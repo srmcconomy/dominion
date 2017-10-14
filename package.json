@@ -1,0 +1,29 @@
+{
+  "name": "dominion-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.5.2",
+    "babel-preset-react": "^6.24.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-plumber": "^1.1.0",
+    "gulp-size": "^2.1.0",
+    "gulp-sourcemaps": "^2.6.0",
+    "nodemon": "^1.11.0",
+    "prettysize": "^0.1.0",
+    "run-sequence": "^1.2.2",
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.5.0"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "gulp-cached": "^1.1.1",
+    "immutable": "^3.8.1",
+    "react": "^15.6.1",
+    "react-hot-loader": "next"
+  }
+}

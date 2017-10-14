@@ -1,0 +1,118 @@
+.card {
+  height: 24.85vh;
+  width: 15.5vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  & .big {
+    height: 497px;
+    width: 310px;
+  }
+  & .small {
+    height: 12.425vh;
+    width: 7.75vh;
+  }
+}
+
+.action {
+  background-image: url(assets/images/cards/backgrounds/action.png);
+}
+
+.treasure {
+  background-image: url(assets/images/cards/backgrounds/treasure.png);
+}
+
+.victory {
+  background-image: url(assets/images/cards/backgrounds/victory.png);
+}
+
+.curse {
+  background-image: url(assets/images/cards/backgrounds/curse.png);
+}
+
+.action.reserve {
+  background-image: url(assets/images/cards/backgrounds/action-reserve.png);
+}
+
+.action.duration {
+  background-image: url(assets/images/cards/backgrounds/action-duration.png);
+}
+
+.action.reaction {
+  background-image: url(assets/images/cards/backgrounds/action-reaction.png);
+}
+
+.action.treasure {
+  background-image: url(assets/images/cards/backgrounds/action-treasure.png);
+}
+
+.action.victory {
+  background-image: url(assets/images/cards/backgrounds/action-victory.png);
+}
+
+.action.shelter {
+  background-image: url(assets/images/cards/backgrounds/action-shelter.png);
+}
+
+.action.ruins {
+  background-image: url(assets/images/cards/backgrounds/action-ruins.png);
+}
+
+.action.traveller {
+  background-image: url(assets/images/cards/backgrounds/action-traveller.png);
+}
+
+.action.reserve.victory {
+  background-image: url(assets/images/cards/backgrounds/action-reserve-victory.png);
+}
+
+.action.duration.reaction {
+  background-image: url(assets/images/cards/backgrounds/action-duration-reaction.png);
+}
+
+.treasure.reaction {
+  background-image: url(assets/images/cards/backgrounds/treasure-reaction.png);
+}
+
+.treasure.victory {
+  background-image: url(assets/images/cards/backgrounds/treasure-victory.png);
+}
+
+.treasure.reserve {
+  background-image: url(assets/images/cards/backgrounds/treasure-reserve.png);
+}
+
+.victory.reaction {
+  background-image: url(assets/images/cards/backgrounds/victory-reaction.png);
+}
+
+.victory.shelter {
+  background-image: url(assets/images/cards/backgrounds/action-reserve.png);
+}
+
+.reaction.shelter {
+  background-image: url(assets/images/cards/backgrounds/reaction-shelter.png);
+}
+
+.image {
+  width: 0.92580645161%;
+  height: 0.42052313883%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.card-border {
+  background: black;
+  border-radius: 0.8875vh;
+  padding: 0.8875vh;
+  &.small {
+    border-radius: 0.44375vh;
+    padding: 0.44375vh;
+  }
+  &.big {
+    border-radius: 20px;
+    padding: 20px;
+  }
+}
