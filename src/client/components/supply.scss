@@ -1,0 +1,17 @@
+.supply {
+  position: relative;
+}
+
+.num {
+  position: absolute;
+  border-radius: 50%;
+  background: purple;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  width: 2em;
+  height: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

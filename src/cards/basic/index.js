@@ -1,9 +1,0 @@
-export { default as Colony } from './colony.js';
-export { default as Copper } from './copper.js';
-export { default as Curse } from './curse.js';
-export { default as Duchy } from './duchy.js';
-export { default as Estate } from './estate.js';
-export { default as Gold } from './gold.js';
-export { default as Platinum } from './platinum.js';
-export { default as Province } from './province.js';
-export { default as Silver } from './silver.js';
