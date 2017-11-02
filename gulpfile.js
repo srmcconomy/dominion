@@ -15,7 +15,7 @@ const path = require('path');
 const pretty = require('prettysize');
 const config = require('./config');
 const nodemon = require('nodemon');
-const spawn = require('child_process').spawn;
+const spawn = require('cross-spawn');
 
 gulp.task('build:server', cb => {
   // gulp.src('./src/server.jsx')
