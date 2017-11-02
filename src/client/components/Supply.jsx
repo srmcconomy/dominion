@@ -29,7 +29,7 @@ export default class Supply extends Component {
     return (
       <div className={cx('supply')}>
         <div className={cx('card')}>
-          {cards.size > 0 ? <Card data={cards.last()} small smaller={this.props.small} selected={this.props.selected} onClick={this.onCardClick} /> : null}
+          {cards.size > 0 ? <Card data={cards.last()} supply small={this.props.small} selected={this.props.selected} onClick={this.onCardClick} /> : null}
         </div>
         <div className={cx('num')}>
           {cards.size}
