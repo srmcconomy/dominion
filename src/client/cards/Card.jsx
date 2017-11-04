@@ -8,23 +8,16 @@ export default class Card extends Model {
     normal: this.constructor.fullArt ? fullImages(`./${this.constructor.name}.jpg`) : normalImages(`./${this.constructor.name}.jpg`),
     small: normalImages(`./${this.constructor.name}.jpg`),
   };
-  get title() {
-    return this.constructor.title || this.constructor.name;
-  }
-  get description() {
-    return this.constructor.description;
-  }
-  get value() {
-    return this.constructor.value;
-  }
-  get cost() {
-    return this.constructor.cost;
-  }
-  get fullArt() {
-    return this.constructor.fullArt;
-  }
-  get types() {
-    return this.constructor.types;
+
+  constructor(...args) {
+    super(...args);
+    const ret = new Proxy(this, {
+      get(target, prop) {
+        return target[prop] || target.constructor[prop];
+      }
+    });
+    Model._models.set(ret.id, ret);
+    return ret;
   }
   static from(id, name) {
     return new (Card.classes.get(name))(id);

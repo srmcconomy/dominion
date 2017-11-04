@@ -1,10 +1,9 @@
-import { readonly, nonenumerable } from 'core-decorators';
-
 import Pile from 'utils/Pile';
 import EventEmitter from 'utils/EventEmitter';
 import Model from 'models/Model';
+import DirtyModel, { trackDirty } from 'utils/DirtyModel';
 import Card from 'cards/Card';
-import PlayerIO from './PlayerIO';
+import AsyncSocket from 'utils/AsyncSocket';
 
 function moveCard(card, fromPile, toPile, options) {
   if (card instanceof Pile) {
@@ -46,34 +45,47 @@ function moveCard(card, fromPile, toPile, options) {
   return cards;
 }
 
-@PlayerIO
+@DirtyModel
 @EventEmitter
 export default class Player extends Model {
-  @readonly
+  @trackDirty(hand => hand.size)
   hand = new Pile();
 
-  @readonly
+  @trackDirty(deck => deck.size)
   deck = new Pile();
 
-  @readonly
+  @trackDirty(pile => (pile.size > 0 ? pile.last().id : null))
   discardPile = new Pile();
 
-  @readonly
-  @nonenumerable
   playArea = new Pile();
 
+  @trackDirty
   name;
+
+  @trackDirty
   index = null;
+
+  @trackDirty
   actions = 1;
+
+  @trackDirty
   money = 0;
+
+  @trackDirty
   buys = 0;
+
+  @trackDirty
   vpTokens = 0;
 
-  @nonenumerable
   game = null;
 
-  constructor(name, game) {
+  socket = null;
+
+  constructor(name, game, socket) {
     super();
+
+    this.socket = new AsyncSocket(socket);
+    this.socket.onReconnect(() => this.socket.emit('state', this.game));
     this.game = game;
     game.players.set(this.id, this);
     this.actions = 1;
@@ -193,5 +205,71 @@ export default class Player extends Model {
     }
     this.cleanup();
     this.draw(5);
+  }
+
+  setSocket(socket) {
+    this.socket.setSocket(socket);
+  }
+
+  async getInputAndNotifyDirty(payload, validate) {
+    console.log('get-input');
+    const dirty = this.game.createDirty();
+    console.log(dirty);
+    await this.forEachOtherPlayer(player => {
+      let newDirty = dirty;
+      if (dirty.players && dirty.players[player.id] && dirty.players[player.id].hand) {
+        newDirty = { ...dirty, hand: player.hand.toIDArray() };
+      }
+      player.socket.emit('get-input', { payload: { type: 'clear-input' }, dirty: newDirty });
+    });
+    if (dirty.players && dirty.players[this.id] && dirty.players[this.id].hand) {
+      dirty.hand = this.hand.toIDArray();
+    }
+    this.game.clean();
+    for (;;) {
+      console.log('loop');
+      const selected = await this.socket.emitAndWait('get-input', {
+        payload,
+        dirty,
+      });
+      console.log('selected');
+      console.log(selected);
+      if (validate(selected)) return selected;
+    }
+  }
+
+  async selectCards(min, max, predicate, from = 'hand') {
+    console.log('select-cards');
+    const filteredCards = predicate ? this[from].filter(predicate) : this[from];
+    if (filteredCards.size === 0) {
+      return [];
+    }
+    const payload = {
+      type: 'select-cards',
+      min,
+      max,
+      cards: filteredCards.toIDArray(),
+    };
+    const ids = await this.getInputAndNotifyDirty(payload, arr => arr.every(id => filteredCards.hasID(id)));
+    return ids.map(id => Model.fromID(id));
+  }
+
+  async selectSupplies(min, max, predicate) {
+    const filteredSupplies = [...this.game.supplies.values()].filter(predicate);
+    if (filteredSupplies.size === 0) {
+      return [];
+    }
+    const payload = {
+      type: 'select-supplies',
+      min,
+      max,
+      supplies: filteredSupplies.map(supply => supply.title),
+    };
+    const names = await this.getInputAndNotifyDirty(payload, arr => arr.every(name => filteredSupplies.some(supply => supply.title === name)));
+    return names.map(name => this.game.supplies.get(name));
+  }
+
+  async revealHand() {
+    await Promise.resolve(this);
   }
 }

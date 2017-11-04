@@ -1,8 +1,7 @@
-import { readonly, nonenumerable, enumerable } from 'core-decorators';
-
 import Card from 'cards/Card';
 import 'cards/basic';
 import Model from 'models/Model';
+import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
 import Supply from 'models/Supply';
 
@@ -15,94 +14,44 @@ function shuffle(arr) {
   }
 }
 
+@DirtyModel
 export default class Game extends Model {
   name;
 
-  @readonly
-  players = new Map();
+  @trackDirty
+  players = new DirtyMap();
 
-  @readonly
-  supplies = new Map();
+  @trackDirty
+  supplies = new DirtyMap();
 
-  @readonly
+  @trackDirty
   organizedSupplies = { victory: [], treasure: [], kingdom: [], nonsupply: [] };
 
-  @readonly
+  @trackDirty
   trash = new Pile();
 
-  @readonly
+  @trackDirty
   cards = [];
 
-  @readonly
+  @trackDirty(arr => arr.map(({ id }) => id))
   playerOrder = [];
 
-  @nonenumerable
-  _dirty = {};
-
-  @nonenumerable
   room = null;
 
-  @nonenumerable
+  @trackDirty(player => player && player.id)
   currentPlayer = null;
 
-  @nonenumerable
   currentPlayerIndex = null;
 
   constructor(name, io) {
     super();
+    console.log(this);
+    console.log(Object.keys(this));
     this.room = io.to(this.id);
-    this.trash.on('dirty', () => { this._dirty.trash = true; });
-    this.players.toJSON = () => {
-      const obj = Object.create(null);
-      this.players.forEach((player, id) => {
-        obj[id] = player;
-      });
-      return obj;
-    };
-    this.supplies.toJSON = () => {
-      const obj = Object.create(null);
-      this.supplies.forEach((supply, id) => {
-        obj[id] = supply;
-      });
-      return obj;
-    };
-    this.playerOrder.toJSON = () => this.playerOrder.map(({ id }) => id);
-    Object.defineProperty(this, 'currentPlayerID', { get() { return this.currentPlayer && this.currentPlayer.id; }, enumerable: true });
   }
 
   getStateFor(player) {
-    return { ...this, hand: player.hand.toIDArray() };
-  }
-
-  clean() {
-    this._dirty = {};
-    this.players.forEach(player => { player._dirty = {}; });
-    this.supplies.forEach(supply => { supply._dirty = {}; });
-  }
-
-  createDirty() {
-    const dirty = {};
-    if (this._dirty.trash) {
-      dirty.trash = this.trash.toIDArray();
-    }
-    if (this._dirty.supplies) {
-      dirty.supplies = {};
-      Object.keys(this._dirty.supplies).forEach(title => {
-        dirty.supplies[title] = this.supplies.get(title).createDirty();
-      });
-    }
-    if (this._dirty.currentPlayerID) {
-      dirty.currentPlayerID = this.currentPlayerID;
-    }
-    if (this._dirty.currentPlayerID || this.currentPlayer._dirty.playArea) {
-      dirty.playArea = this.currentPlayer.playArea;
-    }
-    dirty.players = {};
-    this.players.forEach(player => {
-      const playerDirty = player.createDirty();
-      if (playerDirty) dirty.players[player.id] = playerDirty;
-    });
-    return dirty;
+    return { ...this.createDirty(true), hand: player.hand.toIDArray() };
   }
 
   async start() {
@@ -115,12 +64,6 @@ export default class Game extends Model {
       'Province',
     ].forEach((title) => {
       this.supplies.set(title, new Supply(title, this));
-      this.supplies.get(title).on('dirty', () => {
-        if (!this._dirty.supplies) {
-          this._dirty.supplies = {};
-        }
-        this._dirty.supplies[title] = true;
-      });
       this.organizedSupplies[Card.classes.get(title).supplyCategory].push(title);
     });
     Object.keys(this.organizedSupplies).forEach(key => {
@@ -148,7 +91,10 @@ export default class Game extends Model {
   }
 
   async loop() {
+    console.log('drawing...');
     this.playerOrder.forEach(player => player.draw(5));
+    console.log(this.playerOrder[0].createDirty());
+    console.log(this.createDirty());
     for (;;) {
       await this.currentPlayer.takeTurn();
       this.currentPlayerIndex++;
@@ -156,7 +102,6 @@ export default class Game extends Model {
         this.currentPlayerIndex = 0;
       }
       this.currentPlayer = this.playerOrder[this.currentPlayerIndex];
-      this._dirty.currentPlayerID = true;
     }
   }
 }
