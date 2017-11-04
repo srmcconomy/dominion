@@ -1,9 +1,7 @@
-import { readonly, nonenumerable } from 'core-decorators';
-
 import Card from 'cards/Card';
 import 'cards/basic';
-import DirtyModel from 'models/DirtyModel';
-import DirtyMap from 'models/DirtyMap';
+import Model from 'models/Model';
+import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
 import Supply from 'models/Supply';
 
@@ -16,45 +14,44 @@ function shuffle(arr) {
   }
 }
 
-export default class Game extends DirtyModel {
+@DirtyModel
+export default class Game extends Model {
   name;
 
-  @readonly
+  @trackDirty
   players = new DirtyMap();
 
-  @readonly
+  @trackDirty
   supplies = new DirtyMap();
 
-  @readonly
+  @trackDirty
   organizedSupplies = { victory: [], treasure: [], kingdom: [], nonsupply: [] };
 
-  @readonly
+  @trackDirty
   trash = new Pile();
 
-  @readonly
+  @trackDirty
   cards = [];
 
-  @readonly
+  @trackDirty(arr => arr.map(({ id }) => id))
   playerOrder = [];
 
-  @nonenumerable
   room = null;
 
-  @nonenumerable
+  @trackDirty(player => player && player.id)
   currentPlayer = null;
 
-  @nonenumerable
   currentPlayerIndex = null;
 
   constructor(name, io) {
     super();
+    console.log(this);
+    console.log(Object.keys(this));
     this.room = io.to(this.id);
-    this.playerOrder.toJSON = () => this.playerOrder.map(({ id }) => id);
-    Object.defineProperty(this, 'currentPlayerID', { get() { return this.currentPlayer && this.currentPlayer.id; }, enumerable: true });
   }
 
   getStateFor(player) {
-    return { ...this, hand: player.hand.toIDArray() };
+    return { ...this.createDirty(true), hand: player.hand.toIDArray() };
   }
 
   async start() {
@@ -67,12 +64,6 @@ export default class Game extends DirtyModel {
       'Province',
     ].forEach((title) => {
       this.supplies.set(title, new Supply(title, this));
-      this.supplies.get(title).on('dirty', () => {
-        if (!this._dirty.supplies) {
-          this._dirty.supplies = {};
-        }
-        this._dirty.supplies[title] = true;
-      });
       this.organizedSupplies[Card.classes.get(title).supplyCategory].push(title);
     });
     Object.keys(this.organizedSupplies).forEach(key => {
@@ -100,7 +91,10 @@ export default class Game extends DirtyModel {
   }
 
   async loop() {
+    console.log('drawing...');
     this.playerOrder.forEach(player => player.draw(5));
+    console.log(this.playerOrder[0].createDirty());
+    console.log(this.createDirty());
     for (;;) {
       await this.currentPlayer.takeTurn();
       this.currentPlayerIndex++;
@@ -108,7 +102,6 @@ export default class Game extends DirtyModel {
         this.currentPlayerIndex = 0;
       }
       this.currentPlayer = this.playerOrder[this.currentPlayerIndex];
-      this._dirty.currentPlayerID = true;
     }
   }
 }

@@ -11,11 +11,13 @@ export default class Card extends Model {
 
   constructor(...args) {
     super(...args);
-    return new Proxy(this, {
+    const ret = new Proxy(this, {
       get(target, prop) {
         return target[prop] || target.constructor[prop];
       }
     });
+    Model._models.set(ret.id, ret);
+    return ret;
   }
   static from(id, name) {
     return new (Card.classes.get(name))(id);

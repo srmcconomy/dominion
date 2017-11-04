@@ -24,7 +24,7 @@ export default class Game extends new Record({
   organizedSupplies: null,
   playArea: null,
   yourID: null,
-  currentPlayerID: null,
+  currentPlayer: null,
 }) {
   constructor(json) {
     if (!json) {

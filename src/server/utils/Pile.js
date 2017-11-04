@@ -1,13 +1,13 @@
-import DirtyModel from 'models/DirtyModel';
+import DirtyModel from 'utils/DirtyModel';
 
-export default class Pile extends DirtyModel {
+@DirtyModel
+export default class Pile {
   constructor(list = [], map = new Map()) {
-    super();
     this.list = list;
     this.map = map;
   }
 
-  toJSON() {
+  createDirty() {
     return this.list.map(card => card.id);
   }
 
@@ -18,12 +18,14 @@ export default class Pile extends DirtyModel {
   push(...cards) {
     cards.forEach((card, index) => this.map.set(card.id, this.list.length + index));
     this.list.push(...cards);
+    this.markDirty();
     return this;
   }
 
   unshift(...cards) {
     this.list.unshift(...cards);
     this.list.forEach((card, i) => this.map.set(card.id, i));
+    this.markDirty();
     return this;
   }
 
@@ -35,6 +37,7 @@ export default class Pile extends DirtyModel {
     this.list[index] = card;
     this.map.delete(oldCard.id);
     this.map.set(card.id, index);
+    this.markDirty();
     return this;
   }
 
@@ -48,6 +51,7 @@ export default class Pile extends DirtyModel {
     for (let i = index; i < this.list.length; i++) {
       this.map.set(this.list[i].id, i);
     }
+    this.markDirty();
     return this;
   }
 
@@ -59,6 +63,7 @@ export default class Pile extends DirtyModel {
     const card = this.list.shift();
     this.map.delete(card.id);
     this.list.forEach((c, i) => this.map.set(c.id, i));
+    this.markDirty();
     return card;
   }
 
@@ -75,6 +80,7 @@ export default class Pile extends DirtyModel {
   pop() {
     const card = this.list.pop();
     this.map.delete(card.id);
+    this.markDirty();
     return card;
   }
 
@@ -115,6 +121,7 @@ export default class Pile extends DirtyModel {
   clear() {
     this.list = [];
     this.map.clear();
+    this.markDirty();
     return this;
   }
 
@@ -127,6 +134,7 @@ export default class Pile extends DirtyModel {
       this.map.set(this.list[j].id, j);
       this.map.set(this.list[i].id, i);
     }
+    this.markDirty();
     return this;
   }
 
@@ -136,6 +144,7 @@ export default class Pile extends DirtyModel {
     for (let i = index; i < this.list.length; i++) {
       this.map.set(this.list[i], i);
     }
+    this.markDirty();
     return new Pile(cards, new Map(cards.map((card, i) => [card.id, i])));
   }
 

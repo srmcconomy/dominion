@@ -10,6 +10,9 @@ module.exports = {
     app: [
       './src/server/server.js',
     ],
+    // tests: [
+    //   './src/tests/dirtyModels.js',
+    // ]
   },
   externals: [nodeExternals()],
   target: 'node',
@@ -21,7 +24,7 @@ module.exports = {
   },
   module: {
     rules: [
-     {
+      {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
