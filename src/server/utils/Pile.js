@@ -1,8 +1,8 @@
-import EventEmitter from 'utils/EventEmitter';
+import DirtyModel from 'models/DirtyModel';
 
-@EventEmitter
-export default class Pile {
+export default class Pile extends DirtyModel {
   constructor(list = [], map = new Map()) {
+    super();
     this.list = list;
     this.map = map;
   }
@@ -18,14 +18,12 @@ export default class Pile {
   push(...cards) {
     cards.forEach((card, index) => this.map.set(card.id, this.list.length + index));
     this.list.push(...cards);
-    this.emit('dirty');
     return this;
   }
 
   unshift(...cards) {
     this.list.unshift(...cards);
     this.list.forEach((card, i) => this.map.set(card.id, i));
-    this.emit('dirty');
     return this;
   }
 
@@ -37,7 +35,6 @@ export default class Pile {
     this.list[index] = card;
     this.map.delete(oldCard.id);
     this.map.set(card.id, index);
-    this.emit('dirty');
     return this;
   }
 
@@ -51,7 +48,6 @@ export default class Pile {
     for (let i = index; i < this.list.length; i++) {
       this.map.set(this.list[i].id, i);
     }
-    this.emit('dirty');
     return this;
   }
 
@@ -63,7 +59,6 @@ export default class Pile {
     const card = this.list.shift();
     this.map.delete(card.id);
     this.list.forEach((c, i) => this.map.set(c.id, i));
-    this.emit('dirty');
     return card;
   }
 
@@ -80,7 +75,6 @@ export default class Pile {
   pop() {
     const card = this.list.pop();
     this.map.delete(card.id);
-    this.emit('dirty');
     return card;
   }
 
@@ -121,7 +115,6 @@ export default class Pile {
   clear() {
     this.list = [];
     this.map.clear();
-    this.emit('dirty');
     return this;
   }
 
@@ -134,7 +127,6 @@ export default class Pile {
       this.map.set(this.list[j].id, j);
       this.map.set(this.list[i].id, i);
     }
-    this.emit('dirty');
     return this;
   }
 
@@ -144,7 +136,6 @@ export default class Pile {
     for (let i = index; i < this.list.length; i++) {
       this.map.set(this.list[i], i);
     }
-    this.emit('dirty');
     return new Pile(cards, new Map(cards.map((card, i) => [card.id, i])));
   }
 

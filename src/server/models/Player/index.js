@@ -2,7 +2,7 @@ import { readonly, nonenumerable } from 'core-decorators';
 
 import Pile from 'utils/Pile';
 import EventEmitter from 'utils/EventEmitter';
-import Model from 'models/Model';
+import DirtyModel from 'models/DirtyModel';
 import Card from 'cards/Card';
 import PlayerIO from './PlayerIO';
 
@@ -48,7 +48,7 @@ function moveCard(card, fromPile, toPile, options) {
 
 @PlayerIO
 @EventEmitter
-export default class Player extends Model {
+export default class Player extends DirtyModel {
   @readonly
   hand = new Pile();
 

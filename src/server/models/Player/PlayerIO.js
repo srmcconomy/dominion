@@ -8,13 +8,8 @@ export default function (Class) {
     @nonenumerable
     socket = null;
 
-    @nonenumerable
-    _dirty = {};
-
     constructor(name, game, socket) {
       super(name, game);
-
-      ['hand', 'deck', 'discardPile', 'playArea'].forEach(field => this[field].on('dirty', () => { this._dirty[field] = true; }));
 
       this.hand.toJSON = () => this.hand.size;
       this.deck.toJSON = () => this.deck.size;
@@ -28,27 +23,17 @@ export default function (Class) {
       this.socket.setSocket(socket);
     }
 
-    createDirty() {
-      const keys = Object.keys(this._dirty);
-      if (keys.length === 0) return null;
-      const dirty = {};
-      keys.forEach(key => {
-        dirty[key] = this[key];
-      });
-      return dirty;
-    }
-
     async getInputAndNotifyDirty(payload, validate) {
       console.log('get-input');
       const dirty = this.game.createDirty();
       await this.forEachOtherPlayer(player => {
         let newDirty = dirty;
-        if (player._dirty.hand) {
+        if (player._dirty.has('hand')) {
           newDirty = { ...dirty, hand: player.hand.toIDArray() };
         }
         player.socket.emit('get-input', { payload: { type: 'clear-input' }, dirty: newDirty });
       });
-      if (this._dirty.hand) {
+      if (this._dirty.has('hand')) {
         dirty.hand = this.hand.toIDArray();
       }
       this.game.clean();
@@ -66,7 +51,7 @@ export default function (Class) {
 
     async selectCards(min, max, predicate, from = 'hand') {
       console.log('select-cards');
-      const filteredCards = this[from].filter(predicate);
+      const filteredCards = predicate ? this[from].filter(predicate) : this[from];
       if (filteredCards.size === 0) {
         return [];
       }

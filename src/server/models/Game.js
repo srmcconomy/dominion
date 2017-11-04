@@ -1,8 +1,9 @@
-import { readonly, nonenumerable, enumerable } from 'core-decorators';
+import { readonly, nonenumerable } from 'core-decorators';
 
 import Card from 'cards/Card';
 import 'cards/basic';
-import Model from 'models/Model';
+import DirtyModel from 'models/DirtyModel';
+import DirtyMap from 'models/DirtyMap';
 import Pile from 'utils/Pile';
 import Supply from 'models/Supply';
 
@@ -15,14 +16,14 @@ function shuffle(arr) {
   }
 }
 
-export default class Game extends Model {
+export default class Game extends DirtyModel {
   name;
 
   @readonly
-  players = new Map();
+  players = new DirtyMap();
 
   @readonly
-  supplies = new Map();
+  supplies = new DirtyMap();
 
   @readonly
   organizedSupplies = { victory: [], treasure: [], kingdom: [], nonsupply: [] };
@@ -37,9 +38,6 @@ export default class Game extends Model {
   playerOrder = [];
 
   @nonenumerable
-  _dirty = {};
-
-  @nonenumerable
   room = null;
 
   @nonenumerable
@@ -51,58 +49,12 @@ export default class Game extends Model {
   constructor(name, io) {
     super();
     this.room = io.to(this.id);
-    this.trash.on('dirty', () => { this._dirty.trash = true; });
-    this.players.toJSON = () => {
-      const obj = Object.create(null);
-      this.players.forEach((player, id) => {
-        obj[id] = player;
-      });
-      return obj;
-    };
-    this.supplies.toJSON = () => {
-      const obj = Object.create(null);
-      this.supplies.forEach((supply, id) => {
-        obj[id] = supply;
-      });
-      return obj;
-    };
     this.playerOrder.toJSON = () => this.playerOrder.map(({ id }) => id);
     Object.defineProperty(this, 'currentPlayerID', { get() { return this.currentPlayer && this.currentPlayer.id; }, enumerable: true });
   }
 
   getStateFor(player) {
     return { ...this, hand: player.hand.toIDArray() };
-  }
-
-  clean() {
-    this._dirty = {};
-    this.players.forEach(player => { player._dirty = {}; });
-    this.supplies.forEach(supply => { supply._dirty = {}; });
-  }
-
-  createDirty() {
-    const dirty = {};
-    if (this._dirty.trash) {
-      dirty.trash = this.trash.toIDArray();
-    }
-    if (this._dirty.supplies) {
-      dirty.supplies = {};
-      Object.keys(this._dirty.supplies).forEach(title => {
-        dirty.supplies[title] = this.supplies.get(title).createDirty();
-      });
-    }
-    if (this._dirty.currentPlayerID) {
-      dirty.currentPlayerID = this.currentPlayerID;
-    }
-    if (this._dirty.currentPlayerID || this.currentPlayer._dirty.playArea) {
-      dirty.playArea = this.currentPlayer.playArea;
-    }
-    dirty.players = {};
-    this.players.forEach(player => {
-      const playerDirty = player.createDirty();
-      if (playerDirty) dirty.players[player.id] = playerDirty;
-    });
-    return dirty;
   }
 
   async start() {
