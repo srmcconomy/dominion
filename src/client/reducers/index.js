@@ -13,12 +13,12 @@ function merger(a, b) {
 
 export default function (state = { game: new Game(), input: null }, action) {
   console.log(action);
-  let { game, input, cardToShow } = state;
+  let { game, input, cardToShow, selectedCards } = state;
   switch (action.type) {
     case 'dirty': {
       const dirty = new Game(action.dirty);
       game = game.mergeWith(merger, dirty);
-      return { game, input, cardToShow };
+      return { game, input, cardToShow, selectedCards };
     }
     case 'select-cards': {
       const cards = action.cards && new Set(action.cards);
@@ -26,7 +26,7 @@ export default function (state = { game: new Game(), input: null }, action) {
         input = {};
       }
       input.selectCards = { cards, min: action.min, max: action.max };
-      return { game, input, cardToShow };
+      return { game, input, cardToShow, selectedCards };
     }
     case 'select-supplies': {
       const supplies = action.supplies && new Set(action.supplies);
@@ -34,20 +34,23 @@ export default function (state = { game: new Game(), input: null }, action) {
         input = {};
       }
       input.selectSupplies = { supplies, min: action.min, max: action.max };
-      return { game, input, cardToShow };
+      return { game, input, cardToShow, selectedCards };
     }
     case 'select-option': {
       if (!input) {
         input = {};
       }
-      input.selectOption = { options: action.options };
-      return { game, input, cardToShow };
+      input.selectOption = { choices: action.choices };
+      return { game, input, cardToShow, selectedCards };
     }
     case 'clear-input': {
-      return { game, input: null, cardToShow };
+      return { game, input: null, cardToShow, selectedCards };
     }
     case 'look-at-card': {
-      return { game, input, cardToShow: action.card };
+      return { game, input, cardToShow: action.card, selectedCards };
+    }
+    case 'selected-cards': {
+      return { game, input, cardToShow: action.card, selectedCards: action.cards };
     }
     default:
       return state;

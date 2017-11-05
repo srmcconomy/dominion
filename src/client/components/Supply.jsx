@@ -13,7 +13,7 @@ const cx = classnames.bind(styles);
 @connect(
   (state, props) => ({
     data: state.game.supplies.get(props.title),
-    selected: state.input && state.input.selectSupplies && state.input.selectSupplies.supplies && state.input.selectSupplies.supplies.has(props.title),
+    selectable: state.input && state.input.selectSupplies && state.input.selectSupplies.supplies && state.input.selectSupplies.supplies.has(props.title),
   }),
 )
 export default class Supply extends Component {
@@ -25,7 +25,7 @@ export default class Supply extends Component {
     return (
       <div className={cx('supply')}>
         <div className={cx('card')}>
-          {cards.size > 0 ? <Card data={cards.last()} supply small={this.props.small} selected={this.props.selected} onClick={this.onCardClick} /> : null}
+          {cards.size > 0 ? <Card data={cards.last()} supply small={this.props.small} selectable={this.props.selectable} onClick={this.onCardClick} /> : null}
         </div>
         <div className={cx('num')}>
           {cards.size}

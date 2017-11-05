@@ -14,6 +14,7 @@ import './fonts.scss';
     input: state.input,
     organizedSupplies: state.game && state.game.organizedSupplies,
     cardToShow: state.cardToShow,
+    selectedCards: state.selectedCards,
   }),
   { hideCard: () => ({ type: 'look-at-card', card: null }) }
 )
@@ -29,7 +30,7 @@ export default class App extends Component {
           <Input />
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          {this.props.hand ? <Hand data={this.props.hand} input={this.props.input && this.props.input.selectCards} /> : null}
+          {this.props.hand ? <Hand data={this.props.hand} input={this.props.input && this.props.input.selectCards} selectedCards={this.props.selectedCards} /> : null}
         </div>
         { this.props.cardToShow && (
           <div onClick={this.props.hideCard} style={{ zIndex: 100, top: 0, left: 0, position: 'absolute', height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

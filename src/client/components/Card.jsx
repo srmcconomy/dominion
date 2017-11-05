@@ -19,7 +19,7 @@ export default class Card extends Component {
     const { small, supply } = this.props;
     const image = supply ? this.props.data.image.small : this.props.data.image.normal;
     return (
-      <div className={cx('card-border', { huge: this.props.huge, full: fullArt && !supply, supply, selected: this.props.selected, small })} onClick={this.props.onClick} style={this.props.style} onContextMenu={this.onRightClick}>
+      <div className={cx('card-border', { huge: this.props.huge, full: fullArt && !supply, supply, selected: this.props.selected, selectable: this.props.selectable, small })} onClick={this.props.onClick} style={this.props.style} onContextMenu={this.onRightClick}>
         <div className={cx('card-container')}>
           <div
             className={cx('image')}

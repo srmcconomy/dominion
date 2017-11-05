@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames/bind';
 
-import { addCardToResponse } from 'utils/input';
+import { toggleCardInResponse } from 'utils/input';
 import Card from 'components/Card';
 import styles from './hand.scss';
 
@@ -9,7 +9,7 @@ const cx = classnames.bind(styles);
 
 export default class Hand extends Component {
   onCardClick = card => () => {
-    addCardToResponse(card);
+    toggleCardInResponse(card);
   }
 
   render() {
@@ -19,7 +19,8 @@ export default class Hand extends Component {
           <Card
             key={card.id}
             data={card}
-            selected={this.props.input && this.props.input.cards && this.props.input.cards.has(card.id)}
+            selectable={this.props.input && this.props.input.cards && this.props.input.cards.has(card.id)}
+            selected={this.props.selectedCards && this.props.selectedCards.has(card.id)}
             onClick={this.onCardClick(card)}
             style={{ marginLeft: `${100 * (i / this.props.data.size)}%` }}
             small={this.props.small}

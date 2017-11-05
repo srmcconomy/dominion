@@ -1,6 +1,7 @@
+import { Set } from 'immutable';
 import socket from 'utils/socket';
 
-let cardResponse = [];
+let cardResponse = new Set();
 let store = null;
 
 export function setStore(s) {
@@ -8,17 +9,24 @@ export function setStore(s) {
 }
 
 export function doneChoosingCards() {
-  socket.respond('select-cards', cardResponse);
-  cardResponse = [];
+  console.log(cardResponse);
+  socket.respond('select-cards', cardResponse.toJS());
+  cardResponse = cardResponse.clear();
   store.dispatch({ type: 'selected-cards', cards: cardResponse });
 }
 
-export function addCardToResponse(card) {
+export function toggleCardInResponse(card) {
   const state = store.getState();
   if (!state.input || !state.input.selectCards || !state.input.selectCards.cards.has(card.id)) {
     return;
   }
-  cardResponse.push(card.id);
+  if (cardResponse.has(card.id)) {
+    cardResponse = cardResponse.delete(card.id);
+  } else if (state.input.selectCards.max > cardResponse.size) {
+    cardResponse = cardResponse.add(card.id);
+  } else {
+    return;
+  }
   store.dispatch({ type: 'selected-cards', cards: cardResponse });
   if (store.getState().input.selectCards.max === 1) {
     doneChoosingCards();

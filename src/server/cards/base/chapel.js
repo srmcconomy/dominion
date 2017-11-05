@@ -2,11 +2,10 @@ import Card from 'cards/Card';
 import { Set } from 'immutable';
 
 export default class Chapel extends Card {
-  static name = 'Chapel';
   static cost = 2;
   static types = new Set(['Action']);
-  async onPlay(game) {
-    const cards = await game.currentPlayer.selectCards(4, 'Select cards to trash');
-    cards.forEach(game.currentPlayer.Trash);
+  async onPlay(player) {
+    const cards = await player.selectCards(0, 4);
+    cards.forEach(card => player.trash(card));
   }
 }

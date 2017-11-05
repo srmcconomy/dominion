@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
 import 'cards/basic';
+import 'cards/base/Chapel';
 import socket from 'utils/socket';
 import { setStore as setInputStore } from 'utils/input';
 import reducers from 'reducers';

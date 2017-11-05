@@ -1,17 +1,9 @@
-export { default as Bureaucrat } from './bureaucrat.js';
-export { default as Cellar } from './cellar.js';
-export { default as Chapel } from './chapel.js';
-export { default as CouncilRoom } from './council-room.js';
-export { default as Festival } from './festival.js';
-export { default as Gardens } from './gardens.js';
-export { default as Laboratory } from './laboratory.js';
-export { default as Library } from './library.js';
-export { default as Market } from './market.js';
-export { default as Militia } from './militia.js';
-export { default as Moat } from './moat.js';
-export { default as Moneylender } from './moneylender.js';
-export { default as Remodel } from './remodel.js';
-export { default as Smithy } from './smithy.js';
-export { default as Village } from './village.js';
-export { default as Witch } from './witch.js';
-export { default as Workshop } from './workshop.js';
+// import Card from 'cards/Card';
+// import * as Cards from './';
+
+// Object.keys(Cards).forEach(title => Card.classes.set(title, Cards[title]));
+
+import Card from 'cards/Card';
+import Chapel from './chapel';
+
+Card.classes.set('Chapel', Chapel);

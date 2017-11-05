@@ -13,6 +13,9 @@
 
 .action {
   background-image: url(assets/images/cards/backgrounds/normal/action.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action.png);
+  }
 }
 
 .treasure {
@@ -222,7 +225,11 @@
   z-index: 0;
 
   &.selected {
-    background: red;
+    transform: translateY(-10em);
+  }
+
+  &.selectable {
+    box-shadow: 0 0 3em red;
   }
 
   &.big {
