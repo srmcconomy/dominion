@@ -121,7 +121,7 @@ export default class Player extends Model {
     return card;
   }
 
-  draw(num) {
+  async draw(num, to) {
     this.emit('before-draw');
     const cards = new Pile();
     let numTaken = 0;
@@ -137,8 +137,13 @@ export default class Player extends Model {
     }
     if (this.deck.size > 0) {
       moveCard(this.deck, cards, { num: Math.min(num - numTaken, this.deck.size) });
-      this.hand.push(...cards);
-      cards.forEach(card => card.onDraw(this));
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards.get(i);
+        let whereTo = typeof to === 'function' ? await to(card) : to;
+        if (!whereTo) whereTo = this.hand;
+        whereTo.push(card);
+        await card.onDraw(this);
+      }
     }
     this.emit('after-draw', cards);
     return cards;
@@ -228,7 +233,7 @@ export default class Player extends Model {
       this.buys--;
     }
     this.cleanup();
-    this.draw(5);
+    await this.draw(5);
   }
 
   setSocket(socket) {

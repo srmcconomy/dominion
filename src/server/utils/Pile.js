@@ -156,6 +156,10 @@ export default class Pile {
     return this.splice(0, num);
   }
 
+  every(func) {
+    return this.list.every(func);
+  }
+
   * [Symbol.iterator]() {
     yield* this.list;
   }

@@ -98,9 +98,9 @@ export default class Game extends Model {
 
   async loop() {
     console.log('drawing...');
-    this.playerOrder.forEach(player => player.draw(5));
-    console.log(this.playerOrder[0].createDirty());
-    console.log(this.createDirty());
+    for (let i = 0; i < this.playerOrder.length; i++) {
+      await this.playerOrder[i].draw(5);
+    }
     for (;;) {
       await this.currentPlayer.takeTurn();
       this.currentPlayerIndex++;
