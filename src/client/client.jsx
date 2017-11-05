@@ -5,12 +5,14 @@ import { Provider } from 'react-redux';
 
 import 'cards/basic';
 import socket from 'utils/socket';
+import { setStore as setInputStore } from 'utils/input';
 import reducers from 'reducers';
 import App from './components/App';
 
 
 const store = createStore(reducers);
 socket.setStore(store);
+setInputStore(store);
 
 const createGame = () => {
   socket.emit('create-game', 'game1', 'player1');

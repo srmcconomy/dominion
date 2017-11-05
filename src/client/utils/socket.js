@@ -25,13 +25,23 @@ socket.setStore = store => {
   socket.on('get-input', data => {
     lastID = data.id;
     store.dispatch({ type: 'dirty', dirty: data.dirty });
-    store.dispatch(data.payload);
+    store.dispatch({ type: 'clear-input' });
+    const { payload } = data;
+    if (payload.selectCards) {
+      store.dispatch({ type: 'select-cards', ...data.payload.selectCards });
+    }
+    if (payload.selectSupplies) {
+      store.dispatch({ type: 'select-supplies', ...data.payload.selectSupplies });
+    }
+    if (payload.selectOption) {
+      store.dispatch({ type: 'select-option', ...data.payload.selectOption });
+    }
   });
 };
 
-socket.respond = data => {
+socket.respond = (type, data) => {
   if (lastID) {
-    socket.emit(lastID, data);
+    socket.emit(lastID, { type, data });
   }
 };
 

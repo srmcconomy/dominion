@@ -8,7 +8,7 @@ const transforms = {
   cards: newCardListTransform,
   hand: cardListTransform,
   trash: cardListTransform,
-  playArea: cardListTransform,
+  playArea: obj => obj && cardListTransform(obj),
   supplies: obj => new Map(Object.keys(obj).map(key => [key, new Supply(obj[key])])),
   players: obj => new Map(Object.keys(obj).map(id => [id, new Player(obj[id])])),
 };

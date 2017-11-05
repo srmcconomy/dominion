@@ -10,4 +10,7 @@ export default class Copper extends Card {
   static getNumberInSupply(game) {
     return 60 - (7 * game.players.size);
   }
+  onPlay(player) {
+    player.money++;
+  }
 }

@@ -1,5 +1,8 @@
 .supplies {
   display: flex;
+  >div>div {
+    margin: 0.5em;
+  }
 }
 
 .victory {

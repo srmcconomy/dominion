@@ -1,15 +1,25 @@
 import React, { Component } from 'react';
-import styles from './card.scss';
+import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
-const cx = classnames.bind(styles);
+import styles from './card.scss';
 
+const cx = classnames.bind(styles);
+@connect(
+  undefined,
+  { lookAtCard: card => ({ type: 'look-at-card', card }) }
+)
 export default class Card extends Component {
+  onRightClick = e => {
+    e.preventDefault();
+    this.props.lookAtCard(this.props.data);
+  }
+
   render() {
     const { fullArt } = this.props.data;
     const { small, supply } = this.props;
     const image = supply ? this.props.data.image.small : this.props.data.image.normal;
     return (
-      <div className={cx('card-border', { full: fullArt, supply, selected: this.props.selected, small })} onClick={this.props.onClick}>
+      <div className={cx('card-border', { huge: this.props.huge, full: fullArt && !supply, supply, selected: this.props.selected, small })} onClick={this.props.onClick} style={this.props.style} onContextMenu={this.onRightClick}>
         <div className={cx('card-container')}>
           <div
             className={cx('image')}

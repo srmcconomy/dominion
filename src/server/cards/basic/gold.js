@@ -10,4 +10,7 @@ export default class Gold extends Card {
   static getNumberInSupply(game) {
     return 30;
   }
+  onPlay(player) {
+    player.money += 3;
+  }
 }

@@ -118,6 +118,7 @@ export default class Player extends Model {
     const [card] = moveCard(this.game.supplies.get(name).cards, this[to]);
     card.onGain(this);
     this.emit('after-gain');
+    return card;
   }
 
   draw(num) {
@@ -140,6 +141,7 @@ export default class Player extends Model {
       cards.forEach(card => card.onDraw(this));
     }
     this.emit('after-draw', cards);
+    return cards;
   }
 
   topdeck(card, from = 'hand') {
@@ -159,7 +161,7 @@ export default class Player extends Model {
 
   play(card) {
     this.emit('before-play');
-    card.onPlay();
+    card.onPlay(this);
     moveCard(card, this.hand, this.playArea);
     this.emit('after-play', card);
   }
@@ -186,12 +188,24 @@ export default class Player extends Model {
     }
     while (this.hand.some(card => card.types.has('Treasure'))) {
       console.log('ask for cards');
-      const [card] = await this.selectCards(0, 1, c => c.types.has('Treasure'));
-      console.log('card selected:');
-      console.log(card);
-      if (!card) break;
-      this.money += card.value;
-      this.play(card);
+      const res = await this.selectOptionOrCardsOrSupplies(['Play all treasures'], { min: 0, max: 1, predicate: c => c.types.has('Treasure'), from: 'hand' });
+      if (res === 0) {
+        let i = 0;
+        while (i < this.hand.size) {
+          const card = this.hand.get(i);
+          if (card.types.has('Treasure')) {
+            this.play(card);
+          } else {
+            i++;
+          }
+        }
+      } else {
+        const [card] = res;
+        console.log('card selected:');
+        console.log(card);
+        if (!card) break;
+        this.play(card);
+      }
     }
     while (this.buys > 0) {
       console.log('ask for supplies');
@@ -228,45 +242,93 @@ export default class Player extends Model {
     this.game.clean();
     for (;;) {
       console.log('loop');
-      const selected = await this.socket.emitAndWait('get-input', {
+      const response = await this.socket.emitAndWait('get-input', {
         payload,
         dirty,
       });
       console.log('selected');
-      console.log(selected);
-      if (validate(selected)) return selected;
+      console.log(response);
+      if (validate(response)) return response;
     }
+  }
+
+  async selectOptionOrCardsOrSupplies(options, cardData, supplyData) {
+    console.log('select-option-or-cards-or-supplies');
+    const payload = {};
+    if (options) {
+      payload.selectOption = {
+        options,
+      };
+    }
+    let filteredCards = null;
+    let filteredSupplies = null;
+    if (cardData) {
+      const { min, max, predicate, from } = cardData;
+      filteredCards = predicate ? this[from].filter(predicate) : this[from];
+      if (filteredCards.size === 0 && !supplyData && !options) {
+        return { type: 'select-cards', cards: [] };
+      }
+      if (filteredCards.size > 0) {
+        payload.selectCards = {
+          min,
+          max,
+          cards: filteredCards.toIDArray(),
+        };
+      }
+    }
+    if (supplyData) {
+      const { min, max, predicate } = supplyData;
+      filteredSupplies = [...this.game.supplies.values()].filter(predicate);
+      if (filteredSupplies.length === 0 && !options && !payload.selectCards) {
+        return { type: 'select-supplies', supplies: [] };
+      }
+      if (filteredSupplies.length > 0) {
+        payload.selectSupplies = {
+          min,
+          max,
+          supplies: filteredSupplies.map(supply => supply.title),
+        };
+      }
+    }
+    console.log(payload);
+    const { type, data } = await this.getInputAndNotifyDirty(payload, res => {
+      console.log(res);
+      switch (res.type) {
+        case 'select-cards':
+          return filteredCards && res.data.every(id => filteredCards.hasID(id));
+        case 'select-supply':
+          return filteredSupplies && res.data.every(name => filteredSupplies.some(supply => supply.title === name));
+        case 'select-option':
+          return res.data >= 0 && res.data < options.length;
+        default:
+          return false;
+      }
+    });
+    switch (type) {
+      case 'select-cards':
+        return data.map(id => Model.fromID(id));
+      case 'select-supply':
+        return data.map(name => this.game.supplies.get(name));
+      case 'select-option':
+        return data;
+      default:
+        throw new Error('invalid');
+    }
+  }
+
+  async selectOption(options) {
+    console.log('select-option');
+    return this.selectOptionOrCardsOrSupplies(options);
   }
 
   async selectCards(min, max, predicate, from = 'hand') {
     console.log('select-cards');
-    const filteredCards = predicate ? this[from].filter(predicate) : this[from];
-    if (filteredCards.size === 0) {
-      return [];
-    }
-    const payload = {
-      type: 'select-cards',
-      min,
-      max,
-      cards: filteredCards.toIDArray(),
-    };
-    const ids = await this.getInputAndNotifyDirty(payload, arr => arr.every(id => filteredCards.hasID(id)));
-    return ids.map(id => Model.fromID(id));
+    return this.selectOptionOrCardsOrSupplies(null, { min, max, predicate, from });
   }
 
   async selectSupplies(min, max, predicate) {
-    const filteredSupplies = [...this.game.supplies.values()].filter(predicate);
-    if (filteredSupplies.size === 0) {
-      return [];
-    }
-    const payload = {
-      type: 'select-supplies',
-      min,
-      max,
-      supplies: filteredSupplies.map(supply => supply.title),
-    };
-    const names = await this.getInputAndNotifyDirty(payload, arr => arr.every(name => filteredSupplies.some(supply => supply.title === name)));
-    return names.map(name => this.game.supplies.get(name));
+    console.log('select-supplies');
+    return this.selectOptionOrCardsOrSupplies(null, null, { min, max, predicate });
   }
 
   async revealHand() {

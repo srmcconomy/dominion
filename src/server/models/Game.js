@@ -33,6 +33,9 @@ export default class Game extends Model {
   @trackDirty
   cards = [];
 
+  @trackDirty
+  playArea = null;
+
   @trackDirty(arr => arr.map(({ id }) => id))
   playerOrder = [];
 
@@ -82,6 +85,7 @@ export default class Game extends Model {
     shuffle(this.playerOrder);
     this.currentPlayerIndex = Math.floor(Math.random() * this.playerOrder.length);
     this.currentPlayer = this.playerOrder[this.currentPlayerIndex];
+    this.playArea = this.currentPlayer.playArea;
     this.playerOrder.forEach((player, i) => {
       player.setIndex(i);
       player.socket.emit('state', this.getStateFor(player));
@@ -102,6 +106,7 @@ export default class Game extends Model {
         this.currentPlayerIndex = 0;
       }
       this.currentPlayer = this.playerOrder[this.currentPlayerIndex];
+      this.playArea = this.currentPlayer.playArea;
     }
   }
 }

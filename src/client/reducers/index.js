@@ -13,23 +13,41 @@ function merger(a, b) {
 
 export default function (state = { game: new Game(), input: null }, action) {
   console.log(action);
-  let { game, input } = state;
+  let { game, input, cardToShow } = state;
   switch (action.type) {
     case 'dirty': {
       const dirty = new Game(action.dirty);
       game = game.mergeWith(merger, dirty);
-      return { game, input };
+      return { game, input, cardToShow };
     }
     case 'select-cards': {
       const cards = action.cards && new Set(action.cards);
-      return { game, input: { cards, min: action.min, max: action.max } };
+      if (!input) {
+        input = {};
+      }
+      input.selectCards = { cards, min: action.min, max: action.max };
+      return { game, input, cardToShow };
     }
     case 'select-supplies': {
       const supplies = action.supplies && new Set(action.supplies);
-      return { game, input: { supplies, min: action.min, max: action.max } };
+      if (!input) {
+        input = {};
+      }
+      input.selectSupplies = { supplies, min: action.min, max: action.max };
+      return { game, input, cardToShow };
+    }
+    case 'select-option': {
+      if (!input) {
+        input = {};
+      }
+      input.selectOption = { options: action.options };
+      return { game, input, cardToShow };
     }
     case 'clear-input': {
-      return { game, input: null };
+      return { game, input: null, cardToShow };
+    }
+    case 'look-at-card': {
+      return { game, input, cardToShow: action.card };
     }
     default:
       return state;

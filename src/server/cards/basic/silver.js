@@ -10,4 +10,7 @@ export default class Silver extends Card {
   static getNumberInSupply(game) {
     return 40;
   }
+  onPlay(player) {
+    player.money += 2;
+  }
 }
