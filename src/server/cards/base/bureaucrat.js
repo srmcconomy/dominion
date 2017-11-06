@@ -1,5 +1,4 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class Bureaucrat extends Card {
   static cost = 4;
@@ -9,9 +8,9 @@ export default class Bureaucrat extends Card {
     await player.forEachOtherPlayer(async other => {
       if (other.hand.some(card => card.types.has('Victory'))) {
         const [c] = await other.selectCards(1, 1, card => card.types.has('Victory'));
-        other.moveCard(c, other.hand, other.deck);
+        other.topdeck(c);
       } else {
-        other.revealHand();
+        // other.revealHand();
       }
     });
   }
