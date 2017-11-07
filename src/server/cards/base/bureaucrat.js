@@ -8,7 +8,7 @@ export default class Bureaucrat extends Card {
     await player.forEachOtherPlayer(async other => {
       if (other.hand.some(card => card.types.has('Victory'))) {
         const [c] = await other.selectCards(1, 1, card => card.types.has('Victory'));
-        other.topdeck(c);
+        other.topDeck(c);
       } else {
         // other.revealHand();
       }

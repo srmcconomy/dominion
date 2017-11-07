@@ -71,6 +71,9 @@ export default class Game extends Model {
       'Chapel',
       'Courtyard',
       'Lurker',
+      'Cellar',
+      'Festival',
+      'Bureaucrat',
     ].forEach((title) => {
       this.supplies.set(title, new Supply(title, this));
       this.organizedSupplies[Card.classes.get(title).supplyCategory].push(title);
