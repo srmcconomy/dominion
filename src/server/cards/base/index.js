@@ -20,7 +20,7 @@ import Remodel from './remodel';
 import Smithy from './smithy';
 import Village from './village';
 import Witch from './witch';
-//import Workshop from './workshop';
+import Workshop from './workshop';
 
 Card.classes.set('Bureaucrat', Bureaucrat);
 Card.classes.set('Cellar', Cellar);
@@ -38,5 +38,5 @@ Card.classes.set('Remodel', Remodel);
 Card.classes.set('Smithy', Smithy);
 Card.classes.set('Village', Village);
 Card.classes.set('Witch', Witch);
-//Card.classes.set('Workshop', Workshop);
+Card.classes.set('Workshop', Workshop);
 
