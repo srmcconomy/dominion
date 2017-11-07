@@ -82,6 +82,7 @@ export default class Game extends Model {
       // 'MoneyLender',
       // 'Remodel',
       // 'Smithy',
+      // 'ThroneRoom',
       // 'Village',
       // 'Witch',
        'Workshop',

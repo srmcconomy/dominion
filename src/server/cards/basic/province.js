@@ -1,8 +1,6 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class Province extends Card {
-  static title = 'Province';
   static VP = 6;
   static cost = 8;
   static types = new Set(['Victory']);

@@ -1,17 +1,19 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class Gardens extends Card {
-  static name = 'Gardens';
   static cost = 4;
   static types = new Set(['Victory']);
-  get vp() {
-    return this.calculateVP();
+    static getNumberInSupply(game) {
+    if (game.players.size === 2) return 8;
+    return 12;
   }
-  calculateVP() {
-    return 0;
-  }
-  async onGain(player) {
-    this.calculateVP = () => player.cards.size / 10 | 0;
-  }
+  // get vp() {
+  //   return this.calculateVP();
+  // }
+  // calculateVP() {
+  //   return 0;
+  // }
+  // async onGain(player) {
+  //   this.calculateVP = () => player.cards.size / 10 | 0;
+  // }
 }
