@@ -77,13 +77,17 @@ export default class Game extends Model {
       // 'Library',
       // 'Market',
       // 'Militia',
-      'Mine',
+      // 'Mine',
       // 'Moat',
-      'MoneyLender',
+      // 'MoneyLender',
       // 'Remodel',
       // 'Smithy',
+      'Village',
+      'Witch',
+      //'Workshop',
       'Courtyard',
       'Lurker',
+
     ].forEach((title) => {
       this.supplies.set(title, new Supply(title, this));
       this.organizedSupplies[Card.classes.get(title).supplyCategory].push(title);
