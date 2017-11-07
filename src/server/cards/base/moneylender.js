@@ -1,13 +1,15 @@
 import Card from 'cards/Card';
 import { Set } from 'immutable';
 
-export default class Moneylender extends Card {
-  name = 'Moneylender';
-  cost = 4;
-  types = new Set(['Action']);
+export default class MoneyLender extends Card {
+  // static title = 'MoneyLender';
+  static cost = 4;
+  static types = new Set(['Action']);
   async onPlay(player) {
-    const cards = await player.selectCard(0, 1, card => card.name === 'Copper')
-    cards.forEach(player.trash(card));
-    if (cards.size > 0) player.money += 3;
+    const [card] = await player.selectCards(0, 1, card => card.name === 'Copper')
+    if (card) {
+    	player.trash(card);
+    	player.money += 3;
+    }
   }
 }
