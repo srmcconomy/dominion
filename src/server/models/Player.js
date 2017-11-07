@@ -316,7 +316,7 @@ export default class Player extends Model {
     }
     if (supplyData) {
       const { min, max, predicate } = supplyData;
-      filteredSupplies = [...this.game.supplies.values()].filter(predicate);
+      filteredSupplies = predicate ? [...this.game.supplies.values()].filter(predicate) : [...this.game.supplies.values()];
       if (filteredSupplies.length === 0 && !choices && !payload.selectCards) {
         return { type: 'select-supplies', supplies: [] };
       }
