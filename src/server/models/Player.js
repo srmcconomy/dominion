@@ -156,6 +156,10 @@ export default class Player extends Model {
     this.moveCard(card, this[from], this.deck);
   }
 
+  pickUp(card, from = 'playArea') {
+    this.moveCard(card, this[from], this.hand);
+  }
+
   async cleanup() {
     this.moveCard(this.hand, this.discardPile, { num: this.hand.size });
     this.moveCard(this.playArea, this.discardPile, { num: this.playArea.size });

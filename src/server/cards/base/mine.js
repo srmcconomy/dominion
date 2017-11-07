@@ -7,8 +7,8 @@ export default class Mine extends Card {
     const [card] = await player.selectCards(0, 1, card => card.types.has('Treasure'));
     if (card) {
       await player.trash(card);
-      const [supply] = await player.selectSupplies(1, 1 ,s => {
-        return s.cards.size > 0 && (Card.classes.get(s.title).cost <= card.cost + 3);// && Card.classes.get(s.title).types.has('Treausre');
+      const [supply] = await player.selectSupplies(1, 1, supply => {
+        return supply.cards.size > 0 && (Card.classes.get(supply.title).cost <= card.cost + 3) && supply.cards.last().types.has('Treasure');
       });
       if (supply){
         await player.gain(supply.title);
