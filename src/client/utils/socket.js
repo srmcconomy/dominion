@@ -28,13 +28,16 @@ socket.setStore = store => {
     store.dispatch({ type: 'clear-input' });
     const { payload } = data;
     if (payload.selectCards) {
-      store.dispatch({ type: 'select-cards', ...data.payload.selectCards });
+      store.dispatch({ type: 'select-cards', ...payload.selectCards });
     }
     if (payload.selectSupplies) {
-      store.dispatch({ type: 'select-supplies', ...data.payload.selectSupplies });
+      store.dispatch({ type: 'select-supplies', ...payload.selectSupplies });
     }
     if (payload.selectOption) {
-      store.dispatch({ type: 'select-option', ...data.payload.selectOption });
+      store.dispatch({ type: 'select-option', ...payload.selectOption });
+    }
+    if (payload.message) {
+      store.dispatch({ type: 'message', message: payload.message });
     }
   });
 };

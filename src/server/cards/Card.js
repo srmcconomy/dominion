@@ -18,7 +18,7 @@ export default class Card extends BaseCard {
     return 10;
   }
 
-  static init(game) { }
+  static init(player) { }
 
   toJSON() {
     return {
@@ -27,10 +27,11 @@ export default class Card extends BaseCard {
     };
   }
 
-  async onPlay(game) { }
-  async onDraw(game) { }
-  async onDiscard(game) { }
-  async onTrash(game) { }
-  async onGain(game) { }
-  async onBuy(game) { }
+  async onPlay(player) { }
+  async onDraw(player) { }
+  async onDiscard(player) { }
+  async onTrash(player) { }
+  async onGain(player) { }
+  async onBuy(player) { }
+  async onAttacked(player) { }
 }

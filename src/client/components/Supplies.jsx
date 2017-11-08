@@ -15,7 +15,7 @@ export default class Supplies extends Component {
         <div className={cx('victory')}>
           {victory.map(title => <Supply title={title} small />)}
         </div>
-        <div>
+        <div className={cx('kingdom')}>
           {kingdom.map(title => <Supply title={title} />)}
         </div>
         <div className={cx('victory')}>

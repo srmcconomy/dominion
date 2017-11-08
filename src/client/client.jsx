@@ -5,6 +5,8 @@ import { Provider } from 'react-redux';
 
 import 'cards/basic';
 import 'cards/base/Chapel';
+import 'cards/intrigue/Courtyard';
+import 'cards/intrigue/Lurker';
 import socket from 'utils/socket';
 import { setStore as setInputStore } from 'utils/input';
 import reducers from 'reducers';

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Model from 'models/Model';
 import Hand from './Hand';
 import Card from './Card';
 import Supplies from './Supplies';
@@ -20,9 +21,12 @@ import './fonts.scss';
 )
 export default class App extends Component {
   render() {
+    console.log(this.props.input);
     return (
       <div className="app">
         {this.props.organizedSupplies && <Supplies data={this.props.organizedSupplies} input={this.props.input && this.props.input.selectSupplies} /> }
+        {this.props.input && this.props.input.selectCards && this.props.input.selectCards.from == null && <Hand data={[...this.props.input.selectCards.cards].map(id => Model.fromID(id))} selectCards={this.props.selectedCards} />}
+        {this.props.input && this.props.input.message && <div>{this.props.input.message}</div>}
         <div style={{ display: 'flex', width: '100%' }}>
           <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {this.props.playArea ? <Hand data={this.props.playArea} small /> : null}

@@ -59,6 +59,12 @@ export default class Pile {
     this.list.forEach(func);
   }
 
+  async asyncForEach(func) {
+    for (let i = 0; i < this.list.length; i++) {
+      await func(this.list[i]);
+    }
+  }
+
   shift() {
     const card = this.list.shift();
     this.map.delete(card.id);

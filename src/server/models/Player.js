@@ -5,46 +5,6 @@ import DirtyModel, { trackDirty } from 'utils/DirtyModel';
 import Card from 'cards/Card';
 import AsyncSocket from 'utils/AsyncSocket';
 
-function moveCard(card, fromPile, toPile, options) {
-  if (card instanceof Pile) {
-    options = toPile;
-    toPile = fromPile;
-    fromPile = card;
-    card = null;
-  }
-  const { fromWhere, toWhere, num } = {
-    fromWhere: 'top',
-    toWhere: 'top',
-    num: 1,
-    ...options,
-  };
-  let cards;
-  if (!card) {
-    switch (fromWhere) {
-      default:
-      case 'top':
-        cards = fromPile.spliceLast(num);
-        break;
-      case 'bottom':
-        cards = fromPile.spliceFirst(num);
-        break;
-    }
-  } else {
-    cards = [card];
-    fromPile.delete(card);
-  }
-  switch (toWhere) {
-    default:
-    case 'top':
-      toPile.push(...cards);
-      break;
-    case 'bottom':
-      toPile.unshift(...cards);
-      break;
-  }
-  return cards;
-}
-
 @DirtyModel
 @EventEmitter
 export default class Player extends Model {
@@ -99,24 +59,64 @@ export default class Player extends Model {
     this.index = index;
   }
 
-  trash(card, from = 'hand') {
+  moveCard(card, fromPile, toPile, options) {
+    if (card instanceof Pile) {
+      options = toPile;
+      toPile = fromPile;
+      fromPile = card;
+      card = null;
+    }
+    const { fromWhere, toWhere, num } = {
+      fromWhere: 'top',
+      toWhere: 'top',
+      num: 1,
+      ...options,
+    };
+    let cards;
+    if (!card) {
+      switch (fromWhere) {
+        default:
+        case 'top':
+          cards = fromPile.spliceLast(num);
+          break;
+        case 'bottom':
+          cards = fromPile.spliceFirst(num);
+          break;
+      }
+    } else {
+      cards = [card];
+      fromPile.delete(card);
+    }
+    switch (toWhere) {
+      default:
+      case 'top':
+        toPile.push(...cards);
+        break;
+      case 'bottom':
+        toPile.unshift(...cards);
+        break;
+    }
+    return cards;
+  }
+
+  async trash(card, from = 'hand') {
     this.emit('before-trash', card);
-    card.onTrash(this);
-    moveCard(card, this[from], this.game.trash);
+    this.moveCard(card, this[from], this.game.trash);
+    await card.onTrash(this);
     this.emit('after-trash', card);
   }
 
-  discard(card, from = 'hand') {
+  async discard(card, from = 'hand') {
     this.emit('before-discard', card);
-    card.onDiscard(this);
-    moveCard(card, this[from], this.discardPile);
+    this.moveCard(card, this[from], this.discardPile);
+    await card.onDiscard(this);
     this.emit('after-discard', card);
   }
 
-  gain(name, to = 'discardPile') {
+  async gain(name, to = 'discardPile') {
     this.emit('before-gain');
-    const [card] = moveCard(this.game.supplies.get(name).cards, this[to]);
-    card.onGain(this);
+    const [card] = this.moveCard(this.game.supplies.get(name).cards, this[to]);
+    await card.onGain(this);
     this.emit('after-gain');
     return card;
   }
@@ -128,15 +128,15 @@ export default class Player extends Model {
     if (this.deck.size < num) {
       if (this.deck.size > 0) {
         numTaken = this.deck.size;
-        moveCard(this.deck, cards, { num: numTaken });
+        this.moveCard(this.deck, cards, { num: numTaken });
       }
       if (this.discardPile.size > 0) {
-        moveCard(this.discardPile, this.deck, { num: this.discardPile.size });
+        this.moveCard(this.discardPile, this.deck, { num: this.discardPile.size });
         this.deck.shuffle();
       }
     }
     if (this.deck.size > 0) {
-      moveCard(this.deck, cards, { num: Math.min(num - numTaken, this.deck.size) });
+      this.moveCard(this.deck, cards, { num: Math.min(num - numTaken, this.deck.size) });
       for (let i = 0; i < cards.length; i++) {
         const card = cards.get(i);
         let whereTo = typeof to === 'function' ? await to(card) : to;
@@ -150,23 +150,19 @@ export default class Player extends Model {
   }
 
   topdeck(card, from = 'hand') {
-    moveCard(card, this[from], this.deck);
+    this.moveCard(card, this[from], this.deck);
   }
 
-  cleanup() {
-    this.hand.forEach(card => {
-      card.onDiscard();
-    });
-    this.playArea.forEach(card => {
-      card.onDiscard();
-    });
-    moveCard(this.hand, this.discardPile, { num: this.hand.size });
-    moveCard(this.playArea, this.discardPile, { num: this.playArea.size });
+  async cleanup() {
+    this.moveCard(this.hand, this.discardPile, { num: this.hand.size });
+    this.moveCard(this.playArea, this.discardPile, { num: this.playArea.size });
+    await this.hand.asyncForEach(card => card.onDiscard());
+    await this.playArea.asyncForEach(card => card.onDiscard());
   }
 
   async play(card) {
     this.emit('before-play');
-    moveCard(card, this.hand, this.playArea);
+    this.moveCard(card, this.hand, this.playArea);
     await card.onPlay(this);
     this.emit('after-play', card);
   }
@@ -185,8 +181,9 @@ export default class Player extends Model {
     this.buys = 1;
     this.money = 0;
     while (this.actions > 0 && this.hand.some(card => card.types.has('Action'))) {
-      const [card] = await this.selectCards(0, 1, c => c.types.has('Action'));
+      const [card] = await this.selectCards({ min: 0, max: 1, predicate: c => c.types.has('Action') });
       if (!card) break;
+      this.actions--;
       await this.play(card);
     }
     while (this.hand.some(card => card.types.has('Treasure'))) {
@@ -232,12 +229,24 @@ export default class Player extends Model {
       this.money -= Card.classes.get(supply.title).cost;
       this.buys--;
     }
-    this.cleanup();
+    await this.cleanup();
     await this.draw(5);
   }
 
   setSocket(socket) {
     this.socket.setSocket(socket);
+  }
+
+  async attacked(effect) {
+    let nullified = false;
+    await this.hand.asyncForEach(async card => {
+      if (await card.onAttacked(this)) {
+        nullified = true;
+      }
+    });
+    if (!nullified) {
+      await effect();
+    }
   }
 
   async getInputAndNotifyDirty(payload, validate) {
@@ -270,7 +279,7 @@ export default class Player extends Model {
     }
   }
 
-  async selectOptionOrCardsOrSupplies(choices, cardData, supplyData) {
+  async selectOptionOrCardsOrSupplies(choices, cardData, supplyData, message) {
     console.log('select-option-or-cards-or-supplies');
     const payload = {};
     if (choices) {
@@ -281,8 +290,15 @@ export default class Player extends Model {
     let filteredCards = null;
     let filteredSupplies = null;
     if (cardData) {
-      const { min, max, predicate, from } = cardData;
-      filteredCards = predicate ? this[from].filter(predicate) : this[from];
+      const { min, max, predicate, pile } = cardData;
+      let { from } = cardData;
+      if (pile) {
+        console.log(pile);
+        filteredCards = pile;
+        from = null;
+      } else {
+        filteredCards = predicate ? this[from].filter(predicate) : this[from];
+      }
       if (filteredCards.size === 0 && !supplyData && !choices) {
         return { type: 'select-cards', cards: [] };
       }
@@ -291,6 +307,7 @@ export default class Player extends Model {
           min,
           max,
           cards: filteredCards.toIDArray(),
+          from,
         };
       }
     }
@@ -308,6 +325,7 @@ export default class Player extends Model {
         };
       }
     }
+    if (message) payload.message = message;
     console.log(payload);
     const { type, data } = await this.getInputAndNotifyDirty(payload, res => {
       console.log(res);
@@ -335,19 +353,21 @@ export default class Player extends Model {
     }
   }
 
-  async selectOption(choices) {
+  async selectOption(choices, message) {
     console.log('select-option');
-    return this.selectOptionOrCardsOrSupplies(choices);
+    return this.selectOptionOrCardsOrSupplies(choices, null, null, message);
   }
 
-  async selectCards(min, max, predicate, from = 'hand') {
+  // If third param is a function then it will filter this[from] by that, and then the cards from this[from] will be higlighted
+  // If it is a Pile then those cards will appear on screen without context
+  async selectCards({ min, max, predicate, pile, from = 'hand', message }) {
     console.log('select-cards');
-    return this.selectOptionOrCardsOrSupplies(null, { min, max, predicate, from });
+    return this.selectOptionOrCardsOrSupplies(null, { min, max, predicate, pile, from }, null, message);
   }
 
-  async selectSupplies(min, max, predicate) {
+  async selectSupplies({ min, max, predicate, message }) {
     console.log('select-supplies');
-    return this.selectOptionOrCardsOrSupplies(null, null, { min, max, predicate });
+    return this.selectOptionOrCardsOrSupplies(null, null, { min, max, predicate }, message);
   }
 
   async revealHand() {

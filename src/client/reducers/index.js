@@ -1,4 +1,4 @@
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 
 import Player from 'models/Player';
 import Game from 'models/Game';
@@ -11,7 +11,7 @@ function merger(a, b) {
   return b == null ? a : b;
 }
 
-export default function (state = { game: new Game(), input: null }, action) {
+export default function (state = { game: new Game(), input: null, cardToShow: null, selectedCards: new List() }, action) {
   console.log(action);
   let { game, input, cardToShow, selectedCards } = state;
   switch (action.type) {
@@ -25,7 +25,7 @@ export default function (state = { game: new Game(), input: null }, action) {
       if (!input) {
         input = {};
       }
-      input.selectCards = { cards, min: action.min, max: action.max };
+      input.selectCards = { cards, min: action.min, max: action.max, from: action.from };
       return { game, input, cardToShow, selectedCards };
     }
     case 'select-supplies': {
@@ -42,6 +42,13 @@ export default function (state = { game: new Game(), input: null }, action) {
       }
       input.selectOption = { choices: action.choices };
       return { game, input, cardToShow, selectedCards };
+    }
+    case 'message': {
+      if (!input) {
+        input = {};
+      }
+      input.message = action.message;
+      return { game, input, cardToShow: action.card, selectedCards };
     }
     case 'clear-input': {
       return { game, input: null, cardToShow, selectedCards };

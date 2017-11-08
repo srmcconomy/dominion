@@ -1,6 +1,8 @@
 import Card from 'cards/Card';
 import 'cards/basic';
 import 'cards/base';
+import 'cards/intrigue/Courtyard';
+import 'cards/intrigue/Lurker';
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
@@ -60,6 +62,7 @@ export default class Game extends Model {
 
   async start() {
     [
+      'Curse',
       'Copper',
       'Silver',
       'Gold',
@@ -67,6 +70,8 @@ export default class Game extends Model {
       'Duchy',
       'Province',
       'Chapel',
+      'Courtyard',
+      'Lurker',
     ].forEach((title) => {
       this.supplies.set(title, new Supply(title, this));
       this.organizedSupplies[Card.classes.get(title).supplyCategory].push(title);
