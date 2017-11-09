@@ -3,6 +3,7 @@ import Card from 'cards/Card';
 import Coin from 'components/Coin';
 
 export default class CouncilRoom extends Card {
+  static title = 'Council Room'
   static description = <div>
   <p><strong>+4 Cards</strong></p>
   <p><strong>+1 Buy</strong></p>

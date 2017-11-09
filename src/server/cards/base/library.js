@@ -6,19 +6,17 @@ export default class Library extends Card {
   static cost = 5;
   static types = new Set(['Action']);
 
-  @trackDirty(pile => (pile.size > 0 ? pile.last().id : null))
-  aside = new Pile();
-
   async onPlay(player) {
+    const aside = new Pile();
     while ((player.hand.size < 7) && (player.deck.size + player.discardPile.size > 0)) {
     	await player.draw(1, async card => {
     		if (card.types.has('Action')) {
     			const choice = await player.selectOption(['Put ' + card.title + ' in hand', 'Set ' + card.title + ' aside']);
-    			return [player.hand, this.aside][choice];
+    			return [player.hand, aside][choice];
     		}
     		return player.hand;
   		});
     }
-    this.aside.asyncForEach(card => player.discard(card));
+    aside.asyncForEach(card => player.discard(card));
   }
 }
