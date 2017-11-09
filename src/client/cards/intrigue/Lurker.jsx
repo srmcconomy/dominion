@@ -12,5 +12,3 @@ export default class Lurker extends Card {
   );
   static types = ['Action'];
 }
-
-Card.classes.set('Lurker', Lurker);

@@ -27,5 +27,3 @@ export default class Lurker extends Card {
     }
   }
 }
-
-Card.classes.set('Lurker', Lurker);

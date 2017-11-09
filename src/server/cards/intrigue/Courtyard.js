@@ -11,5 +11,3 @@ export default class Courtyard extends Card {
     }
   }
 }
-
-Card.classes.set('Courtyard', Courtyard);

@@ -1,8 +1,7 @@
 import Card from 'cards/Card';
 import 'cards/basic';
 import 'cards/base';
-import 'cards/intrigue/Courtyard';
-import 'cards/intrigue/Lurker';
+import 'cards/intrigue';
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
@@ -72,6 +71,10 @@ export default class Game extends Model {
       'Chapel',
       'Courtyard',
       'Lurker',
+      'Steward',
+      'ShantyTown',
+      'Pawn',
+      'Masquerade',
     ].forEach((title) => {
       this.supplies.set(title, new Supply(title, this));
       this.organizedSupplies[Card.classes.get(title).supplyCategory].push(title);

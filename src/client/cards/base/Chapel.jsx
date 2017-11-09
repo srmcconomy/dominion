@@ -7,5 +7,3 @@ export default class Chapel extends Card {
   static cost = <Coin>2</Coin>
   static types = ['Action'];
 }
-
-Card.classes.set('Chapel', Chapel);
