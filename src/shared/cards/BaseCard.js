@@ -5,8 +5,8 @@ export default class BaseCard extends Model {
     super(...args);
     const proxy = new Proxy(this, {
       get(target, prop) {
-        if (target[prop]) return target[prop];
-        if (target.constructor[prop]) return target.constructor[prop];
+        if (target[prop] !== undefined) return target[prop];
+        if (target.constructor[prop] !== undefined) return target.constructor[prop];
         if (prop === 'title') return target.constructor.name;
         return undefined;
       }

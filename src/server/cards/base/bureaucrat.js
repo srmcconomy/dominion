@@ -1,5 +1,4 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class Bureaucrat extends Card {
   static cost = 4;
@@ -8,10 +7,10 @@ export default class Bureaucrat extends Card {
     player.gain('Silver', 'deck');
     await player.forEachOtherPlayer(async other => {
       if (other.hand.some(card => card.types.has('Victory'))) {
-        const [c] = await other.selectCards(1, 1, card => card.types.has('Victory'));
-        other.moveCard(c, other.hand, other.deck);
+        const [c] = await other.selectCards({ min: 1, max: 1, predicate: card => card.types.has('Victory'), message: 'Choose a Victory card to put onto your deck' });
+        other.topDeck(c);
       } else {
-        other.revealHand();
+        // other.revealHand();
       }
     });
   }

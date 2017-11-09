@@ -1,9 +1,4 @@
-// import Card from 'cards/Card';
-// import * as Cards from './';
-
-// Object.keys(Cards).forEach(title => Card.classes.set(title, Cards[title]));
-
 import Card from 'cards/Card';
-import Chapel from './chapel';
+import * as Cards from './';
 
-Card.classes.set('Chapel', Chapel);
+Object.keys(Cards).forEach(title => Card.classes.set(title, Cards[title]));

@@ -1,16 +1,16 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class Remodel extends Card {
-  name = 'Remodel';
-  cost = 4;
-  types = new Set(['Action']);
+  static cost = 4;
+  static types = new Set(['Action']);
   async onPlay(player) {
-    const cards = await player.selectCards(1, 1);
-    if (cards.size > 0) {
-      player.trash(cards.get(0));
-      const supply = await player.chooseSupplyWhere(supply => supply.last().cost <= cards.get(0).cost + 2);
-      player.gain(supply.last().name);
+    const [card] = await player.selectCards({ min: 1, max: 1, message: 'Choose a Card to Remodel' });
+    if (card) {
+      await player.trash(card);
+      const [supply] = await player.selectSupplies({ min: 1, max: 1, predicate: s => ((s.cards.size > 0) && (Card.classes.get(s.title).cost <= card.cost + 2)), message: 'Choose an card to gain' });
+      if (supply){
+        await player.gain(supply.title);
+      }
     }
   }
 }

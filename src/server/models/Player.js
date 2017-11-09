@@ -149,8 +149,12 @@ export default class Player extends Model {
     return cards;
   }
 
-  topdeck(card, from = 'hand') {
+  topDeck(card, from = 'hand') {
     this.moveCard(card, this[from], this.deck);
+  }
+
+  pickUp(card, from = 'playArea') {
+    this.moveCard(card, this[from], this.hand);
   }
 
   async cleanup() {
@@ -313,7 +317,7 @@ export default class Player extends Model {
     }
     if (supplyData) {
       const { min, max, predicate } = supplyData;
-      filteredSupplies = [...this.game.supplies.values()].filter(predicate);
+      filteredSupplies = predicate ? [...this.game.supplies.values()].filter(predicate) : [...this.game.supplies.values()];
       if (filteredSupplies.length === 0 && !choices && !payload.selectCards) {
         return { type: 'select-supplies', supplies: [] };
       }

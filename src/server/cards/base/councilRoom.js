@@ -1,13 +1,11 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class CouncilRoom extends Card {
-  static name = 'Council Room';
   static cost = 5;
   static types = new Set(['Action']);
   async onPlay(player) {
-    player.draw(4);
+    await player.draw(4);
     player.buys++;
-    await player.forEachOtherPlayer(other => other.draw(1));
+    await player.forEachOtherPlayer(async other => await other.draw(1));
   }
 }

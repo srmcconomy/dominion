@@ -1,12 +1,10 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class Market extends Card {
-  name = 'Market';
-  cost = 5;
-  types = new Set(['Action']);
+  static cost = 5;
+  static types = new Set(['Action']);
   async onPlay(player) {
-    player.draw(1);
+    await player.draw(1);
     player.actions++;
     player.buys++;
     player.money++;

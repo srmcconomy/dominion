@@ -7,7 +7,7 @@ export default class Courtyard extends Card {
     await player.draw(3);
     const [card] = await player.selectCards({ min: 1, max: 1, message: 'Choose a card to put onto your deck' });
     if (card) {
-      player.moveCard(card, player.hand, player.deck);
+      player.topDeck(card);
     }
   }
 }
