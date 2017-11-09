@@ -17,9 +17,6 @@ export default class Player extends Model {
   @trackDirty(pile => (pile.size > 0 ? pile.last().id : null))
   discardPile = new Pile();
 
-  @trackDirty(pile => (pile.size > 0 ? pile.last().id : null))
-  aside = new Pile();
-
   playArea = new Pile();
 
   @trackDirty

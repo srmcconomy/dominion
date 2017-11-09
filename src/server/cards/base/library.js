@@ -1,5 +1,4 @@
 import Card from 'cards/Card';
-import DirtyModel, { trackDirty } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
 
 export default class Library extends Card {
