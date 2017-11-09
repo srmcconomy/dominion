@@ -1,18 +1,24 @@
 import Card from 'cards/Card';
+import DirtyModel, { trackDirty } from 'utils/DirtyModel';
+import Pile from 'utils/Pile';
 
 export default class Library extends Card {
   static cost = 5;
   static types = new Set(['Action']);
+
+  @trackDirty(pile => (pile.size > 0 ? pile.last().id : null))
+  aside = new Pile();
+
   async onPlay(player) {
     while ((player.hand.size < 7) && (player.deck.size + player.discardPile.size > 0)) {
     	await player.draw(1, async card => {
     		if (card.types.has('Action')) {
     			const choice = await player.selectOption(['Put ' + card.title + ' in hand', 'Set ' + card.title + ' aside']);
-    			return [player.hand, player.aside][choice];
+    			return [player.hand, this.aside][choice];
     		}
     		return player.hand;
   		});
     }
-    await player.aside.forEach(async card => await player.discard(card));
+    this.aside.asyncForEach(card => player.discard(card));
   }
 }

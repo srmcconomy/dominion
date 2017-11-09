@@ -1,7 +1,6 @@
 import Card from 'cards/Card';
 
 export default class CouncilRoom extends Card {
-  // static title = 'Council Room';
   static cost = 5;
   static types = new Set(['Action']);
   async onPlay(player) {

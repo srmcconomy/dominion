@@ -8,7 +8,9 @@ export default class Militia extends Card {
     await player.forEachOtherPlayer(async other => {
       if (other.hand.size > 3) {
         const cards = await other.selectCards({ min:  other.hand.size - 3, max:  other.hand.size - 3, message: 'Discard down to three cards in hand' });
-        cards.forEach(async card => await other.discard(card));
+        for (let i = 0; i < cards.length; i++) {
+          await other.discard(cards[i]);
+        }
       }
     });
   }

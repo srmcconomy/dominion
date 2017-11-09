@@ -1,7 +1,6 @@
 import Card from 'cards/Card';
 
 export default class ThroneRoom extends Card {
-  // static title = 'Throne Room';
   static cost = 4;
   static types = new Set(['Action']);
   async onPlay(player) {
