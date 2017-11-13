@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 import 'cards/basic';
 import 'cards/base';
+import 'cards/baseSecond';
 import 'cards/intrigue';
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
@@ -89,6 +90,8 @@ export default class Game extends Model {
       'Workshop',
       'Courtyard',
       'Lurker',
+      'Bandit',
+      'Artisan',
 
     ].forEach((title) => {
       this.supplies.set(title, new Supply(title, this));
