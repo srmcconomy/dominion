@@ -94,6 +94,8 @@ export default class Game extends Model {
       'Artisan',
       'Harbinger',
       'Merchant',
+      'Poacher',
+      'Sentry',
 
     ].forEach((title) => {
       this.supplies.set(title, new Supply(title, this));
