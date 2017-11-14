@@ -101,7 +101,7 @@ export default class Player extends Model {
 
   async trash(card, from = 'hand') {
     this.emit('before-trash', card);
-    let whereFrom = typeof from === 'string' ? await this[from] : from;
+    const whereFrom = typeof from === 'string' ? this[from] : from;
     this.moveCard(card, whereFrom, this.game.trash);
     await card.onTrash(this);
     this.emit('after-trash', card);
@@ -109,7 +109,7 @@ export default class Player extends Model {
 
   async discard(card, from = 'hand') {
     this.emit('before-discard', card);
-    let whereFrom = typeof from === 'string' ? await this[from] : from;
+    const whereFrom = typeof from === 'string' ? this[from] : from;
     this.moveCard(card, whereFrom, this.discardPile);
     await card.onDiscard(this);
     this.emit('after-discard', card);

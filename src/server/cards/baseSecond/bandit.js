@@ -20,7 +20,6 @@ export default class Bandit extends Card {
 
       for (let i = 0; i < aside.size; i++) {
         if (cards[i]) {
-          console.log(cards[i]);
           await other.discard(cards[i], aside);
         }
       }
