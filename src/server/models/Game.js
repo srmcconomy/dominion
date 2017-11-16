@@ -3,7 +3,8 @@ import 'cards/basic';
 import 'cards/base';
 import 'cards/baseSecond';
 import 'cards/intrigue';
-import 'cards/cornucopia';
+import 'cards/seaside';
+import 'cards/cornucopia'
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';

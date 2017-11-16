@@ -342,6 +342,7 @@ export default class Player extends Model {
     this.cardsPlayedThisTurn.push(card);
     this.moveCard(card, this.hand, this.playArea);
     await this.emit('play', card, this);
+    if (card.types.has('Duration')) ? card.ignoreCleanUp = true;
     await card.onPlay(this);
   }
 
@@ -498,6 +499,9 @@ export default class Player extends Model {
     this.cardsPlayedThisTurn = [];
     this.cardsGainedThisTurn = [];
     this.cardsBoughtThisTurn = [];
+    for (let i = 0; i < this.playArea.size; i++) {
+      this.playArea.list[i].onTurnStart(this);
+    }
 
     await this.processTurnPhases();
   }
