@@ -316,6 +316,7 @@ export default class Player extends Model {
     this.game.log(`${this.name} plays ${card.name}`);
     this.cardsPlayedThisTurn.push(card);
     this.moveCard(card, this.hand, this.playArea);
+    if (card.types.has('Duration')) ? card.ignoreCleanUp = true;
     await card.onPlay(this);
   }
 
@@ -477,6 +478,9 @@ export default class Player extends Model {
     this.actionsPlayedThisTurn = 0;
     this.turnPhase = 'actionPhase';
     this.cardsPlayedThisTurn = [];
+    for (let i = 0; i < this.playArea.size; i++) {
+      this.playArea.list[i].onTurnStart(this);
+    }
 
     await this.processTurnPhases();
   }
