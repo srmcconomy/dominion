@@ -3,6 +3,7 @@ import 'cards/basic';
 import 'cards/base';
 import 'cards/baseSecond';
 import 'cards/intrigue';
+import 'cards/seaside';
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
@@ -110,6 +111,8 @@ export default class Game extends Model {
       'Patrol',
       'Swindler',
       'WishingWell',
+      // 'Caravan',
+      // 'FishingVillage',
 
     ].forEach((title) => {
       console.log(title);

@@ -18,6 +18,8 @@ export default class Player extends Model {
 
   playArea = new Pile();
 
+  durationArea = new Pile();
+
   @trackDirty
   name;
 
@@ -210,6 +212,10 @@ export default class Player extends Model {
     this.moveCard(card, from, this.hand);
   }
 
+  durationComplete(card, from = this.durationArea) {
+    this.moveCard(card, from, this.playArea);
+  }
+
   async cleanup() {
     while (this.hand.size > 0) {
       await this.discard(this.hand.last());
@@ -221,7 +227,7 @@ export default class Player extends Model {
 
   async play(card) {
     this.game.log(`${this.name} plays ${card.name}`);
-    this.moveCard(card, this.hand, this.playArea);
+    this.moveCard(card, this.hand, card.types.has('Duration') ? this.durationArea : this.playArea);
     this.actionsPlayedThisTurn++;
     await card.onPlay(this);
   }
@@ -239,6 +245,9 @@ export default class Player extends Model {
     this.buys = 1;
     this.money = 0;
     this.actionsPlayedThisTurn = 0;
+    for (let i = 0; i < this.durationArea.size; i++) {
+      this.durationArea.list[i].onTurnStart(this);
+    }
     while (this.actions > 0 && this.hand.some(card => card.types.has('Action'))) {
       const [card] = await this.selectCards({ min: 0, max: 1, predicate: c => c.types.has('Action'), message: 'Select an action to play' });
       if (!card) break;

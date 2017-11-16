@@ -36,4 +36,5 @@ export default class Card extends BaseCard {
   async onAttacked(player) { }
   shouldReactTo(event) { return false; }
   async reactTo(event) { }
+  async onTurnStart(player) { }
 }
