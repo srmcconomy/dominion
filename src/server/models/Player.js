@@ -18,6 +18,7 @@ export default class Player extends Model {
 
   playArea = new Pile();
 
+  @trackDirty(pile => (pile.size > 0 ? pile.last().id : null))
   durationArea = new Pile();
 
   @trackDirty
