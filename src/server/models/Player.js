@@ -306,6 +306,10 @@ export default class Player extends Model {
     );
   }
 
+  returnToSupply(card, from = 'hand') {
+    this.moveCard(card, this[from], this.game.supplies.get(card.title).cards);
+  }
+
   async cleanup() {
     await this.emit('cleanup', this);
     while (this.hand.size > 0) {
