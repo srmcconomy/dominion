@@ -118,7 +118,10 @@ export default class Game extends Model {
       // 'Cutpurse',
       // 'Ambassador',
       // 'Salvager',
-      'Navigator',
+      // 'Navigator',
+      // 'Wharf',
+      // 'MerchantShip',
+      'Tactician',
 
 
     ].forEach((title) => {
