@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 
 export default class Artisan extends Card {
   static cost = { coin: 6 };
-  static types = new Set(['Action', 'Attack']);
+  static types = new Set(['Action']);
   async onPlay(player) {
     const [supply] = await player.selectSupplies({
       min: 1,

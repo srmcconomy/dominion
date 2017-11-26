@@ -7,7 +7,7 @@ export default class Navigator extends Card {
   async onPlay(player) {
   	const aside = new Pile();
     player.money += 2;
-    const cards = await player.draw(5, aside);
+    const cards = await player.lookAtTopOfDeck(5);
     const choice = await player.selectOption(['Keep on top', 'Discard all five']);
     switch (choice) {
     	case 0:

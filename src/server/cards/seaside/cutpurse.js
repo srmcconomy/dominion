@@ -6,6 +6,9 @@ export default class Cutpurse extends Card {
   async onPlay(player) {
     player.money += 2;
     await player.forEachOtherPlayer(async other => {
+      if (await other.handleOwnReactions('attack', other, this)) {
+        return;
+      }
       if (other.hand.some(card => card.title === 'Copper')) {
         for (let i = 0; i < other.hand.size; i++) {
           if (other.hand.list[i].title === 'Copper') {

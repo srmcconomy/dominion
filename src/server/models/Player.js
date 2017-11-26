@@ -178,7 +178,7 @@ export default class Player extends Model {
   async discard(card, from = this.hand) {
     this.game.log(`${this.name} discards ${card.name}`);
     this.moveCard(card, from, this.discardPile);
-    await card.onDiscard(this);
+    await card.onDiscard(this, from);
   }
 
   async gainSpecificCard(card, from, to = this.discardPile) {
@@ -306,14 +306,14 @@ export default class Player extends Model {
     );
   }
 
-  returnToSupply(card, from = 'hand') {
-    this.moveCard(card, this[from], this.game.supplies.get(card.title).cards);
+  returnToSupply(card, from = this.hand) {
+    this.moveCard(card, from, this.game.supplies.get(card.title).cards);
   }
 
   async cleanup() {
     await this.emit('cleanup', this);
     while (this.hand.size > 0) {
-      await this.discard(this.hand.last());
+      await this.discard(this.hand.last(), this.hand);
     }
     while (this.playArea.size > 0) {
       await this.discard(this.playArea.last(), this.playArea);
