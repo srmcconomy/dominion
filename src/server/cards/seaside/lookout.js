@@ -5,11 +5,9 @@ export default class Lookout extends Card {
   static cost = 3;
   static types = new Set(['Action']);
   async onPlay(player) {
-    const aside = new Pile();
     player.actions++;
-
    
-    const cards = await player.draw(3, aside);
+    const cards = await player.lookAtTopOfDeck(3);
 
     for (let i = 0; i < cards.size; i++) {
       const options = ['trash', 'discard', 'put on top of your deck'];

@@ -14,7 +14,7 @@ export default class Harbinger extends Card {
         message: 'Select a Card from your discard pile'
       });
       if (card) {
-        await player.topDeck(card);
+        await player.topDeck(card, player.discardPile);
       }
     }
   }

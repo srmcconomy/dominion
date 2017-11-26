@@ -53,6 +53,9 @@ export default class Player extends Model {
   @trackDirty
   cardsPlayedThisTurn = [];
 
+  @trackDirty
+  cardsGainedThisTurn = [];
+
   game = null;
 
   socket = null;
@@ -161,7 +164,7 @@ export default class Player extends Model {
   async discard(card, from = this.hand) {
     this.game.log(`${this.name} discards ${card.name}`);
     this.moveCard(card, from, this.discardPile);
-    await card.onDiscard(this);
+    await card.onDiscard(this, from);
   }
 
   async gainSpecificCard(card, from, to = this.discardPile) {
@@ -179,6 +182,7 @@ export default class Player extends Model {
     }
     const card = supply.cards.last();
     await this.gainSpecificCard(card, supply.cards, to);
+    this.cardsGained.push(card.classes.get(name));
     return card;
   }
 
@@ -282,13 +286,13 @@ export default class Player extends Model {
       );;
   }
 
-  returnToSupply(card, from = 'hand') {
-    this.moveCard(card, this[from], this.game.supplies.get(card.title).cards);
+  returnToSupply(card, from = this.hand) {
+    this.moveCard(card, from, this.game.supplies.get(card.title).cards);
   }
 
   async cleanup() {
     while (this.hand.size > 0) {
-      await this.discard(this.hand.last());
+      await this.discard(this.hand.last(), this.hand);
     }
     while (this.playArea.size > 0) {
       await this.discard(this.playArea.last(), this.playArea);
@@ -482,6 +486,7 @@ export default class Player extends Model {
     this.actionsPlayedThisTurn = 0;
     this.turnPhase = 'actionPhase';
     this.cardsPlayedThisTurn = [];
+    this.cardsGainedThisTurn = [];
     for (let i = 0; i < this.playArea.size; i++) {
       this.playArea.list[i].onTurnStart(this);
     }

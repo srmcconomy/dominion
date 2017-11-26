@@ -6,7 +6,7 @@ export default class Swindler extends Card {
   async onPlay(player) {
     player.money += 2;
     await player.forEachOtherPlayer(async other => {
-      if (await other.handleOwnReactions('attack', player, this)) {
+      if (await other.handleOwnReactions('attack', other, this)) {
         return;
       }
       const [card] = await other.lookAtTopOfDeck(1);
