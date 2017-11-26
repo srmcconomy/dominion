@@ -41,6 +41,9 @@ export default class Player extends Model {
 
   actionsPlayedThisTurn = 0;
 
+  @trackDirty
+  cardsGained = [];
+
   game = null;
 
   socket = null;
@@ -145,7 +148,7 @@ export default class Player extends Model {
   async discard(card, from = this.hand) {
     this.game.log(`${this.name} discards ${card.name}`);
     this.moveCard(card, from, this.discardPile);
-    await card.onDiscard(this);
+    await card.onDiscard(this, from);
   }
 
   async gainSpecificCard(card, from, to = this.discardPile) {
@@ -163,6 +166,7 @@ export default class Player extends Model {
     }
     const card = supply.cards.last();
     await this.gainSpecificCard(card, supply.cards, to);
+    this.cardsGained.push({title:name, cost:card.classes.get(name).cost, types:card.classes.get(name).types});
     return card;
   }
 
@@ -201,6 +205,7 @@ export default class Player extends Model {
     this.game.log(`${this.name} draws ${cards.length} cards`);
     if (putInHand) {
       this.hand.push(...cards);
+      // await card.onDraw(this);
     }
     return cards;
   }
@@ -217,13 +222,13 @@ export default class Player extends Model {
     this.moveCard(card, from, this.playArea);
   }
 
-  returnToSupply(card, from = 'hand') {
-    this.moveCard(card, this[from], this.game.supplies.get(card.title).cards);
+  returnToSupply(card, from.hand) {
+    this.moveCard(card, from, this.game.supplies.get(card.title).cards);
   }
 
   async cleanup() {
     while (this.hand.size > 0) {
-      await this.discard(this.hand.last());
+      await this.discard(this.hand.last(), this.hand);
     }
     while (this.playArea.size > 0) {
       await this.discard(this.playArea.last(), this.playArea);
@@ -250,6 +255,7 @@ export default class Player extends Model {
     this.buys = 1;
     this.money = 0;
     this.actionsPlayedThisTurn = 0;
+    this.cardsGained = [];
     for (let i = 0; i < this.durationArea.size; i++) {
       this.durationArea.list[i].onTurnStart(this);
     }

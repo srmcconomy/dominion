@@ -29,7 +29,7 @@ export default class Card extends BaseCard {
 
   async onPlay(player) { }
   async onDraw(player) { }
-  async onDiscard(player) { }
+  async onDiscard(player, whereFrom) { }
   async onTrash(player) { }
   async onGain(player) { }
   async onBuy(player) { }
