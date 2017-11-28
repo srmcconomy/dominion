@@ -1,7 +1,5 @@
 import shortid from 'shortid';
 
-const TIMEOUT = 60000;
-
 export default class AsyncSocket {
   constructor(socket, broadcast) {
     this.socket = socket;
@@ -27,21 +25,19 @@ export default class AsyncSocket {
     this.reconnectListeners.delete(func);
   }
 
-  emitAndWait(type, data, timeout = TIMEOUT) {
+  emitAndWait(type, data) {
     return new Promise(res => {
       const id = shortid.generate();
       const emit = () => {
         console.log('emit');
         this.emit(type, { id, ...data });
       };
-      const interval = setInterval(emit, timeout);
       this.onReconnect(emit);
       console.log(`waiting for ${id}`);
-      this.socket.on(id, d => {
+      this.socket.once(id, d => {
         console.log(`${id} received`);
         console.log(d);
         this.offReconnect(emit);
-        clearInterval(interval);
         res(d);
       });
       emit();

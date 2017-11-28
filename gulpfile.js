@@ -101,13 +101,13 @@ gulp.task('watch:client', cb => {
 });
 
 gulp.task('watch:server', ['build:server'], () => {
-  gulp.watch('./src/**/*.js', ['build:server']);
+  gulp.watch(['./src/server/**/*.js', './src/shared/**/*.js'], ['build:server']);
 });
 
 gulp.task('run', ['watch:client', 'watch:server'], () => {
   nodemon({
     script: 'build/app.js',
     watch: 'build',
-    args: ['--trace-warnings'],
+    nodeArgs: ['--inspect', '--trace-warnings'],
   });
 });

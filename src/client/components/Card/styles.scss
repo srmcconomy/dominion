@@ -58,6 +58,9 @@
 
 .action.reaction {
   background-image: url(assets/images/cards/backgrounds/normal/action-reaction.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action-reaction.png);
+  }
 }
 
 .action.treasure {
@@ -239,7 +242,7 @@
     font-size: 2em;
   }
   &.small {
-    font-size: 0.666em;
+    font-size: 0.645161em;
   }
   &.huge {
     font-size: 3em;

@@ -5,6 +5,6 @@ export default class Witch extends Card {
   static types = new Set(['Action', 'Attack']);
   async onPlay(player) {
     await player.draw(2);
-    player.forEachOtherPlayer(async other => await other.gain('Curse'));
+    await player.forEachOtherPlayer(other => other.gain('Curse'));
   }
 }

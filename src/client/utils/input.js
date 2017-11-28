@@ -10,20 +10,20 @@ export function setStore(s) {
 
 export function doneChoosingCards() {
   console.log(cardResponse);
-  socket.respond('select-cards', cardResponse.toJS());
+  socket.respond('select-cards', cardResponse.map(card => card.id));
   cardResponse = cardResponse.clear();
   store.dispatch({ type: 'selected-cards', cards: cardResponse });
 }
 
 export function toggleCardInResponse(card) {
   const state = store.getState();
-  if (!state.input || !state.input.selectCards || !state.input.selectCards.cards.has(card.id)) {
+  if (!state.input || !state.input.selectCards || !state.input.selectCards.cards.has(card)) {
     return;
   }
-  if (cardResponse.has(card.id)) {
-    cardResponse = cardResponse.delete(card.id);
+  if (cardResponse.has(card)) {
+    cardResponse = cardResponse.delete(card);
   } else if (state.input.selectCards.max > cardResponse.size) {
-    cardResponse = cardResponse.add(card.id);
+    cardResponse = cardResponse.add(card);
   } else {
     return;
   }

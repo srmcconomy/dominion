@@ -13,10 +13,7 @@ export default class Lurker extends Card {
       case 0: {
         const [supply] = await player.selectSupplies({ min: 1, max: 1, predicate: s => s.cards.size > 0 && s.cards.last().types.has('Action'), message: 'Choose an action to trash' });
         if (supply) {
-          const [card] = player.moveCard(supply.cards, player.game.trash);
-          if (card) {
-            await card.onTrash();
-          }
+          await player.trashFromPile(supply.cards);
         }
         break;
       }
@@ -24,8 +21,7 @@ export default class Lurker extends Card {
         if (player.game.trash.size > 0) {
           const [card] = await player.selectCards({ min: 1, max: 1, pile: player.game.trash.filter(c => c.types.has('Action')), message: 'Choose an action to gain' });
           if (card) {
-            player.moveCard(card, player.game.trash, player.discardPile);
-            await card.onGain();
+            await player.gainSpecificCard(card, player.game.trash);
           }
         }
         break;

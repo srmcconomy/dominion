@@ -6,6 +6,6 @@ export default class CouncilRoom extends Card {
   async onPlay(player) {
     await player.draw(4);
     player.buys++;
-    await player.forEachOtherPlayer(async other => await other.draw(1));
+    await player.forEachOtherPlayer(other => other.draw(1));
   }
 }

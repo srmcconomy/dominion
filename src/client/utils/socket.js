@@ -39,6 +39,9 @@ socket.setStore = store => {
     if (payload.message) {
       store.dispatch({ type: 'message', message: payload.message });
     }
+    if (data.log) {
+      store.dispatch({ type: 'log', log: data.log });
+    }
   });
 };
 

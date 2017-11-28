@@ -10,7 +10,7 @@ import 'cards/intrigue';
 import socket from 'utils/socket';
 import { setStore as setInputStore } from 'utils/input';
 import reducers from 'reducers';
-import App from './components/App';
+import App from './components/App2';
 
 
 const store = createStore(reducers);
@@ -50,5 +50,5 @@ const render = (C) => {
 render(App);
 
 if (module.hot) {
-  module.hot.accept('./components/App', () => { render(App); });
+  module.hot.accept('./components/App2', () => { render(App); });
 }
