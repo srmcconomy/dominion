@@ -50,10 +50,16 @@
 
 .action.reserve {
   background-image: url(assets/images/cards/backgrounds/normal/action-reserve.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action-reserve.png);
+  }
 }
 
 .action.duration {
   background-image: url(assets/images/cards/backgrounds/normal/action-duration.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action-duration.png);
+  }
 }
 
 .action.reaction {
@@ -65,10 +71,16 @@
 
 .action.treasure {
   background-image: url(assets/images/cards/backgrounds/normal/action-treasure.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action-treasure.png);
+  }
 }
 
 .action.victory {
   background-image: url(assets/images/cards/backgrounds/normal/action-victory.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action-victory.png);
+  }
 }
 
 .action.shelter {
@@ -93,14 +105,23 @@
 
 .treasure.reaction {
   background-image: url(assets/images/cards/backgrounds/normal/treasure-reaction.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/treasure-reaction.png);
+  }
 }
 
 .treasure.victory {
   background-image: url(assets/images/cards/backgrounds/normal/treasure-victory.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/treasure-victory.png);
+  }
 }
 
 .treasure.reserve {
   background-image: url(assets/images/cards/backgrounds/normal/treasure-reserve.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/treasure-reserve.png);
+  }
 }
 
 .victory.reaction {
@@ -163,6 +184,7 @@
 
 .cost, .value {
   position: absolute;
+  font-size: 1.5em;
 }
 
 .value {

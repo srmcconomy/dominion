@@ -1,13 +1,12 @@
 import Card from 'cards/Card';
 
 export default class Courtier extends Card {
-  static cost = 4;
-  static types = new Set(['Action', 'Victory']);
+  static cost = 5;
+  static types = new Set(['Action']);
   async onPlay(player) {
-    const [card] = await player.selectCard({
+    const [card] = await player.selectCards({
       min: 1,
       max: 1,
-      predicate: () => true,
       message: 'Choose a card to reveal',
     });
     if (!card) {
@@ -17,7 +16,7 @@ export default class Courtier extends Card {
       '+1 Action': () => player.actions++,
       '+1 Buy': () => player.buys++,
       '+3 coin': () => { player.money += 3; },
-      'Gain a Gold': () => player.gain('gold'),
+      'Gain a Gold': () => player.gain('Gold'),
     };
     const keys = Object.keys(choices);
     const numChoices = Math.min(card.types.size, keys.length);

@@ -62,15 +62,19 @@ export default class Player extends Model {
   }
 
   async handleOwnReactions(event, player, ...args) {
-    const reactions = this.hand.filter(card => card.shouldReactTo(event, this, player, ...args));
+    const handledReactions = new Set();
+    let reactions = this.hand.filter(card => !handledReactions.has(card) && card.shouldReactTo(event, this, player, ...args));
     let handled = false;
+    const predicate = card => reactions.includes(card);
     while (reactions.length > 0) {
-      const [reaction] = await this.selectCards({ min: 0, max: 1, predicate: card => reactions.includes(card), message: 'Choose a card to react with' });
+      const [reaction] = await this.selectCards({ min: 0, max: 1, predicate, message: 'Choose a card to react with' });
       if (!reaction) {
         break;
       }
-      reactions.delete(reaction);
-      handled = handled || await reaction.reactTo(event, this, player, ...args);
+      handledReactions.add(reaction);
+      reactions = this.hand.filter(card => !handledReactions.has(card) && card.shouldReactTo(event, this, player, ...args));
+
+      handled = await reaction.reactTo(event, this, player, ...args) || handled;
     }
     return handled;
   }
@@ -121,6 +125,9 @@ export default class Player extends Model {
   }
 
   async trashFromPile(pile) {
+    if (pile.size === 0) {
+      return;
+    }
     const card = pile.last();
     await this.trash(card, pile);
   }
@@ -231,6 +238,7 @@ export default class Player extends Model {
     this.actions = 1;
     this.buys = 1;
     this.money = 0;
+    this.actionsPlayedThisTurn = 0;
     while (this.actions > 0 && this.hand.some(card => card.types.has('Action'))) {
       const [card] = await this.selectCards({ min: 0, max: 1, predicate: c => c.types.has('Action'), message: 'Select an action to play' });
       if (!card) break;
@@ -292,7 +300,6 @@ export default class Player extends Model {
       this.money -= card.cost;
       this.buys--;
     }
-    this.actionsPlayedThisTurn = 0;
     await this.cleanup();
     await this.draw(5);
   }
@@ -360,7 +367,7 @@ export default class Player extends Model {
         filteredCards = predicate ? this[from].filter(predicate) : this[from];
       }
       if (filteredCards.size === 0 && !supplyData && !choices) {
-        return { type: 'select-cards', cards: [] };
+        return filteredCards;
       }
       if (filteredCards.size > 0) {
         payload.selectCards = {
@@ -375,7 +382,7 @@ export default class Player extends Model {
       const { min, max, predicate } = supplyData;
       filteredSupplies = predicate ? [...this.game.supplies.values()].filter(predicate) : [...this.game.supplies.values()];
       if (filteredSupplies.length === 0 && !choices && !payload.selectCards) {
-        return { type: 'select-supplies', supplies: [] };
+        return filteredSupplies;
       }
       if (filteredSupplies.length > 0) {
         payload.selectSupplies = {

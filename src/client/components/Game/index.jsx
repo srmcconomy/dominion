@@ -9,6 +9,11 @@ import Input from 'components/Input';
 import Card from 'components/Card';
 import Hand from 'components/Hand';
 
+import 'cards/basic';
+import 'cards/base';
+import 'cards/baseSecond';
+import 'cards/intrigue';
+
 import styles from './styles.scss';
 
 const cx = classnames.bind(styles);

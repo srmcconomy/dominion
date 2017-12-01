@@ -18,7 +18,7 @@ export default class Minion extends Card {
           }
           if (other.hand.size >= 5) {
             while (other.hand.size > 0) {
-              await other.discard(player.hand.last());
+              await other.discard(other.hand.last());
             }
             await other.draw(4);
           }

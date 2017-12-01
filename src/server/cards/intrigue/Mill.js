@@ -13,10 +13,12 @@ export default class Mill extends Card {
         max: 2,
         message: 'Select 2 cards to discard'
       });
+      if (cards.length === 2) {
+        player.money += 2;
+      }
       for (let i = 0; i < cards.length; i++) {
         await player.discard(cards[i]);
       }
-      player.money += 2;
     }
   }
 }

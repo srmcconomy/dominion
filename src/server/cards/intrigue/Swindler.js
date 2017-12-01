@@ -14,7 +14,7 @@ export default class Swindler extends Card {
         return;
       }
       await other.trash(card, other.deck);
-      const [supply] = this.selectSupplies({
+      const [supply] = await player.selectSupplies({
         min: 1,
         max: 1,
         predicate: s => s.cards.size > 0 && s.cards.last().cost === card.cost,

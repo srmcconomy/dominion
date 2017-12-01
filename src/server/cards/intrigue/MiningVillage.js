@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 
 export default class MiningVillage extends Card {
   static cost = 4;
-  static types = new Set(['Action', 'Victory']);
+  static types = new Set(['Action']);
   async onPlay(player) {
     await player.draw(1);
     player.actions += 2;

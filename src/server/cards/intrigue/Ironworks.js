@@ -13,7 +13,7 @@ export default class Ironworks extends Card {
     if (!supply) {
       return;
     }
-    const card = player.gain(supply.title);
+    const card = await player.gain(supply.title);
     if (card.types.has('Action')) {
       player.actions++;
     }

@@ -3,10 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import 'cards/basic';
-import 'cards/base';
-import 'cards/baseSecond';
-import 'cards/intrigue';
 import socket from 'utils/socket';
 import { setStore as setInputStore } from 'utils/input';
 import reducers from 'reducers';

@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Baron extends Card {
-  static cost = 3;
+  static cost = 4;
   static types = new Set(['Action']);
   async onPlay(player) {
     player.buys++;
@@ -12,6 +12,7 @@ export default class Baron extends Card {
       message: 'Choose an Estate to discard',
     });
     if (card) {
+      await player.discard(card);
       player.money += 4;
     } else {
       await player.gain('Estate');

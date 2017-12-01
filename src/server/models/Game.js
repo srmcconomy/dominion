@@ -99,6 +99,17 @@ export default class Game extends Model {
       'Merchant',
       'Poacher',
       'Sentry',
+      'Baron',
+      'Conspirator',
+      'Courtier',
+      'Diplomat',
+      'Ironworks',
+      'Mill',
+      'MiningVillage',
+      'Minion',
+      'Patrol',
+      'Swindler',
+      'WishingWell',
 
     ].forEach((title) => {
       console.log(title);
