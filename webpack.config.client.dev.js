@@ -12,7 +12,7 @@ module.exports = merge(common, {
       './src/client/client.jsx',
     ],
   },
-  devtool: 'source-map',
+  devtool: 'eval-source-map',
   output: {
     chunkFilename: '[name].chunk.js',
     filename: '[name].js',
@@ -41,7 +41,14 @@ module.exports = merge(common, {
         test: /\.scss$/,
         use: [
           { loader: 'style-loader', options: { sourceMap: true } },
-          { loader: 'css-loader', options: { modules: true, sourceMap: true } },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              sourceMap: true,
+              localIdentName: '[local]-[hash:base64:5]',
+            }
+          },
           { loader: 'sass-loader', options: { sourceMap: true } },
         ],
       }, {

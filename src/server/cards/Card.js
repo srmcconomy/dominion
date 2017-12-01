@@ -34,4 +34,6 @@ export default class Card extends BaseCard {
   async onGain(player) { }
   async onBuy(player) { }
   async onAttacked(player) { }
+  shouldReactTo(event) { return false; }
+  async reactTo(event) { }
 }

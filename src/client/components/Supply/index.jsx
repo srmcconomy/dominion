@@ -5,15 +5,14 @@ import classnames from 'classnames/bind';
 import Card from 'components/Card';
 import { chooseSupply } from 'utils/input';
 
-import styles from './supply.scss';
+import styles from './styles.scss';
 
 const cx = classnames.bind(styles);
-
 
 @connect(
   (state, props) => ({
     data: state.game.supplies.get(props.title),
-    selectable: state.input && state.input.selectSupplies && state.input.selectSupplies.supplies && state.input.selectSupplies.supplies.has(props.title),
+    selectable: state.input.selectSupplies && state.input.selectSupplies.supplies && state.input.selectSupplies.supplies.has(props.title),
   }),
 )
 export default class Supply extends Component {

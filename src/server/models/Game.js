@@ -7,6 +7,7 @@ import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
 import Supply from 'models/Supply';
+import Log from 'utils/Log';
 
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -43,6 +44,8 @@ export default class Game extends Model {
   playerOrder = [];
 
   room = null;
+
+  log = new Log();
 
   @trackDirty(player => player && player.id)
   currentPlayer = null;
@@ -81,7 +84,7 @@ export default class Game extends Model {
       'Militia',
       'Mine',
       'Moat',
-      'MoneyLender',
+      'Moneylender',
       'Remodel',
       'Smithy',
       'ThroneRoom',
@@ -96,8 +99,20 @@ export default class Game extends Model {
       'Merchant',
       'Poacher',
       'Sentry',
+      'Baron',
+      'Conspirator',
+      'Courtier',
+      'Diplomat',
+      'Ironworks',
+      'Mill',
+      'MiningVillage',
+      'Minion',
+      'Patrol',
+      'Swindler',
+      'WishingWell',
 
     ].forEach((title) => {
+      console.log(title);
       this.supplies.set(title, new Supply(title, this));
       this.organizedSupplies[Card.classes.get(title).supplyCategory].push(title);
     });

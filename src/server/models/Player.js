@@ -2,7 +2,6 @@ import Pile from 'utils/Pile';
 import EventEmitter from 'utils/EventEmitter';
 import Model from 'models/Model';
 import DirtyModel, { trackDirty } from 'utils/DirtyModel';
-import Card from 'cards/Card';
 import AsyncSocket from 'utils/AsyncSocket';
 
 @DirtyModel
@@ -37,6 +36,8 @@ export default class Player extends Model {
   @trackDirty
   vpTokens = 0;
 
+  actionsPlayedThisTurn = 0;
+
   game = null;
 
   socket = null;
@@ -53,6 +54,29 @@ export default class Player extends Model {
     this.buys = 0;
     this.vpTokens = 0;
     this.name = name;
+  }
+
+  async handleReactions(event, ...args) {
+    await this.forEachOtherPlayer(player => player.handleOwnReactions(event, this, ...args));
+    await this.handleOwnReactions(event, this, ...args);
+  }
+
+  async handleOwnReactions(event, player, ...args) {
+    const handledReactions = new Set();
+    let reactions = this.hand.filter(card => !handledReactions.has(card) && card.shouldReactTo(event, this, player, ...args));
+    let handled = false;
+    const predicate = card => reactions.includes(card);
+    while (reactions.length > 0) {
+      const [reaction] = await this.selectCards({ min: 0, max: 1, predicate, message: 'Choose a card to react with' });
+      if (!reaction) {
+        break;
+      }
+      handledReactions.add(reaction);
+      reactions = this.hand.filter(card => !handledReactions.has(card) && card.shouldReactTo(event, this, player, ...args));
+
+      handled = await reaction.reactTo(event, this, player, ...args) || handled;
+    }
+    return handled;
   }
 
   setIndex(index) {
@@ -78,6 +102,7 @@ export default class Player extends Model {
         default:
         case 'top':
           cards = fromPile.spliceLast(num);
+          console.log(cards);
           break;
         case 'bottom':
           cards = fromPile.spliceFirst(num);
@@ -99,32 +124,61 @@ export default class Player extends Model {
     return cards;
   }
 
-  async trash(card, from = 'hand') {
-    this.emit('before-trash', card);
-    const whereFrom = typeof from === 'string' ? this[from] : from;
-    this.moveCard(card, whereFrom, this.game.trash);
+  async trashFromPile(pile) {
+    if (pile.size === 0) {
+      return;
+    }
+    const card = pile.last();
+    await this.trash(card, pile);
+  }
+
+  async trash(card, from = this.hand) {
+    this.game.log(`${this.name} trashes ${card.name}`);
+    this.moveCard(card, from, this.game.trash);
     await card.onTrash(this);
-    this.emit('after-trash', card);
+    await this.handleReactions('trash', card);
   }
 
-  async discard(card, from = 'hand') {
-    this.emit('before-discard', card);
-    const whereFrom = typeof from === 'string' ? this[from] : from;
-    this.moveCard(card, whereFrom, this.discardPile);
+  async discard(card, from = this.hand) {
+    this.game.log(`${this.name} discards ${card.name}`);
+    this.moveCard(card, from, this.discardPile);
     await card.onDiscard(this);
-    this.emit('after-discard', card);
   }
 
-  async gain(name, to = 'discardPile') {
-    this.emit('before-gain');
-    const [card] = this.moveCard(this.game.supplies.get(name).cards, this[to]);
+  async gainSpecificCard(card, from, to = this.discardPile) {
+    await this.handleReactions('before-gain', card);
+    this.game.log(`${this.name} gains ${card.name}`);
+    this.moveCard(from, to);
     await card.onGain(this);
-    this.emit('after-gain');
+    await this.handleReactions('after-gain', card);
+  }
+
+  async gain(name, to = this.discardPile) {
+    const supply = this.game.supplies.get(name);
+    if (supply.cards.length === 0) {
+      return null;
+    }
+    const card = supply.cards.last();
+    await this.gainSpecificCard(card, supply.cards, to);
     return card;
   }
 
-  async draw(num, to) {
-    this.emit('before-draw');
+  lookAtTopOfDeck(num) {
+    if (this.deck.size < num) {
+      this.discardPile.shuffle();
+      this.moveCard(this.discardPile, this.deck, { num: this.discardPile.size });
+    }
+    const cards = new Pile();
+    for (let i = 0; i < Math.min(num, this.deck.size); ++i) {
+      cards.push(this.deck.get((this.deck.size - num) + i));
+    }
+    return cards;
+  }
+
+  draw(
+    num,
+    putInHand = true,
+  ) {
     const cards = new Pile();
     let numTaken = 0;
     if (this.deck.size < num) {
@@ -139,38 +193,37 @@ export default class Player extends Model {
     }
     if (this.deck.size > 0) {
       this.moveCard(this.deck, cards, { num: Math.min(num - numTaken, this.deck.size) });
-      for (let i = 0; i < cards.length; i++) {
-        const card = cards.get(i);
-        let whereTo = typeof to === 'function' ? await to(card) : to;
-        if (!whereTo) whereTo = this.hand;
-        whereTo.push(card);
-        await card.onDraw(this);
-      }
+      console.log(cards);
     }
-    this.emit('after-draw', cards);
+    this.game.log(`${this.name} draws ${cards.length} cards`);
+    if (putInHand) {
+      this.hand.push(...cards);
+    }
     return cards;
   }
 
-  topDeck(card, from = 'hand') {
-    this.moveCard(card, this[from], this.deck);
+  topDeck(card, from = this.hand) {
+    this.moveCard(card, from, this.deck);
   }
 
-  pickUp(card, from = 'playArea') {
-    this.moveCard(card, this[from], this.hand);
+  pickUp(card, from = this.playArea) {
+    this.moveCard(card, from, this.hand);
   }
 
   async cleanup() {
-    this.moveCard(this.hand, this.discardPile, { num: this.hand.size });
-    this.moveCard(this.playArea, this.discardPile, { num: this.playArea.size });
-    await this.hand.asyncForEach(card => card.onDiscard());
-    await this.playArea.asyncForEach(card => card.onDiscard());
+    while (this.hand.size > 0) {
+      await this.discard(this.hand.last());
+    }
+    while (this.playArea.size > 0) {
+      await this.discard(this.playArea.last(), this.playArea);
+    }
   }
 
   async play(card) {
-    this.emit('before-play');
+    this.game.log(`${this.name} plays ${card.name}`);
     this.moveCard(card, this.hand, this.playArea);
+    this.actionsPlayedThisTurn++;
     await card.onPlay(this);
-    this.emit('after-play', card);
   }
 
   async forEachOtherPlayer(func) {
@@ -181,20 +234,30 @@ export default class Player extends Model {
   }
 
   async takeTurn() {
-    console.log('turn start');
-    console.log(this);
+    this.game.log(`${this.name} starts their turn`);
     this.actions = 1;
     this.buys = 1;
     this.money = 0;
+    this.actionsPlayedThisTurn = 0;
     while (this.actions > 0 && this.hand.some(card => card.types.has('Action'))) {
-      const [card] = await this.selectCards({ min: 0, max: 1, predicate: c => c.types.has('Action') });
+      const [card] = await this.selectCards({ min: 0, max: 1, predicate: c => c.types.has('Action'), message: 'Select an action to play' });
       if (!card) break;
       this.actions--;
       await this.play(card);
     }
     while (this.hand.some(card => card.types.has('Treasure'))) {
       console.log('ask for cards');
-      const res = await this.selectOptionOrCardsOrSupplies(['Play all treasures'], { min: 0, max: 1, predicate: c => c.types.has('Treasure'), from: 'hand' });
+      const res = await this.selectOptionOrCardsOrSupplies(
+        ['Play all treasures'],
+        {
+          min: 0,
+          max: 1,
+          predicate: c => c.types.has('Treasure'),
+          from: 'hand'
+        },
+        null,
+        'Select a treasure to play',
+      );
       if (res === 0) {
         let i = 0;
         while (i < this.hand.size) {
@@ -221,8 +284,9 @@ export default class Player extends Model {
         {
           min: 0,
           max: 1,
-          predicate: s => s.cards.size > 0 && Card.classes.get(s.title).cost <= this.money
-        }
+          predicate: s => s.cards.size > 0 && s.cards.last().cost <= this.money
+        },
+        'Select a card to buy',
       );
       if (res === 0) {
         break;
@@ -231,8 +295,9 @@ export default class Player extends Model {
       console.log('card selected:');
       console.log(supply);
       if (!supply) break;
-      this.gain(supply.title);
-      this.money -= Card.classes.get(supply.title).cost;
+      const card = await this.gain(supply.title);
+      await this.handleReactions('buy', this, card);
+      this.money -= card.cost;
       this.buys--;
     }
     await this.cleanup();
@@ -256,19 +321,15 @@ export default class Player extends Model {
   }
 
   async getInputAndNotifyDirty(payload, validate) {
-    console.log('get-input');
     const dirty = this.game.createDirty();
-    console.log(dirty);
+    const log = this.game.log.getNewMessages();
     await this.forEachOtherPlayer(player => {
       let newDirty = dirty;
       if (dirty.players && dirty.players[player.id] && Object.prototype.hasOwnProperty.call(dirty.players[player.id], 'hand')) {
         newDirty = { ...dirty, hand: player.hand.toIDArray() };
       }
-      player.socket.emit('get-input', { payload: { type: 'clear-input' }, dirty: newDirty });
+      player.socket.emit('get-input', { payload: { type: 'clear-input' }, dirty: newDirty, log });
     });
-    console.log('asdf');
-    console.log(dirty);
-    console.log(this.id);
     if (dirty.players && dirty.players[this.id] && Object.prototype.hasOwnProperty.call(dirty.players[this.id], 'hand')) {
       dirty.hand = this.hand.toIDArray();
     }
@@ -278,6 +339,7 @@ export default class Player extends Model {
       const response = await this.socket.emitAndWait('get-input', {
         payload,
         dirty,
+        log,
       });
       console.log('selected');
       console.log(response);
@@ -299,14 +361,13 @@ export default class Player extends Model {
       const { min, max, predicate, pile } = cardData;
       let { from } = cardData;
       if (pile) {
-        console.log(pile);
         filteredCards = pile;
         from = null;
       } else {
         filteredCards = predicate ? this[from].filter(predicate) : this[from];
       }
       if (filteredCards.size === 0 && !supplyData && !choices) {
-        return { type: 'select-cards', cards: [] };
+        return filteredCards;
       }
       if (filteredCards.size > 0) {
         payload.selectCards = {
@@ -321,7 +382,7 @@ export default class Player extends Model {
       const { min, max, predicate } = supplyData;
       filteredSupplies = predicate ? [...this.game.supplies.values()].filter(predicate) : [...this.game.supplies.values()];
       if (filteredSupplies.length === 0 && !choices && !payload.selectCards) {
-        return { type: 'select-supplies', supplies: [] };
+        return filteredSupplies;
       }
       if (filteredSupplies.length > 0) {
         payload.selectSupplies = {

@@ -1,19 +1,19 @@
 .coin {
   background-image: url(assets/images/coin.png);
-  width: 2em;
-  height: 2em;
+  width: 1.5em;
+  height: 1.5em;
   background-size: contain;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
   background-position: center;
   background-repeat: no-repeat;
-  span {
-    font-size: 1.75em;
-    font-weight: 700;
-  }
-  &.small {
-    width: 1em;
-    height: 1em;
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    > span {
+      font-weight: 700;
+    }
   }
 }

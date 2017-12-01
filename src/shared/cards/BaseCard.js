@@ -18,5 +18,14 @@ export default class BaseCard extends Model {
   static from(id, name) {
     return new (BaseCard.classes.get(name))(id);
   }
+
+  static get title() {
+    return this._title || this.name;
+  }
+
+  static set title(value) {
+    this._title = value;
+  }
+
   static classes = new Map();
 }
