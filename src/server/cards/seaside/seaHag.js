@@ -9,7 +9,7 @@ export default class SeaHag extends Card {
         return;
       	}
     	await other.discard(other.deck.list[other.deck.size - 1],other.deck);
-    	await other.gain('Curse', other,deck);
+    	await other.gain('Curse', other.deck);
     });
   }
 }

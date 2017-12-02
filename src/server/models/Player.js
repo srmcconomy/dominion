@@ -222,7 +222,7 @@ export default class Player extends Model {
     this.moveCard(card, from, this.playArea);
   }
 
-  returnToSupply(card, from.hand) {
+  returnToSupply(card, from = this.hand) {
     this.moveCard(card, from, this.game.supplies.get(card.title).cards);
   }
 
