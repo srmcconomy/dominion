@@ -148,6 +148,17 @@ export default class Game extends Model {
     }
     for (;;) {
       await this.currentPlayer.takeTurn();
+      let numEmptySupplies = 0;
+      this.supplies.forEach(supply => {
+        if (supply.cards.size === 0) numEmptySupplies++;
+      });
+      if (
+        this.supplies.get('Province').cards.size === 0 ||
+        (this.supplies.has('Colony') && this.supploes.get('Colony').cards.size === 0) ||
+        numEmptySupplies >= (this.playerOrder.size > 4 ? 4 : 3)
+      ) {
+        break;
+      }
       this.currentPlayerIndex++;
       if (this.currentPlayerIndex === this.players.size) {
         this.currentPlayerIndex = 0;

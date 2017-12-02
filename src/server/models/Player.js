@@ -168,7 +168,7 @@ export default class Player extends Model {
       this.discardPile.shuffle();
       this.moveCard(this.discardPile, this.deck, { num: this.discardPile.size });
     }
-    const cards = new Pile();
+    const cards = [];
     for (let i = 0; i < Math.min(num, this.deck.size); ++i) {
       cards.push(this.deck.get((this.deck.size - num) + i));
     }

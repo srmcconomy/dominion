@@ -11,7 +11,8 @@ export default class Sentry extends Card {
     const cards = await player.lookAtTopOfDeck(2);
     const cardsToPutBack = new Pile();
 
-    await cards.asyncForEach(async card => {
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
       const choice = await player.selectOption([`Trash ${card.title}`, `Discard ${card.title}`, `Put ${card.title} back on your deck`]);
       switch (choice) {
         case 0:
@@ -26,7 +27,7 @@ export default class Sentry extends Card {
         default:
           break;
       }
-    });
+    }
     if (cardsToPutBack.size === 2) {
       const [card] = await player.selectCards({
         min: 1,
