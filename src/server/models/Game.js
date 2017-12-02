@@ -244,7 +244,7 @@ export default class Game extends Model {
       });
       if (
         this.supplies.get('Province').cards.size === 0 ||
-        (this.supplies.has('Colony') && this.supploes.get('Colony').cards.size === 0) ||
+        (this.supplies.has('Colony') && this.supplies.get('Colony').cards.size === 0) ||
         numEmptySupplies >= (this.playerOrder.size > 4 ? 4 : 3)
       ) {
         this.endOfGame();
