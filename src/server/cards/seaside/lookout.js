@@ -19,15 +19,16 @@ export default class Lookout extends Card {
       const [card] = await player.selectCards( {min: 1, max: 1, pile: cardsInspected, message: 'Select a card to ' + options[i] + '.'})
       switch (i) {
         case 0:
-         await player.trash(card, cardsInspected);
+         await player.trash(card, player.deck);
         break;
         case 1:
-         await player.discard(card, cardsInspected);
+         await player.discard(card, player.deck);
         break;
         case 2:
-         player.topDeck(card, cardsInspected);
+         //Do nothing, card already on deck
         break;
       }
+      cardsInspected.delete(card);
     }
   }
 }

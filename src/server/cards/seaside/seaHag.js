@@ -7,8 +7,11 @@ export default class SeaHag extends Card {
     player.forEachOtherPlayer(async other => {
     	if (await other.handleOwnReactions('attack', other, this)) {
         return;
-      	}
-    	await other.discard(other.deck.list[other.deck.size - 1],other.deck);
+      }
+      const [card] = other.lookAtTopOfDeck(1);
+      if (card) {
+    	  await other.discard(card, other.deck);
+      }
     	await other.gain('Curse', other.deck);
     });
   }
