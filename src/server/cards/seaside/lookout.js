@@ -8,22 +8,26 @@ export default class Lookout extends Card {
     player.actions++;
    
     const cards = await player.lookAtTopOfDeck(3);
+    const cardsInspected = new Pile();
 
-    for (let i = 0; i < cards.size; i++) {
+    for(let i = 0; i < cards.length; i++) {
+          cardsInspected.push(cards[i]);
+    }
+
+    for (let i = 0; i < cards.length; i++) {
       const options = ['trash', 'discard', 'put on top of your deck'];
-      const [card] = await player.selectCards( {min: 1, max: 1, pile: aside, message: 'Select a card to ' + options[i] + '.'})
+      const [card] = await player.selectCards( {min: 1, max: 1, pile: cardsInspected, message: 'Select a card to ' + options[i] + '.'})
       switch (i) {
         case 0:
-         await player.trash(card, aside);
+         await player.trash(card, cardsInspected);
         break;
         case 1:
-         await player.discard(card, aside);
+         await player.discard(card, cardsInspected);
         break;
         case 2:
-         player.topDeck(card, aside);
+         player.topDeck(card, cardsInspected);
         break;
       }
-      aside.asyncForEach(card => player.discard(card)); // Sanity
     }
   }
 }
