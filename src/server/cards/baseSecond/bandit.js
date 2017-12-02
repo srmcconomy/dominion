@@ -12,11 +12,16 @@ export default class Bandit extends Card {
       }
       const cards = await other.lookAtTopOfDeck(2);
 
+
       if (cards.some(c => c.types.has('Treasure') && c.title !== 'Copper')) {
+        const cardsInspected = new Pile();
+        for(let i = 0; i < cards.length; i++) {
+          cardsInspected.push(cards[i]);
+        }
         const [card] = await player.selectCards({
           min: 1,
           max: 1,
-          pile: cards.filter(c => c.types.has('Treasure') && c.title !== 'Copper'),
+          pile: cardsInspected.filter(c => c.types.has('Treasure') && c.title !== 'Copper'),
           message: 'Choose a card to trash'
         });
         if (card) {

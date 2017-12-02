@@ -24,7 +24,8 @@ export default class Navigator extends Card {
         console.log(player.deck);
         while (cardsInspected.size > 0) {
           const [card] = await player.selectCards({min:1, max:1, pile:cardsInspected, message:'Select Card to put on top of deck'});
-          player.topDeck(card, cardsInspected);
+          player.topDeck(card, player.deck);
+          cardsInspected.delete(card);
         }
       	break;
       }
