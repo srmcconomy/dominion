@@ -4,7 +4,7 @@ import Coin from 'components/Coin';
 
 export default class SeaHag extends Card {
   static title = 'Sea Hag'
-  static description = 'Each other player discards the top card of their deck, then gains a Curse onto their deck.';
+  static description = (<div>Each other player discards the top card of their deck, then gains a Curse onto their deck.</div>);
   static cost = <Coin>4</Coin>
   static types = ['Action','Attack'];
 }
