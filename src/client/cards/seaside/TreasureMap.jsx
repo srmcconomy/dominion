@@ -4,7 +4,7 @@ import Coin from 'components/Coin';
 
 export default class TreasureMap extends Card {
   static title = 'Treasure Map'
-  static description = 'Trash this and a Treasure Map from your hand. If you trashed two Treasure Maps, gain 4 Golds onto your deck.';
+  static description = (<div>Trash this and a Treasure Map from your hand. If you trashed two Treasure Maps, gain 4 Golds onto your deck.</div>);
   static cost = <Coin>4</Coin>
   static types = ['Action'];
 }

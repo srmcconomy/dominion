@@ -3,11 +3,11 @@ import Card from 'cards/Card';
 import Coin from 'components/Coin';
 
 export default class Warehouse extends Card {
-  static description = <div>
-  <p><strong>+3 Cards</strong></p>
-  <p><strong>+1 Action</strong></p>
-  <p>Discard 3 cards.</p>
-  </div>
+  static description = (<div>
+  <div><strong>+3 Cards</strong></div>
+  <div><strong>+1 Action</strong></div>
+  <div>Discard 3 cards.</div>
+  </div>);
   static cost = <Coin>3</Coin>
   static types = ['Action'];
 }

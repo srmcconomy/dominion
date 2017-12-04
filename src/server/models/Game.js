@@ -73,7 +73,7 @@ export default class Game extends Model {
       'Estate',
       'Duchy',
       'Province',
-      'Bureaucrat',
+      // 'Bureaucrat',
       'Cellar',
       'Chapel',
       // 'CouncilRoom',
@@ -84,7 +84,7 @@ export default class Game extends Model {
       // 'Market',
       // 'Militia',
       // 'Mine',
-      'Moat',
+      // 'Moat',
       // 'Moneylender',
       // 'Remodel',
       // 'Smithy',
@@ -125,8 +125,8 @@ export default class Game extends Model {
       // 'SeaHag',
       // 'TreasureMap',
       // 'Treasury',
-      'GhostShip',
-      'Explorer',
+      // 'GhostShip',
+      // 'Explorer',
 
 
     ].forEach((title) => {
