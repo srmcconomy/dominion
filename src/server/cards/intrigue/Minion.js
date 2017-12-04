@@ -13,7 +13,7 @@ export default class Minion extends Card {
         }
         await player.draw(4);
         await player.forEachOtherPlayer(async other => {
-          if (await other.handleOwnReactions('attack', player, this)) {
+          if (await other.handleOwnReactions('attack', other, this)) {
             return;
           }
           if (other.hand.size >= 5) {

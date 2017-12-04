@@ -13,6 +13,7 @@ import 'cards/basic';
 import 'cards/base';
 import 'cards/baseSecond';
 import 'cards/intrigue';
+import 'cards/seaside';
 
 import styles from './styles.scss';
 
