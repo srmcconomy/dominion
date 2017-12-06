@@ -85,9 +85,7 @@ export default class Game extends Model {
       'Cellar',
       'Militia',
       'Moat',
-      'Village',
-      'YoungWitch',
-      'Gardens'
+      'Village'
       ];
     }
   }
@@ -179,6 +177,7 @@ export default class Game extends Model {
         ...Array(3).fill().map(() => new (Card.classes.get('Estate'))(this)),
       );
       player.deck.shuffle();
+      // player.init();
     });
     this.players.forEach(player => {
       this.playerOrder.push(player);

@@ -37,10 +37,18 @@ export default class Player extends Model {
   money = 0;
 
   @trackDirty
+  debt = 0;
+
+  @trackDirty
+  potion = 0;
+
+  @trackDirty
   buys = 0;
 
   @trackDirty
   vpTokens = 0;
+
+  journeyToken = 'faceUp';
 
   actionsPlayedThisTurn = 0;
 
@@ -57,6 +65,8 @@ export default class Player extends Model {
     game.players.set(this.id, this);
     this.actions = 1;
     this.money = 0;
+    this.debt = 0;
+    this.potion = 0;
     this.buys = 0;
     this.vpTokens = 0;
     this.name = name;
@@ -319,6 +329,7 @@ export default class Player extends Model {
             }
           }
           while (this.buys > 0) {
+            this.debt -= Math.min(this.debt, this.money);
             console.log('ask for supplies');
             const res = await this.selectOptionOrCardsOrSupplies(
               ['End turn'],
@@ -326,7 +337,11 @@ export default class Player extends Model {
               {
                 min: 0,
                 max: 1,
-                predicate: s => s.cards.size > 0 && s.cards.last().cost <= this.money
+                predicate: s =>
+                  (s.cards.size > 0 && (
+                  this.money >= s.cards.last().cost.coin &&
+                  this.debt === 0 &&
+                  this.potion >= s.cards.last().cost.potion))
               },
               'Select a card to buy',
             );
@@ -339,7 +354,9 @@ export default class Player extends Model {
             if (!supply) break;
             const card = await this.gain(supply.title);
             await this.handleReactions('buy', this, card);
-            this.money -= card.cost;
+            this.money -= card.cost.coin;
+            this.debt += card.cost.debt;
+            this.potion -= card.cost.potion;
             this.buys--;
           }
           if (this.turnPhase === 'buyPhase') this.turnPhase = 'nightPhase';
@@ -373,6 +390,7 @@ export default class Player extends Model {
     this.actions = 1;
     this.buys = 1;
     this.money = 0;
+    this.potion = 0;
     this.actionsPlayedThisTurn = 0;
     this.turnPhase = 'actionPhase';
 

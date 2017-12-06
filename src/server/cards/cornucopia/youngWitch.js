@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class YoungWitch extends Card {
-  static cost = 4;
+  static cost = {coin:4};
   static types = new Set(['Action', 'Attack']);
   async onPlay(player) {
     await player.draw(2);

@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 
 export default class Duchy extends Card {
   static VP = 3;
-  static cost = 5;
+  static cost = {coin:5};
   static types = new Set(['Victory']);
   static supplyCategory = 'victory';
   static getNumberInSupply(game) {

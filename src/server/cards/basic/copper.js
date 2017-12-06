@@ -4,7 +4,7 @@ import { Set } from 'immutable';
 export default class Copper extends Card {
   static title = 'Copper';
   static value = 1;
-  static cost = 0;
+  static cost = {coin:0};
   static types = new Set(['Treasure']);
   static supplyCategory = 'treasure';
   static getNumberInSupply(game) {

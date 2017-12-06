@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Pawn extends Card {
-  static cost = 2;
+  static cost = {coin:2};
   static types = new Set(['Action']);
   async onPlay(player) {
     const choices = {

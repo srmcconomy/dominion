@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class MiningVillage extends Card {
-  static cost = 4;
+  static cost = {coin:4};
   static types = new Set(['Action']);
   async onPlay(player) {
     await player.draw(1);

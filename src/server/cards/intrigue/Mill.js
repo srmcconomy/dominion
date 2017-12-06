@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Mill extends Card {
-  static cost = 4;
+  static cost = {coin:4};
   static types = new Set(['Action', 'Victory']);
   async onPlay(player) {
     await player.draw(1);

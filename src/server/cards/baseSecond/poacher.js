@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Poacher extends Card {
-  static cost = 4;
+  static cost = {coin:4};
   static types = new Set(['Action']);
   async onPlay(player) {
     await player.draw(1);
@@ -14,7 +14,11 @@ export default class Poacher extends Card {
       }
     });
     if (emptySupplies) {
-      const cards = await player.selectCards({ min: emptySupplies, max: emptySupplies, message: 'Choose cards to discard' });
+      const cards = await player.selectCards({
+        min: emptySupplies,
+        max: emptySupplies,
+        message: 'Choose cards to discard'
+      });
       for (let i = 0; i < cards.length; i++) {
         await player.discard(cards[i]);
       }

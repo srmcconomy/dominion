@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 import Pile from 'utils/Pile';
 
 export default class Library extends Card {
-  static cost = 5;
+  static cost = {coin:5};
   static types = new Set(['Action']);
 
   async onPlay(player) {
