@@ -7,13 +7,7 @@ export default class Gardens extends Card {
     if (game.players.size === 2) return 8;
     return 12;
   }
-  // get vp() {
-  //   return this.calculateVP();
-  // }
-  // calculateVP() {
-  //   return 0;
-  // }
-  // async onGain(player) {
-  //   this.calculateVP = () => player.cards.size / 10 | 0;
-  // }
+  static getVpValue(player) {
+    return Math.floor(player.deck.length / 10);
+  }
 }

@@ -51,6 +51,8 @@ export default class Game extends Model {
   @trackDirty(player => player && player.id)
   currentPlayer = null;
 
+  startingPlayer = null;
+
   previousPlayer = null;
 
   currentPlayerIndex = null;
@@ -75,7 +77,7 @@ export default class Game extends Model {
       });
       a.push(unusedCards[Math.floor(Math.random() * unusedCards.length)]);
     }
-    if (1) {
+    if (0) {
       return a;
     } else {
       return [
@@ -84,12 +86,13 @@ export default class Game extends Model {
       'Militia',
       'Moat',
       'Village',
-      'YoungWitch'
+      'YoungWitch',
+      'Gardens'
       ];
     }
   }
 
-  async start() {
+  getSupplyCards() {
     let SuppliesArray = [
       'Curse',
       'Copper',
@@ -128,7 +131,41 @@ export default class Game extends Model {
 
     Kingdom.forEach(c => SuppliesArray.push(c));
 
-    SuppliesArray.forEach((title) => {
+    return SuppliesArray;
+  }
+
+  endOfGame() {
+    let scores = [];
+    this.players.forEach(player => {
+      player.endOfGameCleanUp();
+      player.deck.forEach(c => {
+        player.vpTokens += c.getVpValue(player);
+      });
+      this.log(`${player.name} has ${player.vpTokens} victory points`);
+      console.log(`${player.name} has ${player.vpTokens} victory points`);
+      scores.push({player: player.name, score: player.vpTokens});
+    });
+
+    let winner = {player:null, score:null};
+    scores.forEach(s => {
+      if (s.score > winner.score) {
+        winner = s;
+      } else if (s.score === winner.score) {
+        if (s.player === this.startingPlayer && this.currentPlayer === this.startingPlayer) {
+          // Nothing, player went first and tied and had extra turn
+        } else {
+          // Tie but player didn't start
+          winner = s;
+        }
+      }
+    })
+    this.log(`${winner.player} wins the game!!!`);
+    console.log('Scores:', scores);
+    console.log('Winner:', winner);
+  }
+
+  async start() {
+    this.getSupplyCards().forEach((title) => {
       console.log(title);
       this.supplies.set(title, new Supply(title, this));
       this.organizedSupplies[Card.classes.get(title).supplyCategory].push(title);
@@ -149,6 +186,7 @@ export default class Game extends Model {
     shuffle(this.playerOrder);
     this.currentPlayerIndex = Math.floor(Math.random() * this.playerOrder.length);
     this.currentPlayer = this.playerOrder[this.currentPlayerIndex];
+    this.startingPlayer = this.currentPlayer;
     this.playArea = this.currentPlayer.playArea;
     this.playerOrder.forEach((player, i) => {
       player.setIndex(i);
@@ -176,6 +214,7 @@ export default class Game extends Model {
         (this.supplies.has('Colony') && this.supploes.get('Colony').cards.size === 0) ||
         numEmptySupplies >= (this.playerOrder.size > 4 ? 4 : 3)
       ) {
+        this.endOfGame();
         break;
       }
       this.currentPlayerIndex++;

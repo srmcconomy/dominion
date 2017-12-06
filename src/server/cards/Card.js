@@ -15,9 +15,14 @@ export default class Card extends BaseCard {
   static supplyCategory = 'kingdom';
   static bane = false;
   static dependancies = new Map();
+  static VP = 0;
 
   static getNumberInSupply(game) {
     return 10;
+  }
+
+  static getVpValue(player) {
+    return this.VP;
   }
 
   static init(player) { }

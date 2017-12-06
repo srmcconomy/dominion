@@ -18,6 +18,12 @@ export default class Player extends Model {
 
   playArea = new Pile();
 
+  tavernMat = new Pile();
+
+  islandMat = new Pile();
+
+  nativeVillageMat = new Pile();
+
   @trackDirty
   name;
 
@@ -226,6 +232,27 @@ export default class Player extends Model {
     }
     while (this.playArea.size > 0) {
       await this.discard(this.playArea.last(), this.playArea);
+    }
+  }
+
+  async endOfGameCleanUp() {
+    while (this.hand.size > 0) {
+      this.moveCard(this.hand.last(), this.hand, this.deck);
+    }
+    while (this.playArea.size > 0) {
+      this.moveCard(this.hand.last(), this.playArea, this.deck);
+    }
+    while (this.discardPile.size > 0) {
+      this.moveCard(this.hand.last(), this.discardPile, this.deck);
+    }
+    while (this.tavernMat.size > 0) {
+      this.moveCard(this.hand.last(), this.tavernMat, this.deck);
+    }
+    while (this.islandMat.size > 0) {
+      this.moveCard(this.hand.last(), this.islandMat, this.deck);
+    }
+    while (this.nativeVillageMat.size > 0) {
+      this.moveCard(this.hand.last(), this.nativeVillageMat, this.deck);
     }
   }
 
