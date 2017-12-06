@@ -10,16 +10,15 @@ export default class Card extends BaseCard {
     if (game) game.cards.push(this);
 
     this.cost = {
-      coin: typeof(this.cost.coin) === 'undefined' ? 0 : this.cost.coin,
-      debt: typeof(this.cost.debt) === 'undefined' ? 0 : this.cost.debt,
-      potion: typeof(this.cost.potion) === 'undefined' ? 0 : this.cost.potion
-      };
+      coin: 0,
+      debt: 0,
+      potion: 0,
+      ...this.cost,
+    };
   }
 
   static types = new Map();
   static supplyCategory = 'kingdom';
-  static bane = false;
-  static dependancies = new Map();
   static VP = 0;
 
   static getNumberInSupply(game) {
@@ -32,21 +31,23 @@ export default class Card extends BaseCard {
 
   static costsLessThanEqualTo(cost) {
     return (
-      typeof(cost.coin) === 'undefined' ? true : this.cost.coin <= cost.coin &&
-      typeof(cost.debt) === 'undefined' ? true : this.cost.debt <= cost.debt &&
-      typeof(cost.potion) === 'undefined' ? true : this.cost.potion <= cost.potion
+      cost.coin ? this.cost.coin <= cost.coin : false &&
+      cost.debt ? this.cost.debt <= cost.debt : false &&
+      cost.potion ? this.cost.potion <= cost.potion : false
       );
   }
 
   static costsEqualTo(cost) {
     return (
-      this.cost.coin === (typeof(cost.coin) === 'undefined' ? 0 : cost.coin) &&
-      this.cost.debt === (typeof(cost.debt) === 'undefined' ? 0 : cost.debt) &&
-      this.cost.potion === (typeof(cost.potion) === 'undefined' ? 0 : cost.potion)
+      cost.coin ? this.cost.coin === cost.coin : this.cost.coin === 0 &&
+      cost.debt ? this.cost.debt === cost.debt : this.cost.debt === 0 &&
+      cost.potion ? this.cost.potion === cost.potion : this.cost.potion === 0
       );
   }
 
   static init(player) { }
+
+  static setup(kingdomArray, game) { return []; }
 
   toJSON() {
     return {

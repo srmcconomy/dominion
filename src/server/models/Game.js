@@ -51,11 +51,11 @@ export default class Game extends Model {
   @trackDirty(player => player && player.id)
   currentPlayer = null;
 
-  startingPlayer = null;
-
   previousPlayer = null;
 
   currentPlayerIndex = null;
+
+  startingPlayerIndex = null;
 
   constructor(name, io) {
     super();
@@ -73,11 +73,11 @@ export default class Game extends Model {
     while (a.length < 10) {
       let unusedCards = [];
       Card.classes.forEach( c => {
-        if (c.supplyCategory === 'kingdom' && a.indexOf(c.title) === -1) unusedCards.push(c.title);
+        if (c.supplyCategory === 'kingdom' && !a.includes(c.title)) unusedCards.push(c.title);
       });
       a.push(unusedCards[Math.floor(Math.random() * unusedCards.length)]);
     }
-    if (0) {
+    if (true) {
       return a;
     } else {
       return [
@@ -85,13 +85,16 @@ export default class Game extends Model {
       'Cellar',
       'Militia',
       'Moat',
-      'Village'
+      'Village',
+      'Remodel',
+      'Swindler',
+      'YoungWitch',
       ];
     }
   }
 
   getSupplyCards() {
-    let SuppliesArray = [
+    let suppliesArray = [
       'Curse',
       'Copper',
       'Silver',
@@ -100,66 +103,87 @@ export default class Game extends Model {
       'Duchy',
       'Province'];
 
-    const Kingdom = this.getKingdomCards();
+    const kingdomArray = this.getKingdomCards();
 
     this.log('Kingdom Contains:')
-    for (let i = 0; i < Kingdom.length; i++) {
-      this.log(`${Kingdom[i]}`);
+    for (let i = 0; i < kingdomArray.length; i++) {
+      this.log(`${kingdomArray[i]}`);
     }
 
-    if (Kingdom.indexOf('YoungWitch') !== -1) {
-      const possibleBanes = [];
-      Card.classes.forEach(c => {
-        if ((c.cost === 2 || c.cost === 3 ) &&
-        Kingdom.indexOf(c.title) === -1 && c.supplyCategory === 'kingdom') possibleBanes.push(c.title);
-      });
-      let Bane = possibleBanes[Math.floor(Math.random() * possibleBanes.length)];
-      Kingdom.push(Bane)
-      Card.classes.get(Bane).bane = true;
-      this.log(`${Bane} is Young Witch's Bane`);
-    }
-
-    Kingdom.forEach( title => {
-      Card.classes.get(title).dependancies.forEach( d => {
-        if (SuppliesArray.indexOf(d) === -1) {
-          SuppliesArray.push(d);
-        }
+    kingdomArray.forEach(title => {
+      let dependancies = Card.classes.get(title).setup(kingdomArray, this);
+      dependancies.forEach(d => {
+        if (!suppliesArray.includes(d)) suppliesArray.push(d)
       });
     });
 
-    Kingdom.forEach(c => SuppliesArray.push(c));
+    kingdomArray.forEach(c => suppliesArray.push(c));
 
-    return SuppliesArray;
+    return suppliesArray;
   }
 
   endOfGame() {
-    let scores = [];
+    const scores = [];
     this.players.forEach(player => {
+      let score = player.vpTokens;
       player.endOfGameCleanUp();
       player.deck.forEach(c => {
-        player.vpTokens += c.getVpValue(player);
+        score += c.getVpValue(player);
       });
-      this.log(`${player.name} has ${player.vpTokens} victory points`);
-      console.log(`${player.name} has ${player.vpTokens} victory points`);
-      scores.push({player: player.name, score: player.vpTokens});
+      this.log(`${player.name} has ${score} victory points`);
+      console.log(`${player.name} has ${score} victory points`);
+      scores.push({player: player, name: player.name, score: score});
     });
 
-    let winner = {player:null, score:null};
+    const hadExtraTurn = Array(this.playerOrder.length).fill(false);
+    let tempIndex = this.startingPlayerIndex;
+    while (1) {
+      hadExtraTurn[tempIndex] = true;
+      if (tempIndex === this.currentPlayerIndex) break;
+      tempIndex ++;
+      if(tempIndex === this.playerOrder.length) tempIndex = 0;
+    }
+
+    let winningScore = null;
+    const winners = [];
     scores.forEach(s => {
-      if (s.score > winner.score) {
-        winner = s;
-      } else if (s.score === winner.score) {
-        if (s.player === this.startingPlayer && this.currentPlayer === this.startingPlayer) {
-          // Nothing, player went first and tied and had extra turn
-        } else {
-          // Tie but player didn't start
-          winner = s;
-        }
+      if (s.score > winningScore) winningScore = s.score;
+    });
+    scores.forEach(s => {
+      if (s.score === winningScore) winners.push({
+        player: s.player,
+        name: s.name,
+        extraTurn: hadExtraTurn[this.playerOrder.indexOf(s.player)]});
+    });
+
+    if (winners.length > 1) {
+      let unequalTurns = false;
+      winners.forEach( w => {
+        if (w.extraTurn === false) unequalTurns = true;
+      });
+      if (unequalTurns) {
+        winners.forEach( w => {
+          if (w.extraTurn === true) winners.splice(winners.indexOf(w),1);
+        });
       }
-    })
-    this.log(`${winner.player} wins the game!!!`);
+      if (winners.length === 1) {
+        this.log(`${winners[0].name} wins the game!!!`);
+        console.log(`${winners[0].name} wins the game!!!`);
+      } else {
+        this.log('Tie game between:');
+        console.log('Tie game between:');
+        winners.forEach( w => {
+          this.log(w.name);
+          console.log(w.name);
+        });
+      }
+    } else {
+      this.log(`${winners[0].name} wins the game!!!`);
+      console.log(`${winners[0].name} wins the game!!!`);
+    }
+
     console.log('Scores:', scores);
-    console.log('Winner:', winner);
+    console.log('Winner:', winners);
   }
 
   async start() {
@@ -185,7 +209,7 @@ export default class Game extends Model {
     shuffle(this.playerOrder);
     this.currentPlayerIndex = Math.floor(Math.random() * this.playerOrder.length);
     this.currentPlayer = this.playerOrder[this.currentPlayerIndex];
-    this.startingPlayer = this.currentPlayer;
+    this.startingPlayerIndex = this.currentPlayerIndex;
     this.playArea = this.currentPlayer.playArea;
     this.playerOrder.forEach((player, i) => {
       player.setIndex(i);

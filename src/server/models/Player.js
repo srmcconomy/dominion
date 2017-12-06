@@ -269,7 +269,7 @@ export default class Player extends Model {
   async play(card) {
     this.game.log(`${this.name} plays ${card.name}`);
     this.moveCard(card, this.hand, this.playArea);
-    this.actionsPlayedThisTurn++;
+    if (card.types.has(['Action'])) this.actionsPlayedThisTurn++;
     await card.onPlay(this);
   }
 
@@ -280,7 +280,7 @@ export default class Player extends Model {
     }
   }
 
-  async processCurrentPhase() {
+  async processTurnPhases() {
     let doneTurn = false;
     while (doneTurn === false) {
       switch (this.turnPhase) {
@@ -394,7 +394,7 @@ export default class Player extends Model {
     this.actionsPlayedThisTurn = 0;
     this.turnPhase = 'actionPhase';
 
-    await this.processCurrentPhase();
+    await this.processTurnPhases();
   }
 
   setSocket(socket) {

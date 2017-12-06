@@ -13,10 +13,24 @@ export default class YoungWitch extends Card {
     	if (await other.handleOwnReactions('attack', player, this)) {
         	return;
       	}
-      	const [card] = await other.selectCards({min:0, max:1, predicate: c => c.bane === true, message: 'Choose to reveal a bane card or not'});
-      	if (typeof card === 'undefined') {
+      	const [card] = await other.selectCards({min:0, max:1, predicate: c => c.title === this.bane, message: 'Choose to reveal a bane card or not'});
+      	if (!card) {
       		await other.gain('Curse');
       	}
   	});
+  }
+
+
+  static setup(kingdomArray, game) {
+    console.log(kingdomArray)
+    const possibleBanes = [];
+    Card.classes.forEach(c => {
+      if (!c.title) return;
+      if ((c.costsEqualTo({coin: 2}) || c.costsEqualTo({coin: 3})) &&
+     !kingdomArray.includes(c.title) && c.supplyCategory === 'kingdom') possibleBanes.push(c.title);
+    });
+    this.bane = possibleBanes[Math.floor(Math.random() * possibleBanes.length)];
+    game.log(`${this.bane} is Young Witch's Bane`);
+    return [this.bane];
   }
 }
