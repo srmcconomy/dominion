@@ -13,6 +13,8 @@ export default class Card extends BaseCard {
   static cost = 0;
   static types = new Map();
   static supplyCategory = 'kingdom';
+  static bane = false;
+  static dependancies = new Map();
 
   static getNumberInSupply(game) {
     return 10;
