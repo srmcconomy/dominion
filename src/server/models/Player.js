@@ -244,16 +244,13 @@ export default class Player extends Model {
       c.title === 'Bridge'
     }).length;
     tempCost.coin -= this.playArea.filter(c => {
-      c.title === 'Highway'
+      (c.title === 'Highway' || c.title === 'BridgeTroll')
     }).length;
     if (card.types.has('Action')) {
       tempCost.coin -= 2*this.playArea.filter(c => {
       c.title === 'Quarry'
       }).length;
     }
-    // tempCost.coin -= this.durationArea.filter(c => {
-    //   c.title === 'BridgeTroll'
-    // }).length;
     tempCost.coin = Math.max(tempCost.coin, 0);
 
     return tempCost;
@@ -261,21 +258,25 @@ export default class Player extends Model {
   }
 
   costsLessThanEqualTo(card, cost) {
-    const tempCost = this.getCardCost(card);
+    const tempCardCost = this.getCardCost(card);
+    const tempCost = {coin:0, debt:0, potion:0, ...cost};
+
     return (
-      (cost.coin ? tempCost.coin <= cost.coin : false) &&
-      (cost.debt ? tempCost.debt <= cost.debt : false) &&
-      (cost.potion ? tempCost.potion <= cost.potion : false)
+      tempCardCost.coin <= tempCost.coin &&
+      tempCardCost.debt <= tempCost.debt &&
+      tempCardCost.potion <= tempCost.potion
       );
   }
 
   costsEqualTo(card, cost) {
-    const tempCost = this.getCardCost(card);
+    const tempCardCost = this.getCardCost(card);
+    const tempCost = {coin:0, debt:0, potion:0, ...cost};
+
     return (
-      (cost.coin ? tempCost.coin === cost.coin : tempCost.coin === 0) &&
-      (cost.debt ? tempCost.debt === cost.debt : tempCost.debt === 0) &&
-      (cost.potion ? tempCost.potion === cost.potion : tempCost.potion === 0)
-      );
+      tempCardCost.coin === tempCost.coin &&
+      tempCardCost.debt === tempCost.debt &&
+      tempCardCost.potion === tempCost.potion
+      );;
   }
 
   async cleanup() {
@@ -310,10 +311,7 @@ export default class Player extends Model {
 
   async play(card) {
     this.game.log(`${this.name} plays ${card.name}`);
-    this.cardsPlayedThisTurn.push({
-      title: card.title,
-      types: card.types
-    });
+    this.cardsPlayedThisTurn.push(card);
     this.moveCard(card, this.hand, this.playArea);
     await card.onPlay(this);
   }

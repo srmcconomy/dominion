@@ -25,30 +25,12 @@ export default class Card extends BaseCard {
     return 10;
   }
 
-  static getVpValue(player) {
+  getVpValue(player) {
     return this.VP;
   }
 
-  static getCost(player) {
-    return this.cost;
-  }
-
-  static costsLessThanEqualTo(cost) {
-    const tempCost = {coin:0, debt:0, potion:0, ...this.getCost()}; //constructor isn't initialized yet
-    return (
-      (cost.coin ? tempCost.coin <= cost.coin : false) &&
-      (cost.debt ? tempCost.debt <= cost.debt : false) &&
-      (cost.potion ? tempCost.potion <= cost.potion : false)
-      );
-  }
-
-  static costsEqualTo(cost) {
-    const tempCost = {coin:0, debt:0, potion:0, ...this.getCost()}; //constructor isn't initialized yet
-    return (
-      (cost.coin ? tempCost.coin === cost.coin : tempCost.coin === 0) &&
-      (cost.debt ? tempCost.debt === cost.debt : tempCost.debt === 0) &&
-      (cost.potion ? tempCost.potion === cost.potion : tempCost.potion === 0)
-      );
+  getCost(player) {
+    return {coin:0, debt:0, potion:0, ...this.cost};
   }
 
   static init(player) { }

@@ -27,8 +27,9 @@ export default class YoungWitch extends Card {
     const dependancies = [];
     Card.classes.forEach(c => {
       if (!c.title) return;
-      if ((c.costsEqualTo({coin: 2}) || c.costsEqualTo({coin: 3})) &&
-     !kingdomArray.includes(c.title) && c.supplyCategory === 'kingdom') possibleBanes.push(c.title);
+      if ((c.cost.coin === 2 || c.cost.coin === 3) &&
+        !c.cost.debt  && !c.cost.potion &&
+        !kingdomArray.includes(c.title) && c.supplyCategory === 'kingdom') possibleBanes.push(c.title);
     });
     this.bane = possibleBanes[Math.floor(Math.random() * possibleBanes.length)];
     game.log(`${this.bane} is Young Witch's Bane`);
