@@ -17,7 +17,10 @@ export default class Swindler extends Card {
       const [supply] = await player.selectSupplies({
         min: 1,
         max: 1,
-        predicate: s => s.cards.size > 0 && s.cards.last().costsEqualTo(card.cost),
+        predicate: s => (
+          s.cards.size > 0 &&
+          player.costsEqualTo(s.cards.last(), card.getCost())
+          ),
         message: `Choose a card to replace ${other.name}'s ${card.title}`,
       });
       if (!supply) {

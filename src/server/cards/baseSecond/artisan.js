@@ -9,7 +9,7 @@ export default class Artisan extends Card {
       max: 1,
       predicate: s => (
         s.cards.size > 0 &&
-        Card.classes.get(s.title).costsLessThanEqualTo({coin:5})
+        player.costsLessThanEqualTo(s.cards.last(), {coin:5})
         ),
       message: 'Choose an card to gain'
     });

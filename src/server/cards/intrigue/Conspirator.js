@@ -5,7 +5,7 @@ export default class Conspirator extends Card {
   static types = new Set(['Action']);
   async onPlay(player) {
     player.money += 2;
-    if (player.actionsPlayedThisTurn >= 3) {
+    if (player.cardsPlayedThisTurn.filter(c => c.types.has('Action')).length >= 3) {
       await player.draw(1);
       player.actions++;
     }

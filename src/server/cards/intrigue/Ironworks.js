@@ -7,7 +7,7 @@ export default class Ironworks extends Card {
     const [supply] = await player.selectSupplies({
       min: 1,
       max: 1,
-      predicate: s => s.cards.size > 0 && s.cards.last().costsLessThanEqualTo({coin: 4}),
+      predicate: s => s.cards.size > 0 && player.costsLessThanEqualTo(s.cards.last(), {coin: 4}),
       message: 'Gain a card costing up to 4',
     });
     if (!supply) {

@@ -50,7 +50,8 @@ export default class Player extends Model {
 
   journeyToken = 'faceUp';
 
-  actionsPlayedThisTurn = 0;
+  @trackDirty
+  cardsPlayedThisTurn = [];
 
   game = null;
 
@@ -236,6 +237,47 @@ export default class Player extends Model {
     }
   }
 
+  getCardCost(card) {
+    let tempCost = card.getCost(this);
+
+    tempCost.coin -= this.cardsPlayedThisTurn.filter(c => {
+      c.title === 'Bridge'
+    }).length;
+    tempCost.coin -= this.playArea.filter(c => {
+      c.title === 'Highway'
+    }).length;
+    if (card.types.has('Action')) {
+      tempCost.coin -= 2*this.playArea.filter(c => {
+      c.title === 'Quarry'
+      }).length;
+    }
+    // tempCost.coin -= this.durationArea.filter(c => {
+    //   c.title === 'BridgeTroll'
+    // }).length;
+    tempCost.coin = Math.max(tempCost.coin, 0);
+
+    return tempCost;
+
+  }
+
+  costsLessThanEqualTo(card, cost) {
+    const tempCost = this.getCardCost(card);
+    return (
+      (cost.coin ? tempCost.coin <= cost.coin : false) &&
+      (cost.debt ? tempCost.debt <= cost.debt : false) &&
+      (cost.potion ? tempCost.potion <= cost.potion : false)
+      );
+  }
+
+  costsEqualTo(card, cost) {
+    const tempCost = this.getCardCost(card);
+    return (
+      (cost.coin ? tempCost.coin === cost.coin : tempCost.coin === 0) &&
+      (cost.debt ? tempCost.debt === cost.debt : tempCost.debt === 0) &&
+      (cost.potion ? tempCost.potion === cost.potion : tempCost.potion === 0)
+      );
+  }
+
   async cleanup() {
     while (this.hand.size > 0) {
       await this.discard(this.hand.last());
@@ -268,8 +310,11 @@ export default class Player extends Model {
 
   async play(card) {
     this.game.log(`${this.name} plays ${card.name}`);
+    this.cardsPlayedThisTurn.push({
+      title: card.title,
+      types: card.types
+    });
     this.moveCard(card, this.hand, this.playArea);
-    if (card.types.has(['Action'])) this.actionsPlayedThisTurn++;
     await card.onPlay(this);
   }
 
@@ -337,11 +382,13 @@ export default class Player extends Model {
               {
                 min: 0,
                 max: 1,
-                predicate: s =>
-                  (s.cards.size > 0 && (
-                  this.money >= s.cards.last().cost.coin &&
+                predicate: s => {
+                  const tempCost = this.getCardCost(s.cards.last());
+                  return (s.cards.size > 0 && (
+                  this.money >= tempCost.coin &&
                   this.debt === 0 &&
-                  this.potion >= s.cards.last().cost.potion))
+                  this.potion >= tempCost.potion));
+                }
               },
               'Select a card to buy',
             );
@@ -354,9 +401,10 @@ export default class Player extends Model {
             if (!supply) break;
             const card = await this.gain(supply.title);
             await this.handleReactions('buy', this, card);
-            this.money -= card.cost.coin;
-            this.debt += card.cost.debt;
-            this.potion -= card.cost.potion;
+            const temoCost = this.getCardCost(card);
+            this.money -= temoCost.coin;
+            this.debt += temoCost.debt;
+            this.potion -= temoCost.potion;
             this.buys--;
           }
           if (this.turnPhase === 'buyPhase') this.turnPhase = 'nightPhase';
@@ -393,6 +441,7 @@ export default class Player extends Model {
     this.potion = 0;
     this.actionsPlayedThisTurn = 0;
     this.turnPhase = 'actionPhase';
+    this.cardsPlayedThisTurn = [];
 
     await this.processTurnPhases();
   }

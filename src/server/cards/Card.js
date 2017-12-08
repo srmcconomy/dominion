@@ -29,25 +29,33 @@ export default class Card extends BaseCard {
     return this.VP;
   }
 
+  static getCost(player) {
+    return this.cost;
+  }
+
   static costsLessThanEqualTo(cost) {
+    const tempCost = {coin:0, debt:0, potion:0, ...this.getCost()}; //constructor isn't initialized yet
     return (
-      cost.coin ? this.cost.coin <= cost.coin : false &&
-      cost.debt ? this.cost.debt <= cost.debt : false &&
-      cost.potion ? this.cost.potion <= cost.potion : false
+      (cost.coin ? tempCost.coin <= cost.coin : false) &&
+      (cost.debt ? tempCost.debt <= cost.debt : false) &&
+      (cost.potion ? tempCost.potion <= cost.potion : false)
       );
   }
 
   static costsEqualTo(cost) {
+    const tempCost = {coin:0, debt:0, potion:0, ...this.getCost()}; //constructor isn't initialized yet
     return (
-      cost.coin ? this.cost.coin === cost.coin : this.cost.coin === 0 &&
-      cost.debt ? this.cost.debt === cost.debt : this.cost.debt === 0 &&
-      cost.potion ? this.cost.potion === cost.potion : this.cost.potion === 0
+      (cost.coin ? tempCost.coin === cost.coin : tempCost.coin === 0) &&
+      (cost.debt ? tempCost.debt === cost.debt : tempCost.debt === 0) &&
+      (cost.potion ? tempCost.potion === cost.potion : tempCost.potion === 0)
       );
   }
 
   static init(player) { }
 
-  static setup(kingdomArray, game) { return []; }
+  static addDependancies(kingdomArray, game) { return []; }
+
+  static setup(game) { }
 
   toJSON() {
     return {

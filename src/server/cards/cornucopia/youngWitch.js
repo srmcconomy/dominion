@@ -13,7 +13,7 @@ export default class YoungWitch extends Card {
     	if (await other.handleOwnReactions('attack', player, this)) {
         	return;
       	}
-      	const [card] = await other.selectCards({min:0, max:1, predicate: c => c.title === this.bane, message: 'Choose to reveal a bane card or not'});
+      	const [card] = await other.selectCards({min:0, max:1, predicate: c => c.title === Card.classes.get('YoungWitch').bane, message: 'Choose to reveal a bane card or not'});
       	if (!card) {
       		await other.gain('Curse');
       	}
@@ -21,9 +21,10 @@ export default class YoungWitch extends Card {
   }
 
 
-  static setup(kingdomArray, game) {
+  static addDependancies(kingdomArray, game) {
     console.log(kingdomArray)
     const possibleBanes = [];
+    const dependancies = [];
     Card.classes.forEach(c => {
       if (!c.title) return;
       if ((c.costsEqualTo({coin: 2}) || c.costsEqualTo({coin: 3})) &&
@@ -31,6 +32,11 @@ export default class YoungWitch extends Card {
     });
     this.bane = possibleBanes[Math.floor(Math.random() * possibleBanes.length)];
     game.log(`${this.bane} is Young Witch's Bane`);
-    return [this.bane];
+    dependancies.push(this.bane);
+    (Card.classes.get(this.bane).addDependancies(kingdomArray, game)).forEach (d => {
+      dependancies.push(d);
+    })
+
+    return dependancies;
   }
 }

@@ -11,7 +11,7 @@ export default class Remodel extends Card {
         min: 1,
         max: 1, predicate: s => (
           s.cards.size > 0 &&
-          Card.classes.get(s.title).costsLessThanEqualTo({coin: card.cost.coin + 2})
+          player.costsLessThanEqualTo(s.cards.last(), {coin: card.cost.coin + 2})
           ),
         message: 'Choose an card to gain'
       });

@@ -111,7 +111,7 @@ export default class Game extends Model {
     }
 
     kingdomArray.forEach(title => {
-      let dependancies = Card.classes.get(title).setup(kingdomArray, this);
+      let dependancies = Card.classes.get(title).addDependancies(kingdomArray, this);
       dependancies.forEach(d => {
         if (!suppliesArray.includes(d)) suppliesArray.push(d)
       });
@@ -190,10 +190,13 @@ export default class Game extends Model {
     this.getSupplyCards().forEach((title) => {
       console.log(title);
       this.supplies.set(title, new Supply(title, this));
+      Card.classes.get(title).setup(this);
       this.organizedSupplies[Card.classes.get(title).supplyCategory].push(title);
     });
     Object.keys(this.organizedSupplies).forEach(key => {
-      this.organizedSupplies[key].sort((a, b) => this.supplies.get(a).cards.last().cost - this.supplies.get(b).cards.last().cost);
+      this.organizedSupplies[key].sort((a, b) => {
+        this.supplies.get(a).cards.last().cost.coin - this.supplies.get(b).cards.last().cost.coin
+      });
     });
     this.players.forEach(player => {
       player.deck.push(

@@ -9,7 +9,7 @@ export default class Workshop extends Card {
       max: 1,
       predicate: s => (
         s.cards.size > 0 &&
-        Card.classes.get(s.title).costsLessThanEqualTo({coin: 4})
+        player.costsLessThanEqualTo(s.cards.last(), {coin: 4})
         ),
       message: 'Choose an card to gain'
     });
