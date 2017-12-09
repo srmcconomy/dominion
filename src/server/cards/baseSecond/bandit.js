@@ -26,7 +26,11 @@ export default class Bandit extends Card {
         });
         if (card) {
           await other.trash(card, other.deck);
+          cardsInspected.delete(card);
         }
+        cardsInspected.forEach(c => {
+          other.discard(c, other.deck);
+        });
       }
     });
   }
