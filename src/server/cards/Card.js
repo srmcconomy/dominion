@@ -15,6 +15,8 @@ export default class Card extends BaseCard {
       potion: 0,
       ...this.cost,
     };
+
+    this.ignoreCleanUp = false;
   }
 
   static types = new Map();

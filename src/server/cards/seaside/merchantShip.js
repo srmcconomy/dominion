@@ -8,6 +8,6 @@ export default class MerchantShip extends Card {
   }
   async onTurnStart(player) {
   	player.money += 2;
-    player.durationComplete(this);
+    this.ignoreCleanUp = false;
   }
 }

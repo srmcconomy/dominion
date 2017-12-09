@@ -10,6 +10,6 @@ export default class FishingVillage extends Card {
   async onTurnStart(player) {
     player.actions++;
     player.money++;
-    player.durationComplete(this);
+    this.ignoreCleanUp = false;
   }
 }

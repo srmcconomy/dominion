@@ -326,8 +326,8 @@ export default class Player extends Model {
     while (this.hand.size > 0) {
       await this.discard(this.hand.last(), this.hand);
     }
-    while (this.playArea.size > 0) {
-      await this.discard(this.playArea.last(), this.playArea);
+    while (this.playArea.filter(c => c.ignoreCleanUp === false).size > 0) {
+      await this.discard(this.playArea.filter(c => c.ignoreCleanUp === false).last(), this.playArea);
     }
   }
 

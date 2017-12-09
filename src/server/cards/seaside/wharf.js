@@ -10,6 +10,6 @@ export default class Wharf extends Card {
   async onTurnStart(player) {
     await player.draw(2);
     player.buys++;
-    player.durationComplete(this);
+    this.ignoreCleanUp = false;
   }
 }

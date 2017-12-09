@@ -9,7 +9,7 @@ export default class Cutpurse extends Card {
       <div>Each other player discards a Copper (or reveals a hand with no Copper).</div>
     </div>
   );
-  static cost = <Coin>3</Coin>
+  static cost = <Coin>4</Coin>
   static types = ['Action', 'Attack'];
 }
 
