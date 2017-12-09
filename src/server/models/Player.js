@@ -238,6 +238,7 @@ export default class Player extends Model {
   }
 
   getCardCost(card) {
+    if (!card) return {coin:null, debt:null, potion:null};
     let tempCost = card.getCost(this);
 
     tempCost.coin -= this.cardsPlayedThisTurn.filter(c => {
@@ -258,6 +259,7 @@ export default class Player extends Model {
   }
 
   costsLessThanEqualTo(card, cost) {
+    if (!card) return false;
     const tempCardCost = this.getCardCost(card);
     const tempCost = {coin:0, debt:0, potion:0, ...cost};
 
@@ -269,6 +271,7 @@ export default class Player extends Model {
   }
 
   costsEqualTo(card, cost) {
+    if (!card) return false;
     const tempCardCost = this.getCardCost(card);
     const tempCost = {coin:0, debt:0, potion:0, ...cost};
 
@@ -381,11 +384,15 @@ export default class Player extends Model {
                 min: 0,
                 max: 1,
                 predicate: s => {
-                  const tempCost = this.getCardCost(s.cards.last());
-                  return (s.cards.size > 0 && (
-                  this.money >= tempCost.coin &&
-                  this.debt === 0 &&
-                  this.potion >= tempCost.potion));
+                  if (s.cards.size > 0) {
+                    const tempCost = this.getCardCost(s.cards.last());
+                    return (
+                    this.money >= tempCost.coin &&
+                    this.debt === 0 &&
+                    this.potion >= tempCost.potion);
+                  } else {
+                    return false;
+                  }
                 }
               },
               'Select a card to buy',
@@ -399,10 +406,10 @@ export default class Player extends Model {
             if (!supply) break;
             const card = await this.gain(supply.title);
             await this.handleReactions('buy', this, card);
-            const temoCost = this.getCardCost(card);
-            this.money -= temoCost.coin;
-            this.debt += temoCost.debt;
-            this.potion -= temoCost.potion;
+            const tempCost = this.getCardCost(card);
+            this.money -= tempCost.coin;
+            this.debt += tempCost.debt;
+            this.potion -= tempCost.potion;
             this.buys--;
           }
           if (this.turnPhase === 'buyPhase') this.turnPhase = 'nightPhase';
