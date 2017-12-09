@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 import Pile from 'utils/Pile';
  
 export default class Lookout extends Card {
-  static cost = 3;
+  static cost = {coin:3};
   static types = new Set(['Action']);
   async onPlay(player) {
     player.actions++;
@@ -16,7 +16,12 @@ export default class Lookout extends Card {
 
     for (let i = 0; i < cards.length; i++) {
       const options = ['trash', 'discard', 'put on top of your deck'];
-      const [card] = await player.selectCards( {min: 1, max: 1, pile: cardsInspected, message: 'Select a card to ' + options[i] + '.'})
+      const [card] = await player.selectCards({
+        min: 1,
+        max: 1,
+        pile: cardsInspected,
+        message: 'Select a card to ' + options[i] + '.'
+      })
       switch (i) {
         case 0:
          await player.trash(card, player.deck);

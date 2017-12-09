@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class FishingVillage extends Card {
-  static cost = 3;
+  static cost = {coin:3};
   static types = new Set(['Action', 'Duration']);
   async onPlay(player) {
     player.actions += 2;
@@ -10,6 +10,6 @@ export default class FishingVillage extends Card {
   async onTurnStart(player) {
   	player.actions++;
     player.money++;
-    player.durationComplete(this);
+    this.ignoreCleanUp = false;
   }
 }

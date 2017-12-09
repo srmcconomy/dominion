@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Caravan extends Card {
-  static cost = 4;
+  static cost = {coin:4};
   static types = new Set(['Action', 'Duration']);
   async onPlay(player) {
     await player.draw(1);
@@ -9,6 +9,6 @@ export default class Caravan extends Card {
   }
   async onTurnStart(player) {
   	await player.draw(1);
-  	player.durationComplete(this);
+  	this.ignoreCleanUp = false;
   }
 }

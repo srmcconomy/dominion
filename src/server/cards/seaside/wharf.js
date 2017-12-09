@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Wharf extends Card {
-  static cost = 5;
+  static cost = {coin:5};
   static types = new Set(['Action','Duration']);
   async onPlay(player) {
     await player.draw(2);
@@ -10,6 +10,6 @@ export default class Wharf extends Card {
   async onTurnStart(player) {
   	await player.draw(2);
     player.buys++;
-    player.durationComplete(this);
+    this.ignoreCleanUp = false;
   }
 }

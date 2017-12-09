@@ -1,12 +1,12 @@
 import Card from 'cards/Card';
 
 export default class Tactician extends Card {
-  static cost = 5;
+  static cost = {coin:5};
   static types = new Set(['Action','Duration']);
   async onPlay(player) {
     if (player.hand.size) {
     	while (player.hand.size) {
-    		await player.discard(player.hand.list[0]);
+    		await player.discard(player.hand.last());
     	}
     }
     else {
@@ -17,6 +17,6 @@ export default class Tactician extends Card {
 	  	await player.draw(5);
 	    player.actions++;
 	    player.buys++;
-	    player.durationComplete(this);
+	    this.ignoreCleanUp = false;
 	}
 }

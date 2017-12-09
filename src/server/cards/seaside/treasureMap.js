@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class TreasureMap extends Card {
-  static cost = 4;
+  static cost = {coin:4};
   static types = new Set(['Action', 'Attack']);
   async onPlay(player) {
     player.trash(this, player.playArea);

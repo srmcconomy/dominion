@@ -182,7 +182,7 @@ export default class Player extends Model {
     }
     const card = supply.cards.last();
     await this.gainSpecificCard(card, supply.cards, to);
-    this.cardsGained.push(card.classes.get(name));
+    this.cardsGainedThisTurn.push(card.classes.get(name));
     return card;
   }
 
@@ -295,8 +295,8 @@ export default class Player extends Model {
     while (this.hand.size > 0) {
       await this.discard(this.hand.last(), this.hand);
     }
-    while (this.playArea.size > 0) {
-      await this.discard(this.playArea.last(), this.playArea);
+    while (this.playArea.filter(c => c.ignoreCleanUp === false).size > 0) {
+      await this.discard(this.playArea.filter(c => c.ignoreCleanUp === false).last(), this.playArea);
     }
   }
 
@@ -325,7 +325,7 @@ export default class Player extends Model {
     this.game.log(`${this.name} plays ${card.name}`);
     this.cardsPlayedThisTurn.push(card);
     this.moveCard(card, this.hand, this.playArea);
-    if (card.types.has('Duration')) ? card.ignoreCleanUp = true;
+    if (card.types.has('Duration')) card.ignoreCleanUp = true;
     await card.onPlay(this);
   }
 
