@@ -117,6 +117,12 @@ export default class Game extends Model {
       });
     });
 
+    let potionGame = false;
+    kingdomArray.forEach(title => {
+      if (Card.classes.get(title).cost.potion) potionGame = true;
+    });
+    if (potionGame) suppliesArray.push('Potion');
+
     kingdomArray.forEach(c => suppliesArray.push(c));
 
     return suppliesArray;

@@ -328,91 +328,121 @@ export default class Player extends Model {
 
   async processTurnPhases() {
     let doneTurn = false;
+    this.buyState = 'playTreasures';
     while (doneTurn === false) {
       switch (this.turnPhase) {
         case 'actionPhase':
         {
-          while (this.actions > 0 && this.hand.some(card => card.types.has('Action'))) {
+          if (this.actions > 0 && this.hand.some(card => card.types.has('Action'))) {
             const [card] = await this.selectCards({ min: 0, max: 1, predicate: c => c.types.has('Action'), message: 'Select an action to play' });
-            if (!card) break;
-            this.actions--;
-            await this.play(card);
+            if (!card) {
+              this.turnPhase = 'buyPhase';
+              this.buyState = 'playTreasures';
+            } else {
+              this.actions--;
+              await this.play(card);
+            }
+          } else if (this.turnPhase === 'actionPhase') {
+            this.turnPhase = 'buyPhase';
+            this.buyState = 'playTreasures';
           }
-          if (this.turnPhase === 'actionPhase') this.turnPhase = 'buyPhase';
         }
         break;
         case 'buyPhase':
         {
-          while (this.hand.some(card => card.types.has('Treasure'))) {
-            console.log('ask for cards');
-            const res = await this.selectOptionOrCardsOrSupplies(
-              ['Play all treasures'],
-              {
-                min: 0,
-                max: 1,
-                predicate: c => c.types.has('Treasure'),
-                from: 'hand'
-              },
-              null,
-              'Select a treasure to play',
-            );
-            if (res === 0) {
-              let i = 0;
-              while (i < this.hand.size) {
-                const card = this.hand.get(i);
-                if (card.types.has('Treasure')) {
-                  await this.play(card);
+          switch (this.buyState) {
+            case 'playTreasures':
+            {
+              if (this.hand.some(card => card.types.has('Treasure'))) {
+                console.log('ask for cards');
+                const res = await this.selectOptionOrCardsOrSupplies(
+                  ['Play all treasures'],
+                  {
+                    min: 0,
+                    max: 1,
+                    predicate: c => c.types.has('Treasure'),
+                    from: 'hand'
+                  },
+                  null,
+                  'Select a treasure to play',
+                );
+                if (res === 0) {
+                  let i = 0;
+                  while (i < this.hand.size) {
+                    const card = this.hand.get(i);
+                    if (card.types.has('Treasure')) {
+                      await this.play(card);
+                    } else {
+                      i++;
+                    }
+                  }
+                  this.buyState = 'buyCards';
                 } else {
-                  i++;
+                  const [card] = res;
+                  if (card) {
+                    console.log('card selected:');
+                    console.log(card);
+                    await this.play(card);
+                  } else this.buyState = 'buyCards';
                 }
-              }
-            } else {
-              const [card] = res;
-              console.log('card selected:');
-              console.log(card);
-              if (!card) break;
-              await this.play(card);
+              } else this.buyState = 'buyCards';
             }
-          }
-          while (this.buys > 0) {
-            this.debt -= Math.min(this.debt, this.money);
-            console.log('ask for supplies');
-            const res = await this.selectOptionOrCardsOrSupplies(
-              ['End turn'],
-              null,
-              {
-                min: 0,
-                max: 1,
-                predicate: s => {
-                  if (s.cards.size > 0) {
-                    const tempCost = this.getCardCost(s.cards.last());
-                    return (
-                    this.money >= tempCost.coin &&
-                    this.debt === 0 &&
-                    this.potion >= tempCost.potion);
+            break;
+            case 'buyCards':
+            {
+              if (this.buys > 0) {
+                if (this.debt) {
+                  this.debt -= Math.min(this.debt, this.money);
+                  this.game.log(`${this.name} pays off ${Math.min(this.debt, this.money)} debt, has ${this.debt} debt remaining`);
+                }
+                console.log('ask for supplies');
+                const res = await this.selectOptionOrCardsOrSupplies(
+                  ['End turn'],
+                  null,
+                  {
+                    min: 0,
+                    max: 1,
+                    predicate: s => {
+                      if (s.cards.size > 0) {
+                        const tempCost = this.getCardCost(s.cards.last());
+                        return (
+                        this.money >= tempCost.coin &&
+                        this.debt === 0 &&
+                        this.potion >= tempCost.potion);
+                      } else {
+                        return false;
+                      }
+                    }
+                  },
+                  'Select a card to buy',
+                );
+                if (res === 0) {
+                  if (this.turnPhase === 'buyPhase') this.turnPhase = 'nightPhase';
+                }
+                else {
+                  const [supply] = res;
+                  if (supply) {
+                    console.log('card selected:');
+                    console.log(supply);
+                    const card = await this.gain(supply.title);
+                    await this.handleReactions('buy', this, card);
+                    const tempCost = this.getCardCost(card);
+                    this.money -= tempCost.coin;
+                    this.debt += tempCost.debt;
+                    this.potion -= tempCost.potion;
+                    this.buys--;
                   } else {
-                    return false;
+                    if (this.turnPhase === 'buyPhase') this.turnPhase = 'nightPhase';
                   }
                 }
-              },
-              'Select a card to buy',
-            );
-            if (res === 0) {
-              break;
+              } else {
+                if (this.turnPhase === 'buyPhase') this.turnPhase = 'nightPhase';
+              }
             }
-            const [supply] = res;
-            console.log('card selected:');
-            console.log(supply);
-            if (!supply) break;
-            const card = await this.gain(supply.title);
-            await this.handleReactions('buy', this, card);
-            const tempCost = this.getCardCost(card);
-            this.money -= tempCost.coin;
-            this.debt += tempCost.debt;
-            this.potion -= tempCost.potion;
-            this.buys--;
+            break;
+            default:
+            break;
           }
-          if (this.turnPhase === 'buyPhase') this.turnPhase = 'nightPhase';
         }
         break;
         case 'nightPhase':
