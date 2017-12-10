@@ -41,6 +41,8 @@ export default class Card extends BaseCard {
 
   static setup(game) { }
 
+  endGameCleanUp(player) { }
+
   toJSON() {
     return {
       id: this.id,

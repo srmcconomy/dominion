@@ -319,6 +319,9 @@ export default class Player extends Model {
     while (this.nativeVillageMat.size > 0) {
       this.moveCard(this.hand.last(), this.nativeVillageMat, this.deck);
     }
+    this.deck.forEach(c => {
+      c.endGameCleanUp(this);
+    });
   }
 
   async play(card) {
@@ -463,8 +466,15 @@ export default class Player extends Model {
         case 'cleanUpPhase':
         {
           await this.cleanup();
-          await this.draw(5);
-          this.game.previousPlayer = this;
+          let outpostTurn = false;
+          this.playArea.forEach(c => {
+            if (c.title === 'Outpost') outpostTurn = true;
+          });
+          if (outpostTurn) {
+            await this.draw(3);
+          } else {
+            await this.draw(5);
+          }
           this.turnPhase = 'actionPhase';
           doneTurn = true;
         }

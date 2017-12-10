@@ -90,6 +90,7 @@ export default class Game extends Model {
       'Remodel',
       'Swindler',
       'YoungWitch',
+      'Outpost'
       ];
     }
   }
@@ -250,10 +251,22 @@ export default class Game extends Model {
         this.endOfGame();
         break;
       }
-      this.currentPlayerIndex++;
+
+      let additionalTurn = false;
+      if (this.previousPlayer) {
+        if (this.currentPlayer.id !== this.previousPlayer.id) {
+          this.playArea.forEach(c => {
+            if (c.title === 'Outpost') additionalTurn = true;
+          })
+        }
+      }
+      if (additionalTurn === false) {
+        this.currentPlayerIndex++;
+      }
       if (this.currentPlayerIndex === this.players.size) {
         this.currentPlayerIndex = 0;
       }
+      this.previousPlayer = this.currentPlayer;
       this.currentPlayer = this.playerOrder[this.currentPlayerIndex];
       this.playArea = this.currentPlayer.playArea;
     }
