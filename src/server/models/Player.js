@@ -106,6 +106,12 @@ export default class Player extends Model {
 
       handled = await reaction.reactTo(event, this, player, ...args) || handled;
     }
+
+    let durationReactions = this.playArea.filter(card => card.shouldReactTo(event, this, player, ...args));
+    for (let i=0; i < durationReactions.length; i++) {
+      handled = await durationReactions.list[i].reactTo(event, this, player, ...args) || handled;
+    }
+
     return handled;
   }
 
@@ -208,6 +214,11 @@ export default class Player extends Model {
     const card = supply.cards.last();
     await card.onBuy(this);
     this.cardsBoughtThisTurn.push(card.classes.get(name));
+    if (this.game.supplies.get(name).tokens.embargoTokens) {
+      for (let i = 0; i < this.game.supplies.get(name).tokens.embargoTokens; i++) {
+        this.gain('Curse');
+      }
+    }
     await this.gain(name, to);
     return card;
   }
