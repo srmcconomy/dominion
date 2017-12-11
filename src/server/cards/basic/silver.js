@@ -15,7 +15,7 @@ export default class Silver extends Card {
     player.playArea.forEach(c => {
       if (c.title === 'Merchant') {
         coin++;
-      } else if (c.title == 'Silver')
+      } else if (c.title === 'Silver')
       {
         silversPlayed++;
       }

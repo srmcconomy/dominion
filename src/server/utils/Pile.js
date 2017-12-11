@@ -115,6 +115,11 @@ export default class Pile {
     return this.list.length;
   }
 
+  first() {
+    if (this.list.length === 0) return null;
+    return this.list[0];
+  }
+
   last() {
     if (this.list.length === 0) return null;
     return this.list[this.list.length - 1];

@@ -7,25 +7,30 @@ export default class Bandit extends Card {
   async onPlay(player) {
     await player.gain('Gold');
     await player.forEachOtherPlayer(async other => {
-      const aside = new Pile();
-      const cards = await other.draw(2, aside);
+      if (await other.handleOwnReactions('attack', player, this)) {
+        return;
+      }
+      const cards = await other.lookAtTopOfDeck(2);
 
-      if (aside.some(c => c.types.has('Treasure') && c.title !== 'Copper')) {
+
+      if (cards.some(c => c.types.has('Treasure') && c.title !== 'Copper')) {
+        const cardsInspected = new Pile();
+        for(let i = 0; i < cards.length; i++) {
+          cardsInspected.push(cards[i]);
+        }
         const [card] = await player.selectCards({
           min: 1,
           max: 1,
-          pile: aside.filter(c => c.types.has('Treasure') && c.title !== 'Copper'),
+          pile: cardsInspected.filter(c => c.types.has('Treasure') && c.title !== 'Copper'),
           message: 'Choose a card to trash'
         });
         if (card) {
-          await other.trash(card, aside);
+          await other.trash(card, other.deck);
+          cardsInspected.delete(card);
         }
-      }
-
-      for (let i = 0; i < aside.size; i++) {
-        if (cards[i]) {
-          await other.discard(cards[i], aside);
-        }
+        cardsInspected.forEach(c => {
+          other.discard(c, other.deck);
+        });
       }
     });
   }
