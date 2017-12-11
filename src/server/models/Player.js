@@ -390,11 +390,11 @@ export default class Player extends Model {
             break;
             case 'buyCards':
             {
+              if (this.debt) {
+                this.debt -= Math.min(this.debt, this.money);
+                this.game.log(`${this.name} pays off ${Math.min(this.debt, this.money)} debt, has ${this.debt} debt remaining`);
+              }
               if (this.buys > 0) {
-                if (this.debt) {
-                  this.debt -= Math.min(this.debt, this.money);
-                  this.game.log(`${this.name} pays off ${Math.min(this.debt, this.money)} debt, has ${this.debt} debt remaining`);
-                }
                 console.log('ask for supplies');
                 const res = await this.selectOptionOrCardsOrSupplies(
                   ['End turn'],
