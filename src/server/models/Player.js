@@ -56,6 +56,9 @@ export default class Player extends Model {
   @trackDirty
   cardsGainedThisTurn = [];
 
+  @trackDirty
+  cardsBoughtThisTurn = [];
+
   game = null;
 
   socket = null;
@@ -98,6 +101,12 @@ export default class Player extends Model {
 
       handled = await reaction.reactTo(event, this, player, ...args) || handled;
     }
+
+    let durationReactions = this.playArea.filter(card => card.shouldReactTo(event, this, player, ...args));
+    for (let i=0; i < durationReactions.length; i++) {
+      handled = await durationReactions.list[i].reactTo(event, this, player, ...args) || handled;
+    }
+
     return handled;
   }
 
@@ -183,6 +192,24 @@ export default class Player extends Model {
     const card = supply.cards.last();
     await this.gainSpecificCard(card, supply.cards, to);
     this.cardsGainedThisTurn.push(card.classes.get(name));
+    return card;
+  }
+
+  async buy(name, to = this.discardPile) {
+    const supply = this.game.supplies.get(name);
+    if (supply.cards.length === 0) {
+      return null;
+    }
+    const card = supply.cards.last();
+    await this.gainSpecificCard(card, supply.cards, to);
+    await card.onBuy(this);
+    if (this.game.supplies.get(name).tokens.embargoTokens) {
+      for (let i = 0; i < this.game.supplies.get(name).tokens.embargoTokens; i++) {
+        this.gain('Curse');
+      }
+    }
+    this.cardsGainedThisTurn.push(card.classes.get(name));
+    this.cardsBoughtThisTurn.push(card.classes.get(name));
     return card;
   }
 
@@ -437,7 +464,7 @@ export default class Player extends Model {
                   if (supply) {
                     console.log('card selected:');
                     console.log(supply);
-                    const card = await this.gain(supply.title);
+                    const card = await this.buy(supply.title);
                     await this.handleReactions('buy', this, card);
                     const tempCost = this.getCardCost(card);
                     this.money -= tempCost.coin;

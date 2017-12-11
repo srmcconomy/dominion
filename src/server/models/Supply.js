@@ -5,7 +5,7 @@ import Card from 'cards/Card';
 @DirtyModel
 export default class Supply {
   @trackDirty
-  tokens = {};
+  tokens = {embargoTokens:0};
 
   @trackDirty
   cards = new Pile();
@@ -16,6 +16,7 @@ export default class Supply {
   constructor(title, game) {
     this.title = title;
     const CardClass = Card.classes.get(title);
+    this.tokens.embargoTokens = 0;
     this.cards.push(...Array(CardClass.getNumberInSupply(game)).fill().map(() => new CardClass(game)));
   }
 }
