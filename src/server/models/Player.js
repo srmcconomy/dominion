@@ -53,6 +53,12 @@ export default class Player extends Model {
   @trackDirty
   cardsPlayedThisTurn = [];
 
+  @trackDirty
+  cardsGainedThisTurn = [];
+
+  @trackDirty
+  cardsBoughtThisTurn = [];
+
   game = null;
 
   socket = null;
@@ -178,7 +184,20 @@ export default class Player extends Model {
       return null;
     }
     const card = supply.cards.last();
+    this.cardsGainedThisTurn.push(card.classes.get(name));
     await this.gainSpecificCard(card, supply.cards, to);
+    return card;
+  }
+
+  async buy(name, to = this.discardPile) {
+    const supply = this.game.supplies.get(name);
+    if (supply.cards.length === 0) {
+      return null;
+    }
+    const card = supply.cards.last();
+    await card.onBuy(this);
+    this.cardsBoughtThisTurn.push(card.classes.get(name));
+    await this.gain(name, to);
     return card;
   }
 
@@ -382,10 +401,12 @@ export default class Player extends Model {
               break;
             case 'buyCards':
               if (this.debt) {
-                this.debt -= Math.min(this.debt, this.money);
-                this.game.log(`${this.name} pays off ${Math.min(this.debt, this.money)} debt, has ${this.debt} debt remaining`);
+                let debtPayed = Math.min(this.debt, this.money);
+                this.debt -= debtPayed;
+                this.money -= debtPayed;
+                this.game.log(`${this.name} pays off ${debtPayed} debt, has ${this.debt} debt remaining`);
               }
-              if (this.buys > 0) {
+              if (this.buys > 0 && this.debt === 0) {
                 console.log('ask for supplies');
                 const res = await this.selectOptionOrCardsOrSupplies(
                   ['End turn'],
@@ -416,7 +437,7 @@ export default class Player extends Model {
                   if (supply) {
                     console.log('card selected:');
                     console.log(supply);
-                    const card = await this.gain(supply.title);
+                    const card = await this.buy(supply.title);
                     await this.handleReactions('buy', this, card);
                     const tempCost = this.getCardCost(card);
                     this.money -= tempCost.coin;
@@ -463,6 +484,8 @@ export default class Player extends Model {
     this.actionsPlayedThisTurn = 0;
     this.turnPhase = 'actionPhase';
     this.cardsPlayedThisTurn = [];
+    this.cardsGainedThisTurn = [];
+    this.cardsBoughtThisTurn = [];
 
     await this.processTurnPhases();
   }
