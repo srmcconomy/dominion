@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Courtier extends Card {
-  static cost = {coin:5};
+  static cost = { coin: 5 };
   static types = new Set(['Action']);
   async onPlay(player) {
     const [card] = await player.selectCards({

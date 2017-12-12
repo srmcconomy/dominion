@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Swindler extends Card {
-  static cost = {coin:3};
+  static cost = { coin: 3 };
   static types = new Set(['Action', 'Attack']);
   async onPlay(player) {
     player.money += 2;
@@ -20,7 +20,7 @@ export default class Swindler extends Card {
         predicate: s => (
           s.cards.size > 0 &&
           player.costsEqualTo(s.cards.last(), card.getCost())
-          ),
+        ),
         message: `Choose a card to replace ${other.name}'s ${card.title}`,
       });
       if (!supply) {

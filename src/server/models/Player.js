@@ -238,51 +238,45 @@ export default class Player extends Model {
   }
 
   getCardCost(card) {
-    if (!card) return {coin:null, debt:null, potion:null};
-    let tempCost = card.getCost(this);
+    if (!card) return { coin: null, debt: null, potion: null };
+    const tempCost = card.getCost(this);
 
-    tempCost.coin -= this.cardsPlayedThisTurn.filter(c => {
-      c.title === 'Bridge'
-    }).length;
-    tempCost.coin -= this.playArea.filter(c => {
-      (c.title === 'Highway' || c.title === 'BridgeTroll')
-    }).length;
+    tempCost.coin -= this.cardsPlayedThisTurn.filter(c => c.title === 'Bridge').length;
+    tempCost.coin -= this.playArea.filter(c => c.title === 'Highway' || c.title === 'BridgeTroll').length;
     if (card.types.has('Action')) {
-      tempCost.coin -= 2*this.playArea.filter(c => {
-      c.title === 'Quarry'
-      }).length;
+      tempCost.coin -= 2 * this.playArea.filter(c => c.title === 'Quarry').length;
     }
     tempCost.coin = Math.max(tempCost.coin, 0);
 
     return tempCost;
-
   }
 
   costsLessThanEqualTo(card, cost) {
     if (!card) return false;
     const tempCardCost = this.getCardCost(card);
-    const tempCost = {coin:0, debt:0, potion:0, ...cost};
+    const tempCost = { coin: 0, debt: 0, potion: 0, ...cost };
 
     return (
       tempCardCost.coin <= tempCost.coin &&
       tempCardCost.debt <= tempCost.debt &&
       tempCardCost.potion <= tempCost.potion
-      );
+    );
   }
 
   costsEqualTo(card, cost) {
     if (!card) return false;
     const tempCardCost = this.getCardCost(card);
-    const tempCost = {coin:0, debt:0, potion:0, ...cost};
+    const tempCost = { coin: 0, debt: 0, potion: 0, ...cost };
 
     return (
       tempCardCost.coin === tempCost.coin &&
       tempCardCost.debt === tempCost.debt &&
       tempCardCost.potion === tempCost.potion
-      );;
+    );
   }
 
   async cleanup() {
+    await this.emit('cleanup', this);
     while (this.hand.size > 0) {
       await this.discard(this.hand.last());
     }
@@ -316,6 +310,7 @@ export default class Player extends Model {
     this.game.log(`${this.name} plays ${card.name}`);
     this.cardsPlayedThisTurn.push(card);
     this.moveCard(card, this.hand, this.playArea);
+    await this.emit('play', card, this);
     await card.onPlay(this);
   }
 
@@ -332,7 +327,6 @@ export default class Player extends Model {
     while (doneTurn === false) {
       switch (this.turnPhase) {
         case 'actionPhase':
-        {
           if (this.actions > 0 && this.hand.some(card => card.types.has('Action'))) {
             const [card] = await this.selectCards({ min: 0, max: 1, predicate: c => c.types.has('Action'), message: 'Select an action to play' });
             if (!card) {
@@ -346,13 +340,10 @@ export default class Player extends Model {
             this.turnPhase = 'buyPhase';
             this.buyState = 'playTreasures';
           }
-        }
-        break;
+          break;
         case 'buyPhase':
-        {
           switch (this.buyState) {
             case 'playTreasures':
-            {
               if (this.hand.some(card => card.types.has('Treasure'))) {
                 console.log('ask for cards');
                 const res = await this.selectOptionOrCardsOrSupplies(
@@ -385,11 +376,11 @@ export default class Player extends Model {
                     await this.play(card);
                   } else this.buyState = 'buyCards';
                 }
-              } else this.buyState = 'buyCards';
-            }
-            break;
+              } else {
+                this.buyState = 'buyCards';
+              }
+              break;
             case 'buyCards':
-            {
               if (this.debt) {
                 this.debt -= Math.min(this.debt, this.money);
                 this.game.log(`${this.name} pays off ${Math.min(this.debt, this.money)} debt, has ${this.debt} debt remaining`);
@@ -406,20 +397,21 @@ export default class Player extends Model {
                       if (s.cards.size > 0) {
                         const tempCost = this.getCardCost(s.cards.last());
                         return (
-                        this.money >= tempCost.coin &&
-                        this.debt === 0 &&
-                        this.potion >= tempCost.potion);
-                      } else {
-                        return false;
+                          this.money >= tempCost.coin &&
+                          this.debt === 0 &&
+                          this.potion >= tempCost.potion
+                        );
                       }
-                    }
+                      return false;
+                    },
                   },
                   'Select a card to buy',
                 );
                 if (res === 0) {
-                  if (this.turnPhase === 'buyPhase') this.turnPhase = 'nightPhase';
-                }
-                else {
+                  if (this.turnPhase === 'buyPhase') {
+                    this.turnPhase = 'nightPhase';
+                  }
+                } else {
                   const [supply] = res;
                   if (supply) {
                     console.log('card selected:');
@@ -431,39 +423,33 @@ export default class Player extends Model {
                     this.debt += tempCost.debt;
                     this.potion -= tempCost.potion;
                     this.buys--;
-                  } else {
-                    if (this.turnPhase === 'buyPhase') this.turnPhase = 'nightPhase';
+                  } else if (this.turnPhase === 'buyPhase') {
+                    this.turnPhase = 'nightPhase';
                   }
                 }
-              } else {
-                if (this.turnPhase === 'buyPhase') this.turnPhase = 'nightPhase';
+              } else if (this.turnPhase === 'buyPhase') {
+                this.turnPhase = 'nightPhase';
               }
-            }
-            break;
+              break;
             default:
-            break;
+              break;
           }
-        }
-        break;
+          break;
         case 'nightPhase':
-        {
-          if (this.turnPhase === 'nightPhase') this.turnPhase = 'cleanUpPhase';
-        }
-        break;
+          if (this.turnPhase === 'nightPhase') {
+            this.turnPhase = 'cleanUpPhase';
+          }
+          break;
         case 'cleanUpPhase':
-        {
           await this.cleanup();
           await this.draw(5);
           this.game.previousPlayer = this;
           this.turnPhase = 'actionPhase';
           doneTurn = true;
-        }
-        break;
+          break;
         default:
-        {
-          this.turnPhase = 'actionPhase'
-        }
-        break;
+          this.turnPhase = 'actionPhase';
+          break;
       }
     }
   }

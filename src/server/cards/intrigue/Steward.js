@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Steward extends Card {
-  static cost = {coin:3};
+  static cost = { coin: 3 };
   static types = new Set(['Action']);
   async onPlay(player) {
     const choice = await player.selectOption(['+2 Cards', '+2 Coins', 'Trash 2 cards from your hand'], 'Choose one:');

@@ -30,12 +30,12 @@ export default class Card extends BaseCard {
   }
 
   getCost(player) {
-    return {coin:0, debt:0, potion:0, ...this.cost};
+    return { coin: 0, debt: 0, potion: 0, ...this.cost };
   }
 
   static init(player) { }
 
-  static addDependancies(kingdomArray, game) { return []; }
+  static getDependencies(kingdomArray, game) { return []; }
 
   static setup(game) { }
 

@@ -3,7 +3,7 @@ import 'cards/basic';
 import 'cards/base';
 import 'cards/baseSecond';
 import 'cards/intrigue';
-import 'cards/cornucopia'
+import 'cards/cornucopia';
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
@@ -69,58 +69,57 @@ export default class Game extends Model {
   }
 
   getKingdomCards() {
-    let a = [];
+    const a = [];
     while (a.length < 10) {
-      let unusedCards = [];
-      Card.classes.forEach( c => {
+      const unusedCards = [];
+      Card.classes.forEach(c => {
         if (c.supplyCategory === 'kingdom' && !a.includes(c.title)) unusedCards.push(c.title);
       });
       a.push(unusedCards[Math.floor(Math.random() * unusedCards.length)]);
     }
-    if (true) {
+    if (false) {
       return a;
-    } else {
-      return [
+    }
+    return [
       'Chapel',
       'Cellar',
       'Militia',
       'Moat',
       'Village',
       'Remodel',
-      'Swindler',
+      'Merchant',
       'YoungWitch',
-      ];
-    }
+    ];
   }
 
   getSupplyCards() {
-    let suppliesArray = [
+    const suppliesArray = [
       'Curse',
       'Copper',
       'Silver',
       'Gold',
       'Estate',
       'Duchy',
-      'Province'];
+      'Province'
+    ];
 
     const kingdomArray = this.getKingdomCards();
 
-    this.log('Kingdom Contains:')
+    this.log('Kingdom Contains:');
     for (let i = 0; i < kingdomArray.length; i++) {
       this.log(`${kingdomArray[i]}`);
     }
 
     kingdomArray.forEach(title => {
-      let dependancies = Card.classes.get(title).addDependancies(kingdomArray, this);
+      const dependancies = Card.classes.get(title).getDependencies(kingdomArray, this);
       dependancies.forEach(d => {
-        if (!suppliesArray.includes(d)) suppliesArray.push(d)
+        if (!suppliesArray.includes(d)) {
+          suppliesArray.push(d);
+        }
       });
     });
 
-    let potionGame = false;
-    kingdomArray.forEach(title => {
-      if (Card.classes.get(title).cost.potion) potionGame = true;
-    });
+    const potionGame = kingdomArray.some(title => Card.classes.get(title).cost.potion);
     if (potionGame) suppliesArray.push('Potion');
 
     kingdomArray.forEach(c => suppliesArray.push(c));
@@ -138,16 +137,18 @@ export default class Game extends Model {
       });
       this.log(`${player.name} has ${score} victory points`);
       console.log(`${player.name} has ${score} victory points`);
-      scores.push({player: player, name: player.name, score: score});
+      scores.push({ player, name: player.name, score });
     });
 
     const hadExtraTurn = Array(this.playerOrder.length).fill(false);
     let tempIndex = this.startingPlayerIndex;
-    while (1) {
+    for (;;) {
       hadExtraTurn[tempIndex] = true;
       if (tempIndex === this.currentPlayerIndex) break;
-      tempIndex ++;
-      if(tempIndex === this.playerOrder.length) tempIndex = 0;
+      tempIndex++;
+      if (tempIndex === this.playerOrder.length) {
+        tempIndex = 0;
+      }
     }
 
     let winningScore = null;
@@ -156,20 +157,23 @@ export default class Game extends Model {
       if (s.score > winningScore) winningScore = s.score;
     });
     scores.forEach(s => {
-      if (s.score === winningScore) winners.push({
-        player: s.player,
-        name: s.name,
-        extraTurn: hadExtraTurn[this.playerOrder.indexOf(s.player)]});
+      if (s.score === winningScore) {
+        winners.push({
+          player: s.player,
+          name: s.name,
+          extraTurn: hadExtraTurn[this.playerOrder.indexOf(s.player)]
+        });
+      }
     });
 
     if (winners.length > 1) {
       let unequalTurns = false;
-      winners.forEach( w => {
+      winners.forEach(w => {
         if (w.extraTurn === false) unequalTurns = true;
       });
       if (unequalTurns) {
-        winners.forEach( w => {
-          if (w.extraTurn === true) winners.splice(winners.indexOf(w),1);
+        winners.forEach(w => {
+          if (w.extraTurn === true) winners.splice(winners.indexOf(w), 1);
         });
       }
       if (winners.length === 1) {
@@ -178,7 +182,7 @@ export default class Game extends Model {
       } else {
         this.log('Tie game between:');
         console.log('Tie game between:');
-        winners.forEach( w => {
+        winners.forEach(w => {
           this.log(w.name);
           console.log(w.name);
         });
@@ -200,9 +204,9 @@ export default class Game extends Model {
       this.organizedSupplies[Card.classes.get(title).supplyCategory].push(title);
     });
     Object.keys(this.organizedSupplies).forEach(key => {
-      this.organizedSupplies[key].sort((a, b) => {
+      this.organizedSupplies[key].sort((a, b) => (
         this.supplies.get(a).cards.last().cost.coin - this.supplies.get(b).cards.last().cost.coin
-      });
+      ));
     });
     this.players.forEach(player => {
       player.deck.push(

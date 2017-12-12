@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Cellar extends Card {
-  static cost = {coin:2};
+  static cost = { coin: 2 };
   static types = new Set(['Action']);
   async onPlay(player) {
     player.actions++;
