@@ -128,6 +128,7 @@ export default class Player extends Model {
     this.name = name;
     this.journeyToken = 'faceUp';
     this.turnPhase = 'actionPhase';
+    this.padding = 0;
   }
 
   addSilentEffect(eventName, card) {
@@ -318,6 +319,16 @@ export default class Player extends Model {
     }
   }
 
+  async discardMulti(from) {
+    const num = from.length;
+    while (from.length > 0) {
+      const card = from.last()
+      this.moveCard(card, from, this.discardPile);
+      await card.onDiscard(this);
+    }
+    this.gameLog(`${this.name} discards ${num} card${num !== 1 ? 's' : ''}`);
+  }
+
   async gainSpecificCard(card, from, to = this.discardPile) {
     const event = await this.handleTriggers('would-gain', { card }, [card]);
     this.game.log(`${this.name} gains ${card.name}`);
@@ -344,6 +355,7 @@ export default class Player extends Model {
       return null;
     }
     const card = supply.cards.last();
+    this.game.log(`${this.name} buys ${card.name}`);
     await this.handleTriggers('buy', { card }, [card]);
     this.cardsBoughtThisTurn.push(card);
     await this.gain(name, to);
@@ -383,7 +395,7 @@ export default class Player extends Model {
       this.moveCard(this.deck, cards, { num: Math.min(num - numTaken, this.deck.size) });
       console.log(cards);
     }
-    this.game.log(`${this.name} draws ${cards.length} cards`);
+    this.game.log(`${this.name} draws ${cards.length} card${cards.length !== 1 ? 's' : ''}`);
     if (putInHand) {
       this.hand.push(...cards);
     }
@@ -461,13 +473,11 @@ export default class Player extends Model {
   }
 
   async cleanup() {
-    while (this.hand.size > 0) {
-      await this.discard(this.hand.last());
-    }
     let card;
     while (card = this.playArea.find(c => !c.ignoreCleanUp)) {
       await this.discard(card, this.playArea);
     }
+    await this.discardMulti(this.hand);
   }
 
   async endOfGameCleanUp() {
@@ -496,6 +506,7 @@ export default class Player extends Model {
 
   async play(card) {
     this.game.log(`${this.name} plays ${card.name}`);
+    this.padding += 4;
     const firstEvent = await this.handleTriggers('play-first', { card }, [card]);
     this.cardsPlayedThisTurn.push(card);
     this.moveCard(card, this.hand, this.playArea);
@@ -504,6 +515,7 @@ export default class Player extends Model {
       await card.onPlay(this, firstEvent);
     }
     await this.handleTriggers('after-play', { card }, [card]);
+    this.padding -= 4;
   }
 
   async forEachOtherPlayer(func) {
@@ -651,7 +663,9 @@ export default class Player extends Model {
   }
 
   async takeTurn() {
+    this.padding = 0;
     this.game.log(`${this.name} starts their turn`);
+    this.padding += 4;
     this.actions = 1;
     this.buys = 1;
     this.money = 0;
