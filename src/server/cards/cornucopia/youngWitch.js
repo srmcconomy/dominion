@@ -13,7 +13,7 @@ export default class YoungWitch extends Card {
       if (await other.handleOwnReactions('attack', player, this)) {
         return;
       }
-      const [card] = await other.selectCards({ min: 0, max: 1, predicate: c => c.title === YoungWitch.bane, message: 'Choose to reveal a bane card or not' });
+      const [card] = await other.selectCards({ min: 0, max: 1, predicate: c => c instanceof YoungWitch.bane, message: 'Choose to reveal a bane card or not' });
       if (!card) {
         await other.gain('Curse');
       }
@@ -23,21 +23,24 @@ export default class YoungWitch extends Card {
 
   static getDependencies(kingdomArray, game) {
     const dependencies = [];
-    const possibleBanes = Card.classes.filter(c => {
+    const possibleBanes = [];
+    Card.classes.forEach(c => {
       const tempCost = { coin: 0, debt: 0, potion: 0, ...c.cost };
-      return (
+      if (
         c.title &&
         (tempCost.coin === 2 || tempCost.coin === 3) &&
         !tempCost.debt &&
         !tempCost.potion &&
         !kingdomArray.includes(c.title) &&
         c.supplyCategory === 'kingdom'
-      );
+      ) {
+        possibleBanes.push(c);
+      }
     });
     YoungWitch.bane = possibleBanes[Math.floor(Math.random() * possibleBanes.length)];
-    game.log(`${YoungWitch.bane} is Young Witch's Bane`);
-    dependencies.push(YoungWitch.bane);
-    dependencies.push(...Card.classes.get(YoungWitch.bane).getDependencies(kingdomArray, game));
+    game.log(`${YoungWitch.bane.title} is Young Witch's Bane`);
+    dependencies.push(YoungWitch.bane.title);
+    dependencies.push(...YoungWitch.bane.getDependencies(kingdomArray, game));
     return dependencies;
   }
 }

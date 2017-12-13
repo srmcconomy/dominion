@@ -77,7 +77,7 @@ export default class Game extends Model {
       });
       a.push(unusedCards[Math.floor(Math.random() * unusedCards.length)]);
     }
-    if (true) {
+    if (false) {
       return a;
     }
     return [

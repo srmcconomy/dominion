@@ -3,9 +3,7 @@ import Card from 'cards/Card';
 import Coin from 'components/Coin';
 
 export default class Smithy extends Card {
-  static description = <div>
-  <strong>+3 Cards</strong>
-  </div>
+  static description = <strong>+3 Cards</strong>
   static cost = <Coin>4</Coin>
   static types = ['Action'];
 }
