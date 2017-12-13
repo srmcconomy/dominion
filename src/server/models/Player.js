@@ -204,10 +204,11 @@ export default class Player extends Model {
   lookAtTopOfDeck(num) {
     if (this.deck.size < num) {
       this.discardPile.shuffle();
-      this.moveCard(this.discardPile, this.deck, { num: this.discardPile.size });
+      this.moveCard(this.discardPile, this.deck, { num: this.discardPile.size, toWhere: 'bottom'});
     }
     const cards = [];
-    for (let i = 0; i < Math.min(num, this.deck.size); ++i) {
+    num = Math.min(num, this.deck.size)
+    for (let i = 0; i < num; ++i) {
       cards.push(this.deck.get((this.deck.size - num) + i));
     }
     return cards;
