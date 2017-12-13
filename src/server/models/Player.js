@@ -204,10 +204,10 @@ export default class Player extends Model {
   lookAtTopOfDeck(num) {
     if (this.deck.size < num) {
       this.discardPile.shuffle();
-      this.moveCard(this.discardPile, this.deck, { num: this.discardPile.size, toWhere: 'bottom'});
+      this.moveCard(this.discardPile, this.deck, { num: this.discardPile.size, toWhere: 'bottom' });
     }
     const cards = [];
-    num = Math.min(num, this.deck.size)
+    num = Math.min(num, this.deck.size);
     for (let i = 0; i < num; ++i) {
       cards.push(this.deck.get((this.deck.size - num) + i));
     }
@@ -402,7 +402,7 @@ export default class Player extends Model {
               break;
             case 'buyCards':
               if (this.debt) {
-                let debtPayed = Math.min(this.debt, this.money);
+                const debtPayed = Math.min(this.debt, this.money);
                 this.debt -= debtPayed;
                 this.money -= debtPayed;
                 this.game.log(`${this.name} pays off ${debtPayed} debt, has ${this.debt} debt remaining`);
