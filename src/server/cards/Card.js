@@ -8,17 +8,36 @@ export default class Card extends BaseCard {
     }
     super(id);
     if (game) game.cards.push(this);
+
+    this.cost = {
+      coin: 0,
+      debt: 0,
+      potion: 0,
+      ...this.cost,
+    };
   }
 
-  static cost = 0;
   static types = new Map();
   static supplyCategory = 'kingdom';
+  static VP = 0;
 
   static getNumberInSupply(game) {
     return 10;
   }
 
+  getVpValue(player) {
+    return this.VP;
+  }
+
+  getCost(player) {
+    return { coin: 0, debt: 0, potion: 0, ...this.cost };
+  }
+
   static init(player) { }
+
+  static getDependencies(kingdomArray, game) { return []; }
+
+  static setup(game) { }
 
   toJSON() {
     return {

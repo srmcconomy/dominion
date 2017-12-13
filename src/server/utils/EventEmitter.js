@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import EventEmitter from 'utils/AsyncEventEmitter';
 
 const methods = [
   'addListener',
@@ -12,15 +12,13 @@ const methods = [
   'getMaxListeners',
 ];
 
-// Get or create eventemitter for current instance
 const emitters = new WeakMap();
+
 function getEmitter(obj) {
-  let emitter = emitters.get(obj);
-  if (!emitter) {
-    emitter = new EventEmitter();
-    emitters.set(obj, emitter);
+  if (!emitters.has(obj)) {
+    emitters.set(obj, new EventEmitter());
   }
-  return emitter;
+  return emitters.get(obj);
 }
 
 export default function EventEmitterDecorator(klass) {
@@ -28,11 +26,8 @@ export default function EventEmitterDecorator(klass) {
     if (klass.prototype[method]) {
       throw new Error(`"${method}" method is already defined!`);
     }
-
-    if (!EventEmitter.prototype[method]) { return; }
     klass.prototype[method] = function (...args) {
-      const emitter = getEmitter(this);
-      return emitter[method].call(emitter, ...args);
+      return getEmitter(this)[method](...args);
     };
   });
 }

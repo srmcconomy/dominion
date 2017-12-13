@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class ShantyTown extends Card {
-  static cost = 3;
+  static cost = { coin: 3 };
   static types = new Set(['Action']);
   async onPlay(player) {
     player.actions += 2;

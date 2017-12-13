@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Mine extends Card {
-  static cost = 5;
+  static cost = { coin: 5 };
   static types = new Set(['Action']);
   async onPlay(player) {
     const [card] = await player.selectCards({
@@ -17,8 +17,8 @@ export default class Mine extends Card {
         max: 1,
         predicate: s => (
           s.cards.size > 0 &&
-          Card.classes.get(s.title).cost <= card.cost + 3 &&
-          Card.classes.get(s.title).types.has('Treasure')
+          player.costsLessThanEqualTo(s.cards.last(), { coin: card.cost.coin + 3 }) &&
+          s.cards.last().types.has('Treasure')
         ),
         message: 'Choose a Treasure card to gain'
       });

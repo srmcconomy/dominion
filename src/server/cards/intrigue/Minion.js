@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Minion extends Card {
-  static cost = 5;
+  static cost = { coin: 5 };
   static types = new Set(['Action', 'Attack']);
   async onPlay(player) {
     player.actions++;

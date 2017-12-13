@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 import { Set } from 'immutable';
 
 export default class Diplomat extends Card {
-  static cost = 4;
+  static cost = { coin: 4 };
   static types = new Set(['Action', 'Reaction']);
   async onPlay(player) {
     await player.draw(2);
