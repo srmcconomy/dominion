@@ -360,7 +360,7 @@ export default class Player extends Model {
     this.cardsPlayedThisTurn.push(card);
     this.moveCard(card, this.hand, this.playArea);
     await this.emit('play', card, this);
-    if (card.types.has('Duration')) ? card.ignoreCleanUp = true;
+    if (card.types.has('Duration')) card.ignoreCleanUp = true;
     await card.onPlay(this);
   }
 

@@ -4,7 +4,7 @@ import 'cards/base';
 import 'cards/baseSecond';
 import 'cards/intrigue';
 import 'cards/seaside';
-import 'cards/cornucopia'
+import 'cards/cornucopia';
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
@@ -261,7 +261,7 @@ export default class Game extends Model {
         if (this.currentPlayer.id !== this.previousPlayer.id) {
           this.playArea.forEach(c => {
             if (c.title === 'Outpost') additionalTurn = true;
-          })
+          });
         }
       } else {
         additionalTurn = true;
