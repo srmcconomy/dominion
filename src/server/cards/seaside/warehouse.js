@@ -7,8 +7,8 @@ export default class Warehouse extends Card {
     await player.draw(3);
     player.actions++;
     const cards = await player.selectCards({
-      min:3,
-      max:3,
+      min: 3,
+      max: 3,
       message: 'Discard three cards'
     });
     for (let i = 0; i < cards.length; i++) {

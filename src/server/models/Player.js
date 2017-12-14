@@ -107,8 +107,8 @@ export default class Player extends Model {
       handled = await reaction.reactTo(event, this, player, ...args) || handled;
     }
 
-    let durationReactions = this.playArea.filter(card => card.shouldReactTo(event, this, player, ...args));
-    for (let i=0; i < durationReactions.length; i++) {
+    const durationReactions = this.playArea.filter(card => card.shouldReactTo(event, this, player, ...args));
+    for (let i = 0; i < durationReactions.length; i++) {
       handled = await durationReactions.list[i].reactTo(event, this, player, ...args) || handled;
     }
 

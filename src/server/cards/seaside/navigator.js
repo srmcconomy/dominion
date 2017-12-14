@@ -14,7 +14,7 @@ export default class Navigator extends Card {
 
     const choice = await player.selectOption(['Keep on top', 'Discard all five'], cardsStr);
     switch (choice) {
-    	case 0:
+      case 0:
       {
         const cardsInspected = new Pile();
         for (let i = 0; i < cards.length; i++) {
@@ -24,24 +24,23 @@ export default class Navigator extends Card {
         console.log(player.deck);
         while (cardsInspected.size > 0) {
           const [card] = await player.selectCards({
-            min:1,
-            max:1,
-            pile:cardsInspected,
-            message:'Select Card to put on top of deck'
+            min: 1,
+            max: 1,
+            pile: cardsInspected,
+            message: 'Select Card to put on top of deck'
           });
           player.topDeck(card, player.deck);
           cardsInspected.delete(card);
         }
-      	break;
+        break;
       }
-    	case 1:
-    	for (let i = 0; i < cards.size; i++) {
-    		await player.discard(cards[i], player.deck);
-    	}
-    	break;
-    	default:
-    	break;
-
+      case 1:
+        for (let i = 0; i < cards.size; i++) {
+          await player.discard(cards[i], player.deck);
+        }
+        break;
+      default:
+        break;
     }
   }
 }

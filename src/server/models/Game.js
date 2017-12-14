@@ -263,8 +263,6 @@ export default class Game extends Model {
             if (c.title === 'Outpost') additionalTurn = true;
           });
         }
-      } else {
-        additionalTurn = true;
       }
       if (additionalTurn === false) {
         this.currentPlayerIndex++;

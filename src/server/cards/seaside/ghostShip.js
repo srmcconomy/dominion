@@ -11,8 +11,8 @@ export default class GhostShip extends Card {
       }
       while (other.hand.size >= 4) {
         const [card] = await other.selectCards({
-          min:1,
-          max:1,
+          min: 1,
+          max: 1,
           message: 'Choose a card to place on top of your deck'
         });
         other.topDeck(card);

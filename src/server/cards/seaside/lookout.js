@@ -20,8 +20,8 @@ export default class Lookout extends Card {
         min: 1,
         max: 1,
         pile: cardsInspected,
-        message: 'Select a card to ' + options[i] + '.'
-      })
+        message: `Select a card to ${options[i]}.`
+      });
       switch (i) {
         case 0:
           await player.trash(card, player.deck);
