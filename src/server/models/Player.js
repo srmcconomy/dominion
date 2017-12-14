@@ -214,7 +214,7 @@ export default class Player extends Model {
     const card = supply.cards.last();
     await card.onBuy(this);
     this.cardsBoughtThisTurn.push(card.classes.get(name));
-    if (this.game.supplies.get(name).tokens.embargoTokens) {
+    if (supply.tokens.embargoTokens) {
       for (let i = 0; i < this.game.supplies.get(name).tokens.embargoTokens; i++) {
         this.gain('Curse');
       }
@@ -324,9 +324,9 @@ export default class Player extends Model {
   async cleanup() {
     await this.emit('cleanup', this);
     while (this.hand.size > 0) {
-      await this.discard(this.hand.last(), this.hand);
+      await this.discard(this.hand.last());
     }
-    while (this.playArea.filter(c => c.ignoreCleanUp === false).size > 0) {
+    while (this.playArea.some(c => !c.ignoreCleanUp)) {
       await this.discard(this.playArea.filter(c => c.ignoreCleanUp === false).last(), this.playArea);
     }
   }
@@ -360,7 +360,7 @@ export default class Player extends Model {
     this.cardsPlayedThisTurn.push(card);
     this.moveCard(card, this.hand, this.playArea);
     await this.emit('play', card, this);
-    if (card.types.has('Duration')) card.ignoreCleanUp = true;
+    card.ignoreCleanUp = false;
     await card.onPlay(this);
   }
 

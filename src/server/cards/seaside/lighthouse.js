@@ -7,6 +7,7 @@ export default class Lighthouse extends Card {
   async onPlay(player) {
     await player.actions++;
     player.money++;
+    this.ignoreCleanUp = true;
   }
 
   async onTurnStart(player) {

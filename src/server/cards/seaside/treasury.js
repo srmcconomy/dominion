@@ -10,13 +10,13 @@ export default class Treasury extends Card {
   }
   async onDiscard(player, whereFrom) {
     if (whereFrom === player.playArea) {
-      let gainedVP = 0;
+      let gainedVP = false;
       for (let i = 0; i < player.cardsGainedThisTurn.length; i++) {
         if (player.cardsGainedThisTurn[i].types.has('Victory')) {
-          gainedVP = 1;
+          gainedVP = true;
         }
       }
-      if (gainedVP === 0) {
+      if (!gainedVP) {
         await player.topDeck(this, player.discardPile);
       }
     }

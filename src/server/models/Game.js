@@ -264,7 +264,7 @@ export default class Game extends Model {
           });
         }
       }
-      if (additionalTurn === false) {
+      if (!additionalTurn) {
         this.currentPlayerIndex++;
       }
       if (this.currentPlayerIndex === this.players.size) {

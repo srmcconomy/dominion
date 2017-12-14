@@ -14,7 +14,10 @@ export default class Haven extends Card {
       max: 1,
       message: 'Choose a card to set under Haven'
     });
-    if (card) player.moveCard(card, player.hand, this.setAside);
+    if (card) {
+      player.moveCard(card, player.hand, this.setAside);
+      this.ignoreCleanUp = true;
+    }
   }
 
   async onTurnStart(player) {

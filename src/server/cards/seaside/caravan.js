@@ -6,6 +6,7 @@ export default class Caravan extends Card {
   async onPlay(player) {
     await player.draw(1);
     player.actions++;
+    this.ignoreCleanUp = true;
   }
   async onTurnStart(player) {
     await player.draw(1);

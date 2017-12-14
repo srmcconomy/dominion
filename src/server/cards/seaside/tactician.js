@@ -8,8 +8,9 @@ export default class Tactician extends Card {
       while (player.hand.size) {
         await player.discard(player.hand.last());
       }
+      this.ignoreCleanUp = true;
     } else {
-      player.durationComplete(this);
+      this.ignoreCleanUp = false;
     }
   }
   async onTurnStart(player) {

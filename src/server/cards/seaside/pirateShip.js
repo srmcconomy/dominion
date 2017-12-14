@@ -6,12 +6,12 @@ export default class PirateShip extends Card {
   static types = new Set(['Action', 'Attack']);
   async onPlay(player) {
     const choice = await player.selectOption([
-      `+${PirateShip.pirateShipMats.filter(m => m.player.id === player.id)[0].coin} Coin per Coin token on your Pirate Ship Mat`,
+      `+${PirateShip.pirateShipMats.get(player)} Coins`,
       'Treasure Attack'
     ]);
     switch (choice) {
       case 0:
-        player.money += PirateShip.pirateShipMats.filter(m => m.player.id === player.id)[0].coin;
+        player.money += PirateShip.pirateShipMats.get(player);
         break;
       case 1:
         {
@@ -43,7 +43,7 @@ export default class PirateShip extends Card {
               });
             }
           });
-          if (trashedTreasure) PirateShip.pirateShipMats.filter(m => m.player.id === player.id)[0].coin++;
+          if (trashedTreasure) PirateShip.pirateShipMats.set(player, PirateShip.pirateShipMats.get(player) + 1);
         }
         break;
       default:
@@ -52,9 +52,9 @@ export default class PirateShip extends Card {
   }
 
   static setup(game) {
-    PirateShip.pirateShipMats = [];
+    PirateShip.pirateShipMats = new Map();
     game.players.forEach(player => {
-      PirateShip.pirateShipMats.push({ player, coin: 0 });
+      PirateShip.pirateShipMats.set(player, 0);
     });
   }
 }

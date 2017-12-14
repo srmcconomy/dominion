@@ -5,6 +5,7 @@ export default class MerchantShip extends Card {
   static types = new Set(['Action', 'Duration']);
   async onPlay(player) {
     player.money += 2;
+    this.ignoreCleanUp = true;
   }
   async onTurnStart(player) {
     player.money += 2;

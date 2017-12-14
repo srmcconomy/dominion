@@ -14,7 +14,7 @@ export default class NativeVillage extends Card {
       switch (choice) {
         case 0:
           player.moveCard(card, player.deck, player.nativeVillageMat);
-          // Somehow tell the player what the put on mat/allow them to inspect their mat at any time
+          // Somehow tell the player what they put on mat/allow them to inspect their mat at any time
           break;
         case 1:
           while (player.nativeVillageMat.size > 0) {
