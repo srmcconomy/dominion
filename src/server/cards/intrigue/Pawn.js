@@ -13,6 +13,7 @@ export default class Pawn extends Card {
     const keys = Object.keys(choices);
     for (let i = 0; i < 2; i++) {
       const choice = await player.selectOption(keys, 'Choose two:');
+      player.gameLog(`${player.name} chooses ${keys[choice]}`);
       await choices[keys[choice]]();
       keys.splice(choice, 1);
     }

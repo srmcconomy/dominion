@@ -128,7 +128,6 @@ export default class Player extends Model {
     this.name = name;
     this.journeyToken = 'faceUp';
     this.turnPhase = 'actionPhase';
-    this.padding = 0;
   }
 
   addSilentEffect(eventName, card) {
@@ -506,7 +505,7 @@ export default class Player extends Model {
 
   async play(card) {
     this.game.log(`${this.name} plays ${card.name}`);
-    this.padding += 4;
+    this.game.padding += 4;
     const firstEvent = await this.handleTriggers('play-first', { card }, [card]);
     this.cardsPlayedThisTurn.push(card);
     this.moveCard(card, this.hand, this.playArea);
@@ -515,7 +514,7 @@ export default class Player extends Model {
       await card.onPlay(this, firstEvent);
     }
     await this.handleTriggers('after-play', { card }, [card]);
-    this.padding -= 4;
+    this.game.padding -= 4;
   }
 
   async forEachOtherPlayer(func) {
@@ -663,9 +662,9 @@ export default class Player extends Model {
   }
 
   async takeTurn() {
-    this.padding = 0;
+    this.game.padding = 0;
     this.game.log(`${this.name} starts their turn`);
-    this.padding += 4;
+    this.game.padding += 4;
     this.actions = 1;
     this.buys = 1;
     this.money = 0;

@@ -12,7 +12,9 @@ export default class WishingWell extends Card {
       predicate: () => true,
       message: 'Name a card',
     });
+    player.gameLog(`${player.name} names ${supply.title}`);
     const [card] = await player.lookAtTopOfDeck(1);
+    player.gameLog(`${player.name} reveals ${card.title}`);
     if (card && card.title === supply.title) {
       await player.draw(1);
     }

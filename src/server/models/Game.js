@@ -64,6 +64,7 @@ export default class Game extends Model {
     console.log(this);
     console.log(Object.keys(this));
     this.room = io.to(this.id);
+    this.padding = 0;
   }
 
   getStateFor(player) {
