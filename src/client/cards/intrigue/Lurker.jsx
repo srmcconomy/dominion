@@ -6,8 +6,8 @@ export default class Lurker extends Card {
   static cost = <Coin>2</Coin>;
   static description = (
     <div>
-      <p><strong>+1 Action</strong></p>
-      <p>Choose one: Trash an Action from the Supply; or gain an Action card from the trash.</p>
+      <div><strong>+1 Action</strong></div>
+      <div>Choose one: Trash an Action from the Supply; or gain an Action card from the trash.</div>
     </div>
   );
   static types = ['Action'];
