@@ -321,7 +321,7 @@ export default class Player extends Model {
   async discardMulti(from) {
     const num = from.length;
     while (from.length > 0) {
-      const card = from.last()
+      const card = from.last();
       this.moveCard(card, from, this.discardPile);
       await card.onDiscard(this);
     }
