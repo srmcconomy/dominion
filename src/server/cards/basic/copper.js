@@ -10,6 +10,7 @@ export default class Copper extends Card {
     return 60 - (7 * game.players.size);
   }
   onPlay(player) {
-    player.money++;
+    const coppersmiths = player.cardsPlayedThisTurn.filter(c => c.title === 'Coppersmith').length;
+    player.money += 1 + coppersmiths;
   }
 }

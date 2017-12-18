@@ -2,6 +2,7 @@ import Card from 'cards/Card';
 
 export default class Mill extends Card {
   static cost = { coin: 4 };
+  static VP = 1;
   static types = new Set(['Action', 'Victory']);
   async onPlay(player) {
     await player.draw(1);
@@ -20,5 +21,9 @@ export default class Mill extends Card {
         await player.discard(cards[i]);
       }
     }
+  }
+  static getNumberInSupply(game) {
+    if (game.players.size === 2) return 8;
+    return 12;
   }
 }

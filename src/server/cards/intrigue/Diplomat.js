@@ -23,8 +23,7 @@ export default class Diplomat extends Card {
       message: 'Choose 3 cards to discard',
     });
     for (let i = 0; i < cards.length; i++) {
-      const card = cards[i];
-      await player.discard(card);
+      await player.discard(cards[i]);
     }
   }
 }
