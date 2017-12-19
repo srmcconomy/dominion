@@ -151,8 +151,8 @@ export default class Pile extends Model {
     return this;
   }
 
-  splice(index, num) {
-    const cards = this.list.splice(index, num);
+  splice(index, num, insert = null) {
+    const cards = insert ? this.list.splice(index, num, insert) : this.list.splice(index, num);
     cards.forEach(card => this.map.delete(card.id));
     for (let i = index; i < this.list.length; i++) {
       this.map.set(this.list[i], i);
