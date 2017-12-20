@@ -24,7 +24,7 @@ function emitDirty(obj) {
 export default function DirtyModel(klass) {
   dirtyModels.add(klass);
   if (!klass.prototype.createDirty) {
-    klass.prototype.createDirty = function createDirty(all = false) {
+    klass.prototype.createDirty = function createDirty(viewer, all = false) {
       if (!dirtyModels.has(klass)) {
         return null;
       }
@@ -57,9 +57,9 @@ export default function DirtyModel(klass) {
       forEach(prop => {
         const val = this instanceof DirtyMap ? this.get(prop) : this[prop];
         if (serializers.has(klass.prototype) && serializers.get(klass.prototype).has(prop)) {
-          ret[prop] = serializers.get(klass.prototype).get(prop)(val);
+          ret[prop] = serializers.get(klass.prototype).get(prop)(viewer, this)(val);
         } else {
-          ret[prop] = val && val.createDirty ? val.createDirty(all) : val;
+          ret[prop] = val && val.createDirty ? val.createDirty(viewer, all) : val;
         }
       });
       return ret;

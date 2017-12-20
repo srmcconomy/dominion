@@ -10,5 +10,5 @@ function PlayArea({ playArea }) {
 }
 
 export default connect(
-  state => ({ playArea: state.game.playArea })
+  state => ({ playArea: state.game.current && state.game.current.playArea })
 )(PlayArea);

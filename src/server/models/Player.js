@@ -4,18 +4,25 @@ import Model from 'models/Model';
 import DirtyModel, { trackDirty } from 'utils/DirtyModel';
 import AsyncSocket from 'utils/AsyncSocket';
 
+const dirtyTransforms = {
+  size: pile => ({ id: pile.id, size: pile.size }),
+  top: pile => ({ id: pile.id, top: pile.size > 0 ? pile.last().id : null }),
+  full: pile => ({ id: pile.id, pile: pile.list.map(c => c.id) }),
+};
+
 @DirtyModel
 @EventEmitter
 export default class Player extends Model {
-  @trackDirty(hand => hand.size)
+  @trackDirty((viewer, self) => (viewer === self ? dirtyTransforms.full : dirtyTransforms.size))
   hand = new Pile();
 
-  @trackDirty(deck => deck.size)
+  @trackDirty(() => dirtyTransforms.size)
   deck = new Pile();
 
-  @trackDirty(pile => (pile.size > 0 ? pile.last().id : null))
+  @trackDirty(() => dirtyTransforms.top)
   discardPile = new Pile();
 
+  @trackDirty(() => dirtyTransforms.full)
   playArea = new Pile();
 
   tavernMat = new Pile();
@@ -48,15 +55,13 @@ export default class Player extends Model {
   @trackDirty
   vpTokens = 0;
 
+  @trackDirty
   journeyToken = 'faceUp';
 
-  @trackDirty
   cardsPlayedThisTurn = [];
 
-  @trackDirty
   cardsGainedThisTurn = [];
 
-  @trackDirty
   cardsBoughtThisTurn = [];
 
   game = null;
@@ -67,7 +72,7 @@ export default class Player extends Model {
     super();
 
     this.socket = new AsyncSocket(socket);
-    this.socket.onReconnect(() => this.socket.emit('state', this.game));
+    this.socket.onReconnect(() => this.socket.emit('state', this.game.createDirty(this, true)));
     this.game = game;
     game.players.set(this.id, this);
     this.actions = 1;
@@ -126,11 +131,10 @@ export default class Player extends Model {
       switch (fromWhere) {
         default:
         case 'top':
-          cards = fromPile.spliceLast(num);
-          console.log(cards);
+          cards = [...fromPile.spliceLast(num)];
           break;
         case 'bottom':
-          cards = fromPile.spliceFirst(num);
+          cards = [...fromPile.spliceFirst(num)];
           break;
       }
     } else {
@@ -146,6 +150,13 @@ export default class Player extends Model {
         toPile.unshift(...cards);
         break;
     }
+    this.game.eventQueue.push({
+      type: 'move-card',
+      from: fromPile.id,
+      to: toPile.id,
+      cards: cards.map(c => c.id),
+      player: this.id,
+    });
     return cards;
   }
 
@@ -508,24 +519,18 @@ export default class Player extends Model {
   }
 
   async getInputAndNotifyDirty(payload, validate) {
-    const dirty = this.game.createDirty();
     const log = this.game.log.getNewMessages();
     await this.forEachOtherPlayer(player => {
-      let newDirty = dirty;
-      if (dirty.players && dirty.players[player.id] && Object.prototype.hasOwnProperty.call(dirty.players[player.id], 'hand')) {
-        newDirty = { ...dirty, hand: player.hand.toIDArray() };
-      }
-      player.socket.emit('get-input', { payload: { type: 'clear-input' }, dirty: newDirty, log });
+      const dirty = this.game.createDirty(player);
+      player.socket.emit('get-input', { payload: { type: 'clear-input' }, dirty, log });
     });
-    if (dirty.players && dirty.players[this.id] && Object.prototype.hasOwnProperty.call(dirty.players[this.id], 'hand')) {
-      dirty.hand = this.hand.toIDArray();
-    }
+    const ownDirty = this.game.createDirty(this);
     this.game.clean();
     for (;;) {
       console.log('loop');
       const response = await this.socket.emitAndWait('get-input', {
         payload,
-        dirty,
+        dirty: ownDirty,
         log,
       });
       console.log('selected');

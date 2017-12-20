@@ -13,6 +13,8 @@ const store = createStore(reducers);
 socket.setStore(store);
 setInputStore(store);
 
+window.store = store;
+
 const createGame = () => {
   socket.emit('create-game', 'game1', 'player1');
 };

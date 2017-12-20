@@ -23,7 +23,7 @@ export default class Game extends new Record({
   supplies: null,
   organizedSupplies: null,
   playArea: null,
-  yourID: null,
+  ownID: null,
   currentPlayer: null,
 }) {
   constructor(json) {
@@ -40,5 +40,13 @@ export default class Game extends new Record({
       });
       super(ret);
     }
+  }
+
+  get self() {
+    return this.players.get(this.ownID);
+  }
+
+  get current() {
+    return this.players.get(this.currentPlayer) || null;
   }
 }

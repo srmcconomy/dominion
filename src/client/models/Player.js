@@ -1,9 +1,11 @@
 import { Record } from 'immutable';
 
-import { cardTransform } from './transforms';
+import { cardTransform, pileTransform } from './transforms';
 
 const transforms = {
   discardPile: cardTransform,
+  hand: obj => (obj.pile ? pileTransform(obj) : obj.size),
+  playArea: pileTransform,
 };
 
 export default class Player extends new Record({
@@ -11,7 +13,14 @@ export default class Player extends new Record({
   name: null,
   hand: null,
   deck: null,
+  playArea: null,
   discardPile: null,
+  buys: null,
+  actions: null,
+  money: null,
+  debt: null,
+  potions: null,
+  vpTokens: null,
 }) {
   constructor(json) {
     const ret = {};

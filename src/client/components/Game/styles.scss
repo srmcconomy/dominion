@@ -33,6 +33,14 @@
   font-size: 0.7em;
 }
 
+.play-state-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  height: 100%;
+  width: 20%;
+}
+
 .play-area-container {
   display: flex;
   justify-content: center;

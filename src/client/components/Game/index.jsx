@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
 
 import Supplies from 'components/Supplies';
+import PlayState from 'components/PlayState';
 import SelectCards from 'components/SelectCards';
 import PlayArea from 'components/PlayArea';
 import Input from 'components/Input';
@@ -13,7 +14,7 @@ import 'cards/basic';
 import 'cards/base';
 import 'cards/baseSecond';
 import 'cards/intrigue';
-import 'cards/cornucopia'
+import 'cards/cornucopia';
 
 import styles from './styles.scss';
 
@@ -34,6 +35,9 @@ function Game({ game, message, cardToShow, hideCard }) {
         </div>
       </div>
       <div className={cx('center-area')}>
+        <div className={cx('play-state-container')}>
+          <PlayState />
+        </div>
         <div className={cx('play-area-container')}>
           <PlayArea />
         </div>

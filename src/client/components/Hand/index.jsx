@@ -25,7 +25,7 @@ function Hand({ hand, selectableCards, selectedCards }) {
 
 export default connect(
   state => ({
-    hand: state.game.hand,
+    hand: state.game.self.hand,
     selectableCards: state.input.selectCards && state.input.selectCards.cards,
     selectedCards: state.selectedCards,
   }),

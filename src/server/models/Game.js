@@ -38,24 +38,26 @@ export default class Game extends Model {
   @trackDirty
   cards = [];
 
-  @trackDirty
-  playArea = null;
-
-  @trackDirty(arr => arr.map(({ id }) => id))
+  @trackDirty(() => arr => arr.map(({ id }) => id))
   playerOrder = [];
 
   room = null;
 
   log = new Log();
 
-  @trackDirty(player => player && player.id)
+  @trackDirty(() => player => player && player.id)
   currentPlayer = null;
+
+  @trackDirty(viewer => () => viewer.id)
+  ownID
 
   previousPlayer = null;
 
   currentPlayerIndex = null;
 
   startingPlayerIndex = null;
+
+  eventQueue = [];
 
   constructor(name, io) {
     super();
@@ -65,7 +67,7 @@ export default class Game extends Model {
   }
 
   getStateFor(player) {
-    return { ...this.createDirty(true), hand: player.hand.toIDArray() };
+    return { ...this.createDirty(player, true) };
   }
 
   getKingdomCards() {
@@ -223,7 +225,6 @@ export default class Game extends Model {
     this.currentPlayerIndex = Math.floor(Math.random() * this.playerOrder.length);
     this.currentPlayer = this.playerOrder[this.currentPlayerIndex];
     this.startingPlayerIndex = this.currentPlayerIndex;
-    this.playArea = this.currentPlayer.playArea;
     this.playerOrder.forEach((player, i) => {
       player.setIndex(i);
       player.socket.emit('state', this.getStateFor(player));
@@ -258,7 +259,6 @@ export default class Game extends Model {
         this.currentPlayerIndex = 0;
       }
       this.currentPlayer = this.playerOrder[this.currentPlayerIndex];
-      this.playArea = this.currentPlayer.playArea;
     }
   }
 }

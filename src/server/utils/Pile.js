@@ -1,8 +1,10 @@
 import DirtyModel from 'utils/DirtyModel';
+import Model from 'models/Model';
 
 @DirtyModel
-export default class Pile {
+export default class Pile extends Model {
   constructor(list = [], map = new Map()) {
+    super();
     this.list = list;
     this.map = map;
   }
