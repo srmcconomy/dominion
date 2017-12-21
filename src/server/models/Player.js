@@ -72,6 +72,8 @@ export default class Player extends Model {
 
   nativeVillageMat = new Pile();
 
+  asidePile = new Pile();
+
   @trackDirty
   name;
 
@@ -398,6 +400,10 @@ export default class Player extends Model {
     this.moveCard(card, from, this.hand);
   }
 
+  setAside(card, from = this.playArea) {
+    this.moveCard(card, from, this.asidePile);
+  }
+
   flipJourneyToken() {
     if (this.journeyToken === 'faceUp') {
       this.journeyToken = 'faceDown';
@@ -661,6 +667,12 @@ export default class Player extends Model {
     this.cardsPlayedThisTurn = [];
     this.cardsGainedThisTurn = [];
     this.cardsBoughtThisTurn = [];
+    for (let i = 0; i < this.playArea.size; i++) {
+      this.playArea.list[i].onTurnStart(this);
+    }
+    for (let i = this.asidePile.size - 1; i >= 0; i--) {
+      this.asidePile.list[i].onTurnStart(this);
+    }
 
     await this.processTurnPhases();
   }

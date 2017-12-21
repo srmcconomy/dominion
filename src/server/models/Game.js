@@ -136,7 +136,12 @@ export default class Game extends Model {
       let score = player.vpTokens;
       player.endOfGameCleanUp();
       player.deck.forEach(c => {
-        score += c.getVpValue(player);
+        const cardScore = c.getVpValue(player);
+        if (cardScore) {
+          this.log(`${player.name}\'s ${c.title} is worth ${cardScore}`);
+          console.log(`${player.name}\'s ${c.title} is worth ${cardScore}`);
+        }
+        score += cardScore;
       });
       this.log(`${player.name} has ${score} victory points`);
       console.log(`${player.name} has ${score} victory points`);
