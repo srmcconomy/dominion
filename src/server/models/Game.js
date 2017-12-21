@@ -38,6 +38,9 @@ export default class Game extends Model {
   trash = new Pile();
 
   @trackDirty
+  prizePile = new Pile();
+
+  @trackDirty
   cards = [];
 
   @trackDirty(() => arr => arr.map(({ id }) => id))
