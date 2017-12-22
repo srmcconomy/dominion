@@ -318,14 +318,14 @@ export default class Player extends Model {
     }
   }
 
-  async discardMulti(from) {
-    const num = from.length;
-    while (from.length > 0) {
-      const card = from.last();
-      this.moveCard(card, from, this.discardPile);
+  async discardAll(pile) {
+    const num = pile.length;
+    while (pile.length > 0) {
+      const card = pile.last();
+      this.moveCard(card, pile, this.discardPile);
       await card.onDiscard(this);
     }
-    this.gameLog(`${this.name} discards ${num} card${num !== 1 ? 's' : ''}`);
+    this.game.log(`${this.name} discards ${num} card${num !== 1 ? 's' : ''}`);
   }
 
   async gainSpecificCard(card, from, to = this.discardPile) {

@@ -80,7 +80,7 @@ export default class Game extends Model {
       });
       a.push(unusedCards[Math.floor(Math.random() * unusedCards.length)]);
     }
-    if (false) {
+    if (true) {
       return a;
     }
     return [

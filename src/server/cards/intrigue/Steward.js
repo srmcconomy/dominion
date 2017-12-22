@@ -10,7 +10,7 @@ export default class Steward extends Card {
         await player.draw(2);
         break;
       case 1:
-        player.gameLog(`${player.name} chooses +$2`);
+        player.game.log(`${player.name} chooses +$2`);
         player.money += 2;
         break;
       case 2: {

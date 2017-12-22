@@ -16,7 +16,7 @@ export default class YoungWitch extends Card {
       const [card] = await other.selectCards({ min: 0, max: 1, predicate: c => c instanceof YoungWitch.bane, message: 'Choose to reveal a bane card or not' });
       if (!card) {
         await other.gain('Curse');
-      } else player.gameLog(`${other.name} reveals ${card.title} as Young Witch's bane`);
+      } else player.game.log(`${other.name} reveals ${card.title} as Young Witch's bane`);
     });
   }
 

@@ -11,7 +11,7 @@ export default class Bandit extends Card {
         return;
       }
       const cards = await other.lookAtTopOfDeck(2);
-      player.gameLog(`${other.name} reveals ${cards.map(c => c.title).join(', ')}`)
+      player.game.log(`${other.name} reveals ${cards.map(c => c.title).join(', ')}`)
 
 
       if (cards.some(c => c.types.has('Treasure') && c.title !== 'Copper')) {
