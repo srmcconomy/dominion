@@ -2,7 +2,6 @@ import Card from 'cards/Card';
 import { Set } from 'immutable';
 
 export default class Copper extends Card {
-  static title = 'Copper';
   static value = 1;
   static cost = { coin: 0 };
   static types = new Set(['Treasure']);

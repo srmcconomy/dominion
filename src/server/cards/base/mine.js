@@ -23,7 +23,7 @@ export default class Mine extends Card {
         message: 'Choose a Treasure card to gain'
       });
       if (supply) {
-        await player.gain(supply.title);
+        await player.gain(supply.title, player.hand);
       }
     }
   }

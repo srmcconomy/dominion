@@ -10,7 +10,6 @@ export default class Sentry extends Card {
 
     const cards = await player.lookAtTopOfDeck(2);
     const cardsToPutBack = new Pile();
-
     for (let i = 0; i < cards.length; i++) {
       const card = cards[i];
       const choice = await player.selectOption([`Trash ${card.title}`, `Discard ${card.title}`, `Put ${card.title} back on your deck`]);
@@ -36,7 +35,7 @@ export default class Sentry extends Card {
         message: 'Choose the card to put on your deck last',
       });
       if (card && card !== player.deck.last()) {
-        player.moveCard(card, player.deck, player.deck);
+        player.topDeck(card, player.deck);
       }
     }
   }
