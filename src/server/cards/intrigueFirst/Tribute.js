@@ -9,15 +9,13 @@ export default class Tribute extends Card {
     ];
     const cards = leftPlayer.lookAtTopOfDeck(2);
     player.game.log(`${leftPlayer.name} reveals ${cards.map(c => c.title).join(', ')}`);
-    if (cards[0]) {
-      if (cards[0].types.has('Action')) player.actions += 2;
-      if (cards[0].types.has('Treasure')) player.money += 2;
-      if (cards[0].types.has('Victory')) await player.draw(2);
-    }
-    if (cards[1] && cards[1].title !== cards[0].title) {
-      if (cards[1].types.has('Action')) player.actions += 2;
-      if (cards[1].types.has('Treasure')) player.money += 2;
-      if (cards[1].types.has('Victory')) await player.draw(2);
+    const cardNames = [];
+    for (let i = 0; i < cards.length; i++) {
+      if (cardNames.includes(cards[i].title)) continue;
+      cardNames.push(cards[i].title);
+      if (cards[i].types.has('Action')) player.actions += 2;
+      if (cards[i].types.has('Treasure')) player.money += 2;
+      if (cards[i].types.has('Victory')) await player.draw(2);
     }
     cards.forEach(c => leftPlayer.discard(c, leftPlayer.deck));
   }
