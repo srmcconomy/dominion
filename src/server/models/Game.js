@@ -65,6 +65,7 @@ export default class Game extends Model {
     console.log(Object.keys(this));
     this.room = io.to(this.id);
     this.padding = 0;
+    this.turnNumber = 1;
   }
 
   getStateFor(player) {
@@ -232,6 +233,7 @@ export default class Game extends Model {
       player.socket.emit('state', this.getStateFor(player));
     });
     this.clean();
+    this.turnNumber = 1;
     await this.loop();
   }
 
@@ -250,16 +252,33 @@ export default class Game extends Model {
       });
       if (
         this.supplies.get('Province').cards.size === 0 ||
-        (this.supplies.has('Colony') && this.supploes.get('Colony').cards.size === 0) ||
+        (this.supplies.has('Colony') && this.supplies.get('Colony').cards.size === 0) ||
         numEmptySupplies >= (this.playerOrder.size > 4 ? 4 : 3)
       ) {
         this.endOfGame();
         break;
       }
-      this.currentPlayerIndex++;
+
+      let additionalTurn = false;
+      if (this.previousPlayer) {
+        if (this.currentPlayer.id !== this.previousPlayer.id) {
+          this.currentPlayer.playArea.forEach(c => {
+            if (c.title === 'Outpost') additionalTurn = true;
+          });
+        }
+      }
+      if (additionalTurn === false) {
+        this.currentPlayerIndex++;
+      }
+
       if (this.currentPlayerIndex === this.players.size) {
         this.currentPlayerIndex = 0;
       }
+      if (this.currentPlayerIndex === this.startingPlayerIndex && additionalTurn === false) {
+        this.turnNumber++;
+      }
+
+      this.previousPlayer = this.currentPlayer;
       this.currentPlayer = this.playerOrder[this.currentPlayerIndex];
     }
   }

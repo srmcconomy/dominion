@@ -663,6 +663,7 @@ export default class Player extends Model {
 
   async takeTurn() {
     this.game.padding = 0;
+    this.game.log(`Turn: ${this.game.turnNumber}`);
     this.game.log(`${this.name} starts their turn`);
     this.game.padding += 4;
     this.actions = 1;
