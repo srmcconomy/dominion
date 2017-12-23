@@ -3,6 +3,7 @@ import 'cards/basic';
 import 'cards/base';
 import 'cards/baseSecond';
 import 'cards/intrigue';
+import 'cards/intrigueFirst';
 import 'cards/seaside';
 import 'cards/cornucopia';
 import Model from 'models/Model';
@@ -249,28 +250,16 @@ export default class Game extends Model {
       });
       if (
         this.supplies.get('Province').cards.size === 0 ||
-        (this.supplies.has('Colony') && this.supplies.get('Colony').cards.size === 0) ||
+        (this.supplies.has('Colony') && this.supploes.get('Colony').cards.size === 0) ||
         numEmptySupplies >= (this.playerOrder.size > 4 ? 4 : 3)
       ) {
         this.endOfGame();
         break;
       }
-
-      let additionalTurn = false;
-      if (this.previousPlayer) {
-        if (this.currentPlayer.id !== this.previousPlayer.id) {
-          this.playArea.forEach(c => {
-            if (c.title === 'Outpost') additionalTurn = true;
-          });
-        }
-      }
-      if (!additionalTurn) {
-        this.currentPlayerIndex++;
-      }
+      this.currentPlayerIndex++;
       if (this.currentPlayerIndex === this.players.size) {
         this.currentPlayerIndex = 0;
       }
-      this.previousPlayer = this.currentPlayer;
       this.currentPlayer = this.playerOrder[this.currentPlayerIndex];
     }
   }

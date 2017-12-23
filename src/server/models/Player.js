@@ -305,6 +305,18 @@ export default class Player extends Model {
     );
   }
 
+  costsMoreThanEqualTo(card, cost) {
+    if (!card) return false;
+    const tempCardCost = this.getCardCost(card);
+    const tempCost = { coin: 0, debt: 0, potion: 0, ...cost };
+
+    return (
+      tempCardCost.coin >= tempCost.coin &&
+      tempCardCost.debt >= tempCost.debt &&
+      tempCardCost.potion >= tempCost.potion
+    );
+  }
+
   costsEqualTo(card, cost) {
     if (!card) return false;
     const tempCardCost = this.getCardCost(card);
