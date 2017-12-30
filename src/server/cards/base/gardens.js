@@ -7,7 +7,7 @@ export default class Gardens extends Card {
     if (game.players.size === 2) return 8;
     return 12;
   }
-  static getVpValue(player) {
+  getVpValue(player) {
     return Math.floor(player.deck.length / 10);
   }
 }

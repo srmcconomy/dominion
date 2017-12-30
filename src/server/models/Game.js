@@ -3,6 +3,8 @@ import 'cards/basic';
 import 'cards/base';
 import 'cards/baseSecond';
 import 'cards/intrigue';
+import 'cards/intrigueFirst';
+import 'cards/seaside';
 import 'cards/cornucopia';
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
@@ -51,8 +53,6 @@ export default class Game extends Model {
   @trackDirty(viewer => () => viewer.id)
   ownID
 
-  previousPlayer = null;
-
   currentPlayerIndex = null;
 
   startingPlayerIndex = null;
@@ -83,6 +83,8 @@ export default class Game extends Model {
       return a;
     }
     return [
+      'Lighthouse',
+      'Caravan',
       'Chapel',
       'Cellar',
       'Militia',
@@ -91,7 +93,7 @@ export default class Game extends Model {
       'Remodel',
       'Merchant',
       'YoungWitch',
-      'Merchant',
+      'Outpost',
     ];
   }
 

@@ -81,6 +81,10 @@ export default class Pile extends Model {
     return pile;
   }
 
+  find(func) {
+    return this._list.find(func);
+  }
+
   some(func) {
     return this._list.some(func);
   }
@@ -117,6 +121,11 @@ export default class Pile extends Model {
     return this._list.length;
   }
 
+  first() {
+    if (this.list.length === 0) return null;
+    return this.list[0];
+  }
+
   last() {
     if (this._list.length === 0) return null;
     return this._list[this._list.length - 1];
@@ -146,8 +155,8 @@ export default class Pile extends Model {
     return this;
   }
 
-  splice(index, num) {
-    const cards = this._list.splice(index, num);
+  splice(index, num, insert = null) {
+    const cards = insert ? this._list.splice(index, num, insert) : this._list.splice(index, num);
     cards.forEach(card => this._map.delete(card.id));
     for (let i = index; i < this._list.length; i++) {
       this._map.set(this._list[i], i);

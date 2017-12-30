@@ -193,9 +193,9 @@ export default class Player extends Model {
     let mandatoryCardsLength = 0;
     const refreshCards = () => {
       [
-        { title: 'hand', getAllCards: () => this.hand },
-        { title: 'playArea', getAllCards: () => this.playArea },
-        { title: 'reserve', getAllCards: () => this.mats.tavern || [] },
+        { title: 'hand', getAllCards: () => [...this.hand] },
+        { title: 'playArea', getAllCards: () => [...this.playArea] },
+        { title: 'reserve', getAllCards: () => (this.mats.tavern ? [...this.mats.tavern] : []) },
         {
           title: 'persistent',
           getAllCards: () => (
@@ -312,8 +312,10 @@ export default class Player extends Model {
 
   async discard(card, from = this.hand) {
     this.game.log(`${this.name} discards ${card.name}`);
-    this.moveCard(card, from, this.discardPile);
-    await this.handleTriggers('discard', { card }, [card]);
+    const event = await this.handleTriggers('discard', { card, from }, [card]);
+    if (!event.handledByPlayer.get(this)) {
+      this.moveCard(card, from, this.discardPile);
+    }
   }
 
   async gainSpecificCard(card, from, to = this.discardPile) {
@@ -344,6 +346,11 @@ export default class Player extends Model {
     const card = supply.cards.last();
     await this.handleTriggers('buy', { card }, [card]);
     this.cardsBoughtThisTurn.push(card);
+    if (supply.tokens.embargoTokens) {
+      for (let i = 0; i < this.game.supplies.get(name).tokens.embargoTokens; i++) {
+        this.gain('Curse');
+      }
+    }
     await this.gain(name, to);
     return card;
   }
@@ -430,6 +437,18 @@ export default class Player extends Model {
     );
   }
 
+  costsMoreThanEqualTo(card, cost) {
+    if (!card) return false;
+    const tempCardCost = this.getCardCost(card);
+    const tempCost = { coin: 0, debt: 0, potion: 0, ...cost };
+
+    return (
+      tempCardCost.coin >= tempCost.coin &&
+      tempCardCost.debt >= tempCost.debt &&
+      tempCardCost.potion >= tempCost.potion
+    );
+  }
+
   costsEqualTo(card, cost) {
     if (!card) return false;
     const tempCardCost = this.getCardCost(card);
@@ -442,13 +461,17 @@ export default class Player extends Model {
     );
   }
 
+  returnToSupply(card, from = this.hand) {
+    this.moveCard(card, from, this.game.supplies.get(card.title).cards);
+  }
+
   async cleanup() {
-    await this.handleTriggers('cleanup');
     while (this.hand.size > 0) {
       await this.discard(this.hand.last());
     }
-    while (this.playArea.size > 0) {
-      await this.discard(this.playArea.last(), this.playArea);
+    let card;
+    while (card = this.playArea.find(c => !c.ignoreCleanUp)) {
+      await this.discard(card, this.playArea);
     }
   }
 
@@ -471,6 +494,9 @@ export default class Player extends Model {
     while (this.nativeVillageMat.size > 0) {
       this.moveCard(this.hand.last(), this.nativeVillageMat, this.deck);
     }
+    this.deck.forEach(c => {
+      c.endGameCleanUp(this);
+    });
   }
 
   async play(card) {
@@ -612,13 +638,16 @@ export default class Player extends Model {
             this.turnPhase = 'cleanUpPhase';
           }
           break;
-        case 'cleanUpPhase':
-          await this.cleanup();
-          await this.draw(5);
-          this.game.previousPlayer = this;
+        case 'cleanUpPhase': {
+          const event = await this.handleTriggers('cleanup');
+          if (!event.handledByPlayer.get(this)) {
+            await this.cleanup();
+            await this.draw(5);
+          }
           this.turnPhase = 'actionPhase';
           doneTurn = true;
           break;
+        }
         default:
           this.turnPhase = 'actionPhase';
           break;

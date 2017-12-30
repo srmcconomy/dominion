@@ -2,7 +2,6 @@ import Card from 'cards/Card';
 import { Set } from 'immutable';
 
 export default class Copper extends Card {
-  static title = 'Copper';
   static value = 1;
   static cost = { coin: 0 };
   static types = new Set(['Treasure']);
@@ -11,6 +10,7 @@ export default class Copper extends Card {
     return 60 - (7 * game.players.size);
   }
   onPlay(player) {
-    player.money++;
+    const coppersmiths = player.cardsPlayedThisTurn.filter(c => c.title === 'Coppersmith').length;
+    player.money += 1 + coppersmiths;
   }
 }
