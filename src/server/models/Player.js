@@ -346,11 +346,6 @@ export default class Player extends Model {
     const card = supply.cards.last();
     await this.handleTriggers('buy', { card }, [card]);
     this.cardsBoughtThisTurn.push(card);
-    if (supply.tokens.embargoTokens) {
-      for (let i = 0; i < this.game.supplies.get(name).tokens.embargoTokens; i++) {
-        this.gain('Curse');
-      }
-    }
     await this.gain(name, to);
     return card;
   }

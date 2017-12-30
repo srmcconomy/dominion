@@ -12,11 +12,28 @@ export default class Embargo extends Card {
     });
     await player.trash(this, this.playArea);
     if (supply) {
-      if (supply.tokens.embargoTokens) {
-        supply.tokens.embargoTokens++;
+      if (supply.tokens.embargo) {
+        supply.tokens.embargo++;
       } else {
-        supply.tokens.embargoTokens = 1;
+        supply.tokens.embargo = 1;
       }
+    }
+  }
+
+  static setup(game) {
+    const exampleCard = new Embargo(game);
+    game.players.forEach(player => {
+      player.addPersistentEffect('buy', exampleCard);
+    });
+  }
+
+  willTriggerOn(event, player, persistent) {
+    return persistent === 'persistent' && event.triggeringPlayer === player && player.game.supplies.get(event.card.title).tokens.embargo > 0;
+  }
+
+  async onTrigger(event, player) {
+    for (let i = 0; i < player.game.supplies.get(event.card.title).tokens.embargo; i++) {
+      await player.gain('Curse');
     }
   }
 }

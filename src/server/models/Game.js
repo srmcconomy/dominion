@@ -83,17 +83,15 @@ export default class Game extends Model {
       return a;
     }
     return [
-      'Lighthouse',
-      'Caravan',
       'Chapel',
       'Cellar',
       'Militia',
       'Moat',
       'Village',
-      'Remodel',
       'Merchant',
       'YoungWitch',
       'Outpost',
+      'Embargo',
     ];
   }
 
