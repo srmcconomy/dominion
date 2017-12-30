@@ -1,7 +1,7 @@
 .coin {
   background-image: url(assets/images/coin.png);
-  width: 1.5em;
-  height: 1.5em;
+  width: 1.1em;
+  height: 1.1em;
   background-size: contain;
   display: inline-block;
   background-position: center;
@@ -13,7 +13,8 @@
     height: 100%;
     width: 100%;
     > span {
-      margin-top: 2px;
+      margin-top: 1px;
+      line-height: 100%;
       font-weight: 700;
     }
   }

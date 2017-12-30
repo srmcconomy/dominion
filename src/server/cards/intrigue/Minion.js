@@ -3,7 +3,7 @@ import Card from 'cards/Card';
 export default class Minion extends Card {
   static cost = { coin: 5 };
   static types = new Set(['Action', 'Attack']);
-  async onPlay(player) {
+  async onPlay(player, event) {
     player.actions++;
     const choices = {
       '+2 coins': () => { player.money += 2; },
@@ -13,7 +13,7 @@ export default class Minion extends Card {
         }
         await player.draw(4);
         await player.forEachOtherPlayer(async other => {
-          if (await other.handleOwnReactions('attack', player, this)) {
+          if (event.handledByPlayer.get(other)) {
             return;
           }
           if (other.hand.size >= 5) {

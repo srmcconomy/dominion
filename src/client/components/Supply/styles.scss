@@ -5,13 +5,19 @@
 .num {
   position: absolute;
   border-radius: 50%;
-  background: purple;
-  top: 0;
-  right: 0;
+  background: #6A1B9A;
+  top: -0.5em;
+  right: -0.5em;
   z-index: 1;
-  width: 2em;
-  height: 2em;
+  width: 3em;
+  height: 3em;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
+  border: 0.2em solid black;
+  > span {
+    font-size: 1.5em;
+    line-height: 100%;
+  }
 }

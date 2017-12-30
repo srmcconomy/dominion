@@ -6,14 +6,19 @@ export default class Merchant extends Card {
   async onPlay(player) {
     await player.draw(1);
     player.actions++;
-    player.on('play', this.onPlayerPlayCard);
-    player.on('cleanup', () => player.removeListener('cleanup', this.onPlayerPlayCard));
+    player.addPersistentEffect('play', this);
+    player.addSilentEffect('cleanup', this);
   }
 
-  onPlayerPlayCard = (card, player) => {
-    if (card.title === 'Silver') {
+  willTriggerOn(event, player, persistent) {
+    return persistent === 'persistent' && event.triggeringPlayer === player && event.card.title === 'Silver';
+  }
+
+  async onTrigger(event, player) {
+    if (event.name === 'play') {
       player.money++;
-      player.removeListener('play', this.onPlayerPlayCard);
     }
+    player.removeSilentEffect('cleanup', this);
+    player.removePersistentEffect('play', this);
   }
 }

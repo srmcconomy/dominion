@@ -35,10 +35,30 @@ export default class Card extends Component {
   }
 
   render() {
-    const { style, selected, selectable, huge, small, supply, data: { fullArt, types, title, description, set, cost }, onClick } = this.props;
+    const { style, selected, selectable, huge, small, supply, onClick, data } = this.props;
+    if (!data) {
+      return (
+        <div
+        className={cx('card-border', { huge, full: true && !supply, supply, selected, selectable, small })}
+        style={style}
+        onClick={onClick}
+        onContextMenu={this.onRightClick}
+        >
+          <div className={cx('card-container')}>
+            <div className={cx('card', 'back')} />
+          </div>
+        </div>
+      );
+    }
     const image = supply ? this.props.data.image.small : this.props.data.image.normal;
+    const { fullArt, types, title, description, set, cost } = data;
     return (
-      <div className={cx('card-border', { huge, full: fullArt && !supply, supply, selected, selectable, small })} onClick={onClick} style={style} onContextMenu={this.onRightClick}>
+      <div
+        className={cx('card-border', { huge, full: fullArt && !supply, supply, selected, selectable, small })}
+        onClick={onClick}
+        style={style}
+        onContextMenu={this.onRightClick}
+      >
         <div className={cx('card-container')}>
           <div
             className={cx('image')}

@@ -91,6 +91,7 @@ export default class Game extends Model {
       'Remodel',
       'Merchant',
       'YoungWitch',
+      'Merchant',
     ];
   }
 

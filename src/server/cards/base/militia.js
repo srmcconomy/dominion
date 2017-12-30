@@ -3,10 +3,10 @@ import Card from 'cards/Card';
 export default class Militia extends Card {
   static cost = { coin: 4 };
   static types = new Set(['Action', 'Attack']);
-  async onPlay(player) {
+  async onPlay(player, event) {
     player.money += 2;
     await player.forEachOtherPlayer(async other => {
-      if (await other.handleOwnReactions('attack', player, this)) {
+      if (event.handledByPlayer.get(other)) {
         return;
       }
       if (other.hand.size > 3) {

@@ -11,11 +11,11 @@ export default class Diplomat extends Card {
     }
   }
 
-  shouldReactTo(event, player) {
-    return event === 'attack' && player.hand.size >= 5;
+  canTriggerOn(event, player) {
+    return event.name === 'play' && event.card.types.has('Attack') && player !== event.triggeringPlayer && player.hand.includes(this) && player.hand.size >= 5;
   }
 
-  async reactTo(event, player) {
+  async onTrigger(event, player) {
     await player.draw(2);
     const cards = await player.selectCards({
       min: 3,

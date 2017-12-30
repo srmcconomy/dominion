@@ -55,4 +55,7 @@ export default class Card extends BaseCard {
   async onAttacked(player) { }
   shouldReactTo(event) { return false; }
   async reactTo(event) { }
+  canTriggerOn(event) { return false; }
+  willTriggerOn(event, cardLocation) { return false; }
+  async onTrigger(event, cardLocation) { }
 }

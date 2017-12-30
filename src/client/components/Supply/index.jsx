@@ -27,7 +27,9 @@ export default class Supply extends Component {
           {cards.size > 0 ? <Card data={cards.last()} supply small={this.props.small} selectable={this.props.selectable} onClick={this.onCardClick} /> : null}
         </div>
         <div className={cx('num')}>
-          {cards.size}
+          <span>
+            {cards.size}
+          </span>
         </div>
       </div>
     );

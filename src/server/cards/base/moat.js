@@ -8,11 +8,11 @@ export default class Moat extends Card {
     await player.draw(2);
   }
 
-  shouldReactTo(event) {
-    return event === 'attack';
+  canTriggerOn(event, player) {
+    return event.name === 'play' && player !== event.triggeringPlayer && event.card.types.has('Attack') && player.hand.includes(this);
   }
 
-  async reactTo() {
-    return true;
+  async onTrigger(event, player) {
+    event.handledByPlayer.set(player, true);
   }
 }

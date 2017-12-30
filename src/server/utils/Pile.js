@@ -5,12 +5,12 @@ import Model from 'models/Model';
 export default class Pile extends Model {
   constructor(list = [], map = new Map()) {
     super();
-    this.list = list;
-    this.map = map;
+    this._list = list;
+    this._map = map;
   }
 
   createDirty() {
-    return this.list.map(card => card.id);
+    return this._list.map(card => card.id);
   }
 
   toIDArray() {
@@ -18,146 +18,146 @@ export default class Pile extends Model {
   }
 
   push(...cards) {
-    cards.forEach((card, index) => this.map.set(card.id, this.list.length + index));
-    this.list.push(...cards);
+    cards.forEach((card, index) => this._map.set(card.id, this._list.length + index));
+    this._list.push(...cards);
     this.markDirty();
     return this;
   }
 
   unshift(...cards) {
-    this.list.unshift(...cards);
-    this.list.forEach((card, i) => this.map.set(card.id, i));
+    this._list.unshift(...cards);
+    this._list.forEach((card, i) => this._map.set(card.id, i));
     this.markDirty();
     return this;
   }
 
   set(index, card) {
-    if (this.list.length >= index) {
+    if (this._list.length >= index) {
       return this;
     }
-    const oldCard = this.list.get(index);
-    this.list[index] = card;
-    this.map.delete(oldCard.id);
-    this.map.set(card.id, index);
+    const oldCard = this._list.get(index);
+    this._list[index] = card;
+    this._map.delete(oldCard.id);
+    this._map.set(card.id, index);
     this.markDirty();
     return this;
   }
 
   delete(card) {
-    if (!this.map.has(card.id)) {
+    if (!this._map.has(card.id)) {
       return this;
     }
-    const index = this.map.get(card.id);
-    this.list.splice(index, 1);
-    this.map.delete(card.id);
-    for (let i = index; i < this.list.length; i++) {
-      this.map.set(this.list[i].id, i);
+    const index = this._map.get(card.id);
+    this._list.splice(index, 1);
+    this._map.delete(card.id);
+    for (let i = index; i < this._list.length; i++) {
+      this._map.set(this._list[i].id, i);
     }
     this.markDirty();
     return this;
   }
 
   forEach(func) {
-    this.list.forEach(func);
+    this._list.forEach(func);
   }
 
   async asyncForEach(func) {
-    for (let i = 0; i < this.list.length; i++) {
-      await func(this.list[i]);
+    for (let i = 0; i < this._list.length; i++) {
+      await func(this._list[i]);
     }
   }
 
   shift() {
-    const card = this.list.shift();
-    this.map.delete(card.id);
-    this.list.forEach((c, i) => this.map.set(c.id, i));
+    const card = this._list.shift();
+    this._map.delete(card.id);
+    this._list.forEach((c, i) => this._map.set(c.id, i));
     this.markDirty();
     return card;
   }
 
   filter(func) {
     const pile = new Pile();
-    pile.push(...this.list.filter(func));
+    pile.push(...this._list.filter(func));
     return pile;
   }
 
   some(func) {
-    return this.list.some(func);
+    return this._list.some(func);
   }
 
   pop() {
-    const card = this.list.pop();
-    this.map.delete(card.id);
+    const card = this._list.pop();
+    this._map.delete(card.id);
     this.markDirty();
     return card;
   }
 
   get(index) {
-    return this.list[index];
+    return this._list[index];
   }
 
   has(index) {
-    return this.list.length < index && index >= 0;
+    return this._list.length < index && index >= 0;
   }
 
   hasID(id) {
-    return this.map.has(id);
+    return this._map.has(id);
   }
 
   includes(card) {
-    if (typeof card === 'string') return this.map.has(card);
-    return this.map.has(card.id);
+    if (typeof card === 'string') return this._map.has(card);
+    return this._map.has(card.id);
   }
 
   get size() {
-    return this.list.length;
+    return this._list.length;
   }
 
   get length() {
-    return this.list.length;
+    return this._list.length;
   }
 
   last() {
-    if (this.list.length === 0) return null;
-    return this.list[this.list.length - 1];
+    if (this._list.length === 0) return null;
+    return this._list[this._list.length - 1];
   }
 
   map(func) {
-    return this.list.map(func);
+    return this._list.map(func);
   }
 
   clear() {
-    this.list = [];
-    this.map.clear();
+    this._list = [];
+    this._map.clear();
     this.markDirty();
     return this;
   }
 
   shuffle() {
-    for (let i = this.list.length - 1; i > 0; i--) {
+    for (let i = this._list.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * i);
-      const temp = this.list[i];
-      this.list[i] = this.list[j];
-      this.list[j] = temp;
-      this.map.set(this.list[j].id, j);
-      this.map.set(this.list[i].id, i);
+      const temp = this._list[i];
+      this._list[i] = this._list[j];
+      this._list[j] = temp;
+      this._map.set(this._list[j].id, j);
+      this._map.set(this._list[i].id, i);
     }
     this.markDirty();
     return this;
   }
 
   splice(index, num) {
-    const cards = this.list.splice(index, num);
-    cards.forEach(card => this.map.delete(card.id));
-    for (let i = index; i < this.list.length; i++) {
-      this.map.set(this.list[i], i);
+    const cards = this._list.splice(index, num);
+    cards.forEach(card => this._map.delete(card.id));
+    for (let i = index; i < this._list.length; i++) {
+      this._map.set(this._list[i], i);
     }
     this.markDirty();
     return new Pile(cards, new Map(cards.map((card, i) => [card.id, i])));
   }
 
   spliceLast(num) {
-    return this.splice(this.list.length - num, num);
+    return this.splice(this._list.length - num, num);
   }
 
   spliceFirst(num) {
@@ -165,10 +165,10 @@ export default class Pile extends Model {
   }
 
   every(func) {
-    return this.list.every(func);
+    return this._list.every(func);
   }
 
   * [Symbol.iterator]() {
-    yield* this.list;
+    yield* this._list;
   }
 }
