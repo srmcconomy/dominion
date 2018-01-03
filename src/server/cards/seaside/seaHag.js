@@ -3,9 +3,9 @@ import Card from 'cards/Card';
 export default class SeaHag extends Card {
   static cost = { coin: 4 };
   static types = new Set(['Action', 'Attack']);
-  async onPlay(player) {
+  async onPlay(player, event) {
     player.forEachOtherPlayer(async other => {
-      if (await other.handleOwnReactions('attack', other, this)) {
+      if (event.handledByPlayer.get(other)) {
         return;
       }
       const [card] = other.lookAtTopOfDeck(1);

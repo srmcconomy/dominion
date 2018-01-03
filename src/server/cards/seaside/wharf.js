@@ -8,7 +8,12 @@ export default class Wharf extends Card {
     player.buys++;
     this.ignoreCleanUp = true;
   }
-  async onTurnStart(player) {
+
+  willTriggerOn(event, player) {
+    return event.name === 'start-of-turn' && event.triggeringPlayer === player && player.playArea.includes(this);
+  }
+
+  async onTrigger(event, player) {
     await player.draw(2);
     player.buys++;
     this.ignoreCleanUp = false;

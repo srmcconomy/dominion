@@ -4,13 +4,32 @@ export default class Outpost extends Card {
   static cost = { coin: 5 };
   static types = new Set(['Action', 'Duration']);
   async onPlay(player) {
-    this.ignoreCleanUp = true;
-    player.playArea.filter(c => c !== this).forEach(c => {
-      if (c.title === 'Outpost') this.ignoreCleanUp = false;
-    });
-    if (player.game.previousPlayer === player) this.ignoreCleanUp = false;
+    if (
+      !player.cardsPlayedThisTurn.some(card => card !== this && card.title === 'Outpost') &&
+      !player.playArea.some(card => card !== this && card.title === 'Outpost')
+    ) {
+      this.ignoreCleanUp = true;
+    }
   }
-  async onTurnStart(player) {
-	    this.ignoreCleanUp = false;
+
+  willTriggerOn(event, player) {
+    return (
+      (event.name === 'cleanup' && this.ignoreCleanUp) ||
+      event.name === 'start-of-turn'
+    ) && event.triggeringPlayer === player && player.playArea.includes(this);
+  }
+
+  async onTrigger(event, player) {
+    switch (event.name) {
+      case 'cleanup':
+        event.handledByPlayer.set(player, true);
+        await player.cleanup();
+        await player.draw(3);
+        await player.takeTurn();
+        break;
+      case 'start-of-turn':
+        this.ignoreCleanUp = false;
+        break;
+    }
   }
 }

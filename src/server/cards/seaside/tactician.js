@@ -13,7 +13,12 @@ export default class Tactician extends Card {
       this.ignoreCleanUp = false;
     }
   }
-  async onTurnStart(player) {
+
+  willTriggerOn(event, player) {
+    return event.name === 'start-of-turn' && event.triggeringPlayer === player && player.playArea.includes(this);
+  }
+
+  async onTrigger(event, player) {
     await player.draw(5);
     player.actions++;
     player.buys++;

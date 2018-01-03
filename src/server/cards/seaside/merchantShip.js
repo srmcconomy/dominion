@@ -7,7 +7,12 @@ export default class MerchantShip extends Card {
     player.money += 2;
     this.ignoreCleanUp = true;
   }
-  async onTurnStart(player) {
+
+  willTriggerOn(event, player) {
+    return event.name === 'start-of-turn' && event.triggeringPlayer === player && player.playArea.includes(this);
+  }
+
+  async onTrigger(event, player) {
     player.money += 2;
     this.ignoreCleanUp = false;
   }

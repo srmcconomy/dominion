@@ -3,7 +3,7 @@ import { Record } from 'immutable';
 import { cardTransform, pileTransform } from './transforms';
 
 const transforms = {
-  discardPile: cardTransform,
+  discardPile: obj => obj.top && cardTransform(obj.top),
   hand: obj => (obj.pile ? pileTransform(obj) : obj.size),
   playArea: pileTransform,
 };

@@ -7,7 +7,7 @@ export default class Navigator extends Card {
   async onPlay(player) {
     player.money += 2;
     const cards = await player.lookAtTopOfDeck(5);
-    let cardsStr = cards.map(c => c.title).join(', ');
+    const cardsStr = cards.map(c => c.title).join(', ');
 
     const choice = await player.selectOption(['Keep on top', 'Discard all five'], cardsStr);
     switch (choice) {

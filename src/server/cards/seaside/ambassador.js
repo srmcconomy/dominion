@@ -3,7 +3,7 @@ import Card from 'cards/Card';
 export default class Ambassador extends Card {
   static cost = { coin: 3 };
   static types = new Set(['Action', 'Attack']);
-  async onPlay(player) {
+  async onPlay(player, event) {
     const [card] = await player.selectCards({
       min: 1,
       max: 1,
@@ -19,7 +19,7 @@ export default class Ambassador extends Card {
       await player.returnToSupply(cards[i]);
     }
     await player.forEachOtherPlayer(async other => {
-      if (await other.handleOwnReactions('attack', other, this)) {
+      if (event.handledByPlayer.get(other)) {
         return;
       }
       await other.gain(card.title);

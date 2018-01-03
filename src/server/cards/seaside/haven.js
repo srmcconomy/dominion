@@ -20,7 +20,11 @@ export default class Haven extends Card {
     }
   }
 
-  async onTurnStart(player) {
+  willTriggerOn(event, player) {
+    return event.name === 'start-of-turn' && event.triggeringPlayer === player && player.playArea.includes(this);
+  }
+
+  async onTrigger(event, player) {
     if (this.setAside.last()) player.pickUp(this.setAside.last(), this.setAside);
     this.ignoreCleanUp = false;
   }

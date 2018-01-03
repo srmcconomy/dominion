@@ -3,8 +3,8 @@ import Card from 'cards/Card';
 export default class Replace extends Card {
   static cost = { coin: 5 };
   static types = new Set(['Action', 'Attack']);
-  async onPlay(player) {
-    const [card] = await player.selectCards({min:1, max:1, message:'Select a card trash'});
+  async onPlay(player, event) {
+    const [card] = await player.selectCards({ min: 1, max: 1, message: 'Select a card trash' });
     if (card) {
       await player.trash(card);
       const [supply] = await player.selectSupplies({
@@ -22,7 +22,7 @@ export default class Replace extends Card {
         } else await player.gain(supply.title);
         if (Card.classes.get(supply.title).types.has('Victory')) {
           await player.forEachOtherPlayer(async other => {
-            if (await other.handleOwnReactions('attack', player, this)) {
+            if (event.handledByPlayer.get(other)) {
               return;
             }
             other.gain('Curse');

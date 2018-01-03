@@ -3,10 +3,10 @@ import Card from 'cards/Card';
 export default class Torturer extends Card {
   static cost = { coin: 5 };
   static types = new Set(['Action', 'Attack']);
-  async onPlay(player) {
+  async onPlay(player, event) {
     await player.draw(3);
     await player.forEachOtherPlayer(async other => {
-      if (await other.handleOwnReactions('attack', player, this)) {
+      if (event.handledByPlayer.get(other)) {
         return;
       }
       const choice = await other.selectOption(['Discard two cards', 'Gain a Curse to Hand']);

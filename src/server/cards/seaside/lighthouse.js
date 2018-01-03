@@ -10,16 +10,22 @@ export default class Lighthouse extends Card {
     this.ignoreCleanUp = true;
   }
 
-  async onTurnStart(player) {
-    player.money++;
-    this.ignoreCleanUp = false;
+  willTriggerOn(event, player) {
+    return (
+      (event.name === 'play' && event.card.types.has('Attack') && player !== event.triggeringPlayer && player.playArea.includes(this)) ||
+      (event.name === 'start-of-turn' && event.triggeringPlayer === player && player.playArea.includes(this))
+    );
   }
 
-  shouldReactTo(event, attacker, player) {
-    return (event === 'attack') && (player.playArea.hasID(this.id));
-  }
-
-  async reactTo() {
-    return true;
+  async onTrigger(event, player) {
+    switch (event.name) {
+      case 'play':
+        event.handledByPlayer.set(player, true);
+        break;
+      case 'start-of-turn':
+        player.money++;
+        this.ignoreCleanUp = false;
+        break;
+    }
   }
 }

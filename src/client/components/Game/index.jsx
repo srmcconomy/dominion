@@ -9,6 +9,7 @@ import PlayArea from 'components/PlayArea';
 import Input from 'components/Input';
 import Card from 'components/Card';
 import Hand from 'components/Hand';
+import Players from 'components/Players';
 
 import 'cards/basic';
 import 'cards/base';
@@ -50,6 +51,9 @@ function Game({ game, message, cardToShow, hideCard }) {
       </div>
       <div className={cx('hand-container')}>
         <Hand />
+      </div>
+      <div className={cx('player-container')}>
+        <Players />
       </div>
       { cardToShow && (
         <div onClick={hideCard} className={cx('card-to-show')}>

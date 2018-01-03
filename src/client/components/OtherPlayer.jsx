@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import Card from 'components/Card';
 
-export default class OtherPlayer extends Component {
+export default class Player extends Component {
   render() {
     const { name, hand, discardPile, deck } = this.props.data;
     return (

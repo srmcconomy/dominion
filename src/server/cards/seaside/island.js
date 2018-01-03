@@ -1,4 +1,5 @@
 import Card from 'cards/Card';
+import Pile from 'utils/Pile';
 
 export default class Island extends Card {
   static VP = 2;
@@ -11,12 +12,18 @@ export default class Island extends Card {
       max: 1,
       message: 'Select a card to place on your island mat'
     });
-    player.moveCard(this, player.playArea, player.islandMat);
-    if (card) player.moveCard(card, player.hand, player.islandMat);
+    player.moveCard(this, player.playArea, player.mats.island);
+    if (card) player.moveCard(card, player.hand, player.mats.island);
   }
 
   static getNumberInSupply(game) {
     if (game.players.size === 2) return 8;
     return 12;
+  }
+
+  static setup(game) {
+    game.players.forEach(player => {
+      player.mats.island = new Pile();
+    });
   }
 }

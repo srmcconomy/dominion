@@ -8,17 +8,19 @@ export default class Treasury extends Card {
     player.actions++;
     player.money++;
   }
-  async onDiscard(player, whereFrom) {
-    if (whereFrom === player.playArea) {
-      let gainedVP = false;
-      for (let i = 0; i < player.cardsGainedThisTurn.length; i++) {
-        if (player.cardsGainedThisTurn[i].types.has('Victory')) {
-          gainedVP = true;
-        }
-      }
-      if (!gainedVP) {
-        await player.topDeck(this, player.discardPile);
-      }
-    }
+
+  willTriggerOn(event, player) {
+    return (
+      event.name === 'discard' &&
+      event.triggeringPlayer === player &&
+      event.card === this &&
+      !player.cardsGainedThisTurn.some(card => card.types.has('Victory')) &&
+      player.playArea.includes(this)
+    );
+  }
+
+  async onTrigger(event, player) {
+    await player.topDeck(this, player.playArea);
+    event.handledByPlayer.set(player, true);
   }
 }

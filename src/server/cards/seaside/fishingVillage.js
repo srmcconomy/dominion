@@ -8,7 +8,12 @@ export default class FishingVillage extends Card {
     player.money++;
     this.ignoreCleanUp = true;
   }
-  async onTurnStart(player) {
+
+  willTriggerOn(event, player) {
+    return event.name === 'start-of-turn' && event.triggeringPlayer === player && player.playArea.includes(this);
+  }
+
+  async onTrigger(event, player) {
     player.actions++;
     player.money++;
     this.ignoreCleanUp = false;
