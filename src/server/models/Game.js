@@ -6,6 +6,7 @@ import 'supplies/intrigueFirst';
 import 'supplies/seaside';
 import 'supplies/cornucopia';
 import 'supplies/adventures';
+import 'supplies/guilds';
 import Copper from 'cards/basic/Copper';
 import Estate from 'cards/basic/Estate';
 import Model from 'models/Model';
