@@ -379,6 +379,7 @@ export default class Player extends Model {
       this.moveCard(card, from, to);
       this.cardsGainedThisTurn.push(card);
       await this.handleTriggers('gain', { card }, [card]);
+      return true;
     }
   }
 
@@ -389,8 +390,7 @@ export default class Player extends Model {
     }
     const card = supply.cards.last();
 
-    await this.gainSpecificCard(card, supply.cards, to);
-    return card;
+    return (await this.gainSpecificCard(card, supply.cards, to)) ? card : null;
   }
 
   async buy(name, to = this.discardPile) {
@@ -599,6 +599,10 @@ export default class Player extends Model {
     for (let i = this.index === this.game.playerOrder.length - 1 ? 0 : this.index + 1; i !== this.index; i = i === this.game.playerOrder.length - 1 ? 0 : i + 1) {
       await func(this.game.playerOrder[i]);
     }
+  }
+
+  nextPlayer() {
+    return this.game.playerOrder[this.index === this.game.playerOrder.length - 1 ? 0 : this.index + 1];
   }
 
   async processTurnPhases() {
