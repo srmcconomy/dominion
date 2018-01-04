@@ -4,11 +4,11 @@ export default class Followers extends Card {
   static cost = { coin: 0 };
   static types = new Set(['Action', 'Attack', 'Prize']);
   static supplyCategory = 'nonSupply';
-  async onPlay(player) {
+  async onPlay(player, event) {
     await player.draw(2);
     await player.gain('Estate');
     await player.forEachOtherPlayer(async other => {
-      if (await other.handleOwnReactions('attack', player, this)) {
+      if (event.handledByPlayer.get(other)) {
         return;
       }
       await other.gain('Curse');

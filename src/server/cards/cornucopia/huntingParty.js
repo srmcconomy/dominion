@@ -7,7 +7,7 @@ export default class HuntingParty extends Card {
   async onPlay(player) {
     await player.draw(1);
     player.actions++;
-    player.game.log(`${player.name} reveals ${player.hand.list.map(c => c.title).join(', ')}`);
+    player.game.log(`${player.name} reveals ${player.hand.map(c => c.title).join(', ')}`);
     const uniqueNames = [];
     player.hand.forEach(c => {
       if (!uniqueNames.includes(c.title)) uniqueNames.push(c.title);

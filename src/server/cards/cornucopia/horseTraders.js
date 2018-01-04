@@ -17,16 +17,27 @@ export default class HorseTraders extends Card {
     }
   }
 
-  shouldReactTo(event, player) {
-    return event === 'attack';
+  canTriggerOn(event, player) {
+    return event.name === 'play-first' && player !== event.triggeringPlayer && event.card.types.has('Attack') && player.hand.includes(this);
   }
 
-  async reactTo(event, player) {
-    player.setAside(this, player.hand);
+  willTriggerOn(event, player, persistent) {
+    return persistent === 'persistent' && event.name === 'start-of-turn' && event.triggeringPlayer === player && player.asidePile.includes(this);
   }
 
-  async onTurnStart(player) {
-    player.pickUp(this, player.asidePile);
-    await player.draw(1);
+  async onTrigger(event, player) {
+    switch (event.name) {
+      case 'play-first':
+        player.setAside(this, player.hand);
+        player.addPersistentEffect('start-of-turn', this);
+        break;
+      case 'start-of-turn':
+        player.pickUp(this, player.asidePile);
+        await player.draw(1);
+        player.removePersistentEffect('start-of-turn', this);
+        break;
+      default:
+        break;
+    }
   }
 }

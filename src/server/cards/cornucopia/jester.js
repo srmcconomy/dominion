@@ -3,10 +3,10 @@ import Card from 'cards/Card';
 export default class Jester extends Card {
   static cost = { coin: 5 };
   static types = new Set(['Action', 'Attack']);
-  async onPlay(player) {
+  async onPlay(player, event) {
     player.money += 2;
     await player.forEachOtherPlayer(async other => {
-      if (await other.handleOwnReactions('attack', player, this)) {
+      if (event.handledByPlayer.get(other)) {
         return;
       }
       const [card] = other.lookAtTopOfDeck(1);

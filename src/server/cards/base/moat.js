@@ -9,7 +9,7 @@ export default class Moat extends Card {
   }
 
   canTriggerOn(event, player) {
-    return event.name === 'play' && player !== event.triggeringPlayer && event.card.types.has('Attack') && player.hand.includes(this);
+    return event.name === 'play-first' && player !== event.triggeringPlayer && event.card.types.has('Attack') && player.hand.includes(this);
   }
 
   async onTrigger(event, player) {
