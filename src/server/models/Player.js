@@ -322,8 +322,10 @@ export default class Player extends Model {
     const num = pile.length;
     while (pile.length > 0) {
       const card = pile.last();
-      this.moveCard(card, pile, this.discardPile);
-      await card.onDiscard(this);
+      const event = await this.handleTriggers('discard', { card, pile }, [card]);
+      if (!event.handledByPlayer.get(this)) {
+        this.moveCard(card, pile, this.discardPile);
+      }
     }
     this.game.log(`${this.name} discards ${num} card${num !== 1 ? 's' : ''}`);
   }
@@ -476,7 +478,7 @@ export default class Player extends Model {
     while (card = this.playArea.find(c => !c.ignoreCleanUp)) {
       await this.discard(card, this.playArea);
     }
-    await this.discardMulti(this.hand);
+    await this.discardAll(this.hand);
   }
 
   async endOfGameCleanUp() {
