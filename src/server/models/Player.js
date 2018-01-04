@@ -121,6 +121,9 @@ export default class Player extends Model {
   potion = 0;
 
   @trackDirty
+  coinTokens = 0;
+
+  @trackDirty
   buys = 0;
 
   @trackDirty
@@ -170,6 +173,7 @@ export default class Player extends Model {
     this.money = 0;
     this.debt = 0;
     this.potion = 0;
+    this.coinTokens = 0;
     this.buys = 0;
     this.vpTokens = 0;
     this.score = 0;
@@ -620,10 +624,11 @@ export default class Player extends Model {
         case 'buyPhase':
           switch (this.buyState) {
             case 'playTreasures':
-              if (this.hand.some(card => card.types.has('Treasure'))) {
+              if (this.hand.some(card => card.types.has('Treasure')) || this.coinTokens > 0) {
                 console.log('ask for cards');
+                const options = this.coinTokens ? ['Play all treasures', 'Spend a Coin Token'] : ['Play all treasures'];
                 const res = await this.selectOptionOrCardsOrSupplies(
-                  ['Play all treasures'],
+                  options,
                   {
                     min: 0,
                     max: 1,
@@ -644,6 +649,9 @@ export default class Player extends Model {
                     }
                   }
                   this.buyState = 'buyCards';
+                } else if (res === 1) {
+                  this.coinTokens--;
+                  this.money++;
                 } else {
                   const [card] = res;
                   if (card) {
