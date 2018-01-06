@@ -605,6 +605,29 @@ export default class Player extends Model {
     return this.game.playerOrder[this.index === this.game.playerOrder.length - 1 ? 0 : this.index + 1];
   }
 
+  async overpay() {
+    const tempCost = { coin: 0, potion: 0, debt: 0 };
+    while (this.money > 0 || this.potion > 0) {
+      const options = [];
+      if (this.money) options.push('Over Pay a Coin');
+      if (this.potion) options.push('Over Pay a Potion');
+      options.push('No more Overpay');
+      const message = `Overpay currently at ${tempCost.coin} Coin`;
+      if ([...this.game.supplies.values()].some(s => s.title === 'Potion'))  message = `Overpay currently at ${tempCost.coin} Coin, ${tempCost.potion} Potion`;
+      const choice = await this.selectOption(options, message);
+      if (choice === 0) {
+        this.money--;
+        tempCost.coin++;
+      } else if (choice === options.length - 1) {
+        break;
+      } else {
+        this.potion--;
+        tempCost.potion++;
+      }
+    }
+    return tempCost;
+  }
+
   async processTurnPhases() {
     let doneTurn = false;
     this.buyState = 'playTreasures';
