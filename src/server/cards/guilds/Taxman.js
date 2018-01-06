@@ -26,7 +26,7 @@ export default class Taxman extends Card {
         if (cardOther) {
           await other.discard(cardOther);
         } else {
-          player.game.log(`${other.name} reveals ${other.hand.map(c => c.title).join(', ')}`);
+          other.revealHand();
         }
       });
       const [supply] = await player.selectSupplies({

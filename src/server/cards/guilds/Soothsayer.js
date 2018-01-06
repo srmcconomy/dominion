@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 
 export default class Soothsayer extends Card {
   static cost = { coin: 5 };
-  static types = new Set(['Action']);
+  static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {
     await player.gain('Gold');
     await player.forEachOtherPlayer(async other => {

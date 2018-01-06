@@ -293,6 +293,10 @@ export default class Player extends Model {
     this.index = index;
   }
 
+  revealHand() {
+    this.game.log(`${this.name} reveals a hand of: ${this.hand.map(c => c.title).join(', ')}`);
+  }
+
   moveCard(card, fromPile, toPile, options) {
     if (card instanceof Pile) {
       options = toPile;
@@ -914,7 +918,4 @@ export default class Player extends Model {
     return this.selectOptionOrCardsOrSupplies(null, null, { min, max, predicate, includeNonSupply, includeEvents }, message);
   }
 
-  async revealHand() {
-    await Promise.resolve(this);
-  }
 }
