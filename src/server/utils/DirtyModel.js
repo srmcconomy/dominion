@@ -8,6 +8,17 @@ const serializers = new WeakMap();
 const initialized = new WeakMap();
 const needsInit = new WeakMap();
 
+function isDirtyModel(obj) {
+  let { constructor } = obj;
+  while (constructor.prototype) {
+    if (dirtyModels.has(constructor)) {
+      return true;
+    }
+    constructor = Object.getPrototypeOf(constructor);
+  }
+  return false;
+}
+
 function onDirty(obj, func) {
   if (!dirtyHandlers.has(obj)) {
     dirtyHandlers.set(obj, new Set());
@@ -83,12 +94,10 @@ export default function DirtyModel(klass) {
 @DirtyModel
 export class DirtyMap extends Map {
   set(key, value) {
-    console.log(key, value);
     if (!dirtyMap.has(this)) {
       dirtyMap.set(this, new Set());
     }
-    if (value && dirtyModels.has(value.constructor)) {
-      console.log('is dirtymodel');
+    if (value && isDirtyModel(value)) {
       if (!dirtyListeners.has(this)) {
         dirtyListeners.set(this, new Map());
       }
@@ -160,7 +169,7 @@ export function trackDirty(target, key, descriptor, serializer) {
       }
 
       // If value is a dirtyModel
-      if (value && dirtyModels.has(value.constructor)) {
+      if (value && isDirtyModel(value)) {
         if (!dirtyListeners.has(this)) {
           dirtyListeners.set(this, new Map());
         }
@@ -172,6 +181,13 @@ export function trackDirty(target, key, descriptor, serializer) {
           dirtyMap.get(this).add(key);
         });
         dirtyListeners.get(this).set(key, listener);
+      }
+
+      if (initializer && (!initialized.has(this) || !initialized.get(this).has(key))) {
+        if (!initialized.has(this)) {
+          initialized.set(this, new Set());
+        }
+        initialized.get(this).add(key);
       }
       emitDirty(this);
       dirtyMap.get(this).add(key);

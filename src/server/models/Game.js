@@ -1,15 +1,17 @@
 import Card from 'cards/Card';
-import 'cards/basic';
-import 'cards/base';
-import 'cards/baseSecond';
-import 'cards/intrigue';
-import 'cards/intrigueFirst';
-import 'cards/seaside';
-import 'cards/cornucopia';
+import 'supplies/basic';
+import 'supplies/base';
+import 'supplies/baseSecond';
+import 'supplies/intrigue';
+import 'supplies/intrigueFirst';
+import 'supplies/seaside';
+import 'supplies/cornucopia';
+import Copper from 'cards/basic/Copper';
+import Estate from 'cards/basic/Estate';
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
-import Supply from 'models/Supply';
+import Supply from 'supplies/Supply';
 import Log from 'utils/Log';
 
 function shuffle(arr) {
@@ -43,8 +45,6 @@ export default class Game extends Model {
   @trackDirty(() => arr => arr.map(({ id }) => id))
   playerOrder = [];
 
-  room = null;
-
   log = new Log();
 
   @trackDirty(() => player => player && player.id)
@@ -59,28 +59,21 @@ export default class Game extends Model {
 
   eventQueue = [];
 
-  constructor(name, io) {
-    super();
-    console.log(this);
-    console.log(Object.keys(this));
-    this.room = io.to(this.id);
-  }
-
   getStateFor(player) {
     return { ...this.createDirty(player, true) };
   }
 
   getKingdomCards() {
-    const a = [];
-    while (a.length < 10) {
-      const unusedCards = [];
-      Card.classes.forEach(c => {
-        if (c.supplyCategory === 'kingdom' && !a.includes(c.title)) unusedCards.push(c.title);
-      });
-      a.push(unusedCards[Math.floor(Math.random() * unusedCards.length)]);
+    const kingdomSupplies = [...Supply.classes.values()].filter(S => S.category === 'kingdom');
+    const suppliesTitles = [];
+    while (suppliesTitles.length < 10) {
+      suppliesTitles.push(kingdomSupplies.splice(
+        Math.floor(Math.random() * kingdomSupplies.length),
+        1,
+      ).title);
     }
     if (false) {
-      return a;
+      return suppliesTitles;
     }
     return [
       'Chapel',
@@ -114,15 +107,15 @@ export default class Game extends Model {
     }
 
     kingdomArray.forEach(title => {
-      const dependancies = Card.classes.get(title).getDependencies(kingdomArray, this);
-      dependancies.forEach(d => {
+      const dependencies = Supply.classes.get(title).getDependencies(kingdomArray, this);
+      dependencies.forEach(d => {
         if (!suppliesArray.includes(d)) {
           suppliesArray.push(d);
         }
       });
     });
 
-    const potionGame = kingdomArray.some(title => Card.classes.get(title).cost.potion);
+    const potionGame = kingdomArray.some(title => Supply.classes.get(title).cost.potion);
     if (potionGame) suppliesArray.push('Potion');
 
     kingdomArray.forEach(c => suppliesArray.push(c));
@@ -202,22 +195,29 @@ export default class Game extends Model {
   async start() {
     this.getSupplyCards().forEach((title) => {
       console.log(title);
-      this.supplies.set(title, new Supply(title, this));
-      Card.classes.get(title).setup(this);
-      this.organizedSupplies[Card.classes.get(title).supplyCategory].push(title);
+      const supply = new (Supply.classes.get(title))(this);
+      supply.setup(this);
+      this.supplies.set(title, supply);
+      this.organizedSupplies[supply.category].push(title);
     });
     Object.keys(this.organizedSupplies).forEach(key => {
       this.organizedSupplies[key].sort((a, b) => (
-        this.supplies.get(a).cards.last().cost.coin - this.supplies.get(b).cards.last().cost.coin
+        this.supplies.get(a).cost.coin - this.supplies.get(b).cost.coin
       ));
     });
     this.players.forEach(player => {
-      player.deck.push(
-        ...Array(7).fill().map(() => new (Card.classes.get('Copper'))(this)),
-        ...Array(3).fill().map(() => new (Card.classes.get('Estate'))(this)),
-      );
-      player.deck.shuffle();
-      // player.init();
+      if (this.startingDeck) {
+        console.log('starting deck');
+        console.log(this.startingDeck());
+        player.deck.push(...this.startingDeck());
+        console.log(player.deck.map(c => c.title));
+      } else {
+        player.deck.push(
+          ...Array(7).fill().map(() => new Copper(this)),
+          ...Array(3).fill().map(() => new Estate(this)),
+        );
+        player.deck.shuffle();
+      }
     });
     this.players.forEach(player => {
       this.playerOrder.push(player);
@@ -228,7 +228,9 @@ export default class Game extends Model {
     this.startingPlayerIndex = this.currentPlayerIndex;
     this.playerOrder.forEach((player, i) => {
       player.setIndex(i);
-      player.socket.emit('state', this.getStateFor(player));
+      if (player.socket) {
+        player.socket.emit('state', this.getStateFor(player));
+      }
     });
     this.clean();
     await this.loop();
@@ -243,13 +245,13 @@ export default class Game extends Model {
       await this.currentPlayer.takeTurn();
       let numEmptySupplies = 0;
       this.supplies.forEach(supply => {
-        if (supply.cards.size === 0 && Card.classes.get(supply.title).supplyCategory !== 'nonSupply') {
+        if (supply.cards.size === 0 && supply.category !== 'nonSupply') {
           numEmptySupplies++;
         }
       });
       if (
         this.supplies.get('Province').cards.size === 0 ||
-        (this.supplies.has('Colony') && this.supploes.get('Colony').cards.size === 0) ||
+        (this.supplies.has('Colony') && this.supplies.get('Colony').cards.size === 0) ||
         numEmptySupplies >= (this.playerOrder.size > 4 ? 4 : 3)
       ) {
         this.endOfGame();

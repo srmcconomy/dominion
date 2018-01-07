@@ -2,7 +2,7 @@ import 'source-map-support/register';
 
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
-import Copper from 'cards/basic/copper';
+import Copper from 'cards/basic/Copper';
 
 @DirtyModel
 class B {

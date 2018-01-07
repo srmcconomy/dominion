@@ -77,6 +77,11 @@ gulp.task('build:client', cb => {
   });
 });
 
+gulp.task('test', ['build:server'], done => {
+  const child = spawn('node', ['build/tests.test.js', '--trace-warnings', process.argv[3]], { stdio: 'inherit' });
+  child.on('exit', () => done());
+});
+
 gulp.task('watch:client', cb => {
   const child = spawn(`${__dirname}/node_modules/.bin/webpack-dev-server`, { stdio: [, 'pipe']});
   child.stdout.on('data', chunk => {
