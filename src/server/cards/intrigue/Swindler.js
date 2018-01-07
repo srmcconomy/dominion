@@ -13,6 +13,7 @@ export default class Swindler extends Card {
       if (!card) {
         return;
       }
+      player.game.log(`${other.name} reveals ${card.title}`);
       await other.trash(card, other.deck);
       const [supply] = await player.selectSupplies({
         min: 1,
