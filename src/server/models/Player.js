@@ -521,6 +521,7 @@ export default class Player extends Model {
   }
 
   returnToSupply(card, from = this.hand) {
+    this.game.log(`${this.name} returns ${card.title} to its supply`);
     this.moveCard(card, from, this.game.supplies.get(card.title).cards);
   }
 
