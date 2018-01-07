@@ -72,6 +72,8 @@ export default class Player extends Model {
 
   nativeVillageMat = new Pile();
 
+  asidePile = new Pile();
+
   @trackDirty
   name;
 
@@ -334,7 +336,7 @@ export default class Player extends Model {
     const event = await this.handleTriggers('would-gain', { card }, [card]);
     this.game.log(`${this.name} gains ${card.name}`);
     if (!event.handledByPlayer.get(this)) {
-      this.moveCard(from, to);
+      this.moveCard(card, from, to);
       await this.handleTriggers('gain', { card }, [card]);
     }
   }
@@ -411,6 +413,10 @@ export default class Player extends Model {
     this.moveCard(card, from, this.hand);
   }
 
+  setAside(card, from = this.playArea) {
+    this.moveCard(card, from, this.asidePile);
+  }
+
   flipJourneyToken() {
     if (this.journeyToken === 'faceUp') {
       this.journeyToken = 'faceDown';
@@ -425,6 +431,7 @@ export default class Player extends Model {
 
     tempCost.coin -= this.cardsPlayedThisTurn.filter(c => c.title === 'Bridge').length;
     tempCost.coin -= this.playArea.filter(c => c.title === 'Highway' || c.title === 'BridgeTroll').length;
+    tempCost.coin -= 2 * this.playArea.filter(c => c.title === 'Princess').length;
     if (card.types.has('Action')) {
       tempCost.coin -= 2 * this.playArea.filter(c => c.title === 'Quarry').length;
     }

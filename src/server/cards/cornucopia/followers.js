@@ -1,14 +1,17 @@
 import Card from 'cards/Card';
 
-export default class Militia extends Card {
-  static cost = { coin: 4 };
-  static types = new Set(['Action', 'Attack']);
+export default class Followers extends Card {
+  static cost = { coin: 0 };
+  static types = new Set(['Action', 'Attack', 'Prize']);
+  static supplyCategory = 'nonSupply';
   async onPlay(player, event) {
-    player.money += 2;
+    await player.draw(2);
+    await player.gain('Estate');
     await player.forEachOtherPlayer(async other => {
       if (event.handledByPlayer.get(other)) {
         return;
       }
+      await other.gain('Curse');
       if (other.hand.size > 3) {
         const cards = await other.selectCards({
           min: other.hand.size - 3,

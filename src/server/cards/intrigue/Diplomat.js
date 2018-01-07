@@ -12,7 +12,7 @@ export default class Diplomat extends Card {
   }
 
   canTriggerOn(event, player) {
-    return event.name === 'play' && event.card.types.has('Attack') && player !== event.triggeringPlayer && player.hand.includes(this) && player.hand.size >= 5;
+    return event.name === 'play-first' && event.card.types.has('Attack') && player !== event.triggeringPlayer && player.hand.includes(this) && player.hand.size >= 5;
   }
 
   async onTrigger(event, player) {
