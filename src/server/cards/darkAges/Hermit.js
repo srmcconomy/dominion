@@ -36,8 +36,9 @@ export default class Hermit extends Card {
   }
 
   async onTrigger(event, player) {
-    await player.trash(this);
+    await player.trash(this, player.playArea);
     await player.gain('Madman');
+    event.handledByPlayer.set(player, true);
   }
 
   static getDependencies() {

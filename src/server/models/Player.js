@@ -347,7 +347,10 @@ export default class Player extends Model {
   async trash(card, from = this.hand) {
     this.game.log(`${this.name} trashes ${card.name}`);
     this.moveCard(card, from, this.game.trash);
-    await this.handleTriggers('trash', { card }, [card]);
+    const event = await this.handleTriggers('trash', { card, from }, [card]);
+    if (!event.handledByPlayer.get(this)) {
+      this.moveCard(card, from, this.game.trash);
+    }
   }
 
   async discard(card, from = this.hand) {
