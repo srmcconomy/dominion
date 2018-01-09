@@ -11,6 +11,7 @@ export default class Spoils extends Card {
     </div>
   );
   static cost = <Coin>0*</Coin>
+  static value = <Coin>3</Coin>;
   static types = ['Treasure'];
 }
 

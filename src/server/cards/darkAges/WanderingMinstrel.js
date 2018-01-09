@@ -13,7 +13,6 @@ export default class WanderingMinstrel extends Card {
         min: 1,
         max: 1,
         pile: cards.filter(c => c.types.has('Action')),
-        predicate: c => c.types.has('Action'),
         message: 'Select a card to put on top of your deck'
       });
       player.topDeck(card, cards);
