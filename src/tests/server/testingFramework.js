@@ -27,7 +27,7 @@ export function expect(val1) {
       const pass = val1 === val2;
       results.push({
         pass,
-        message: pass ? '' : `Expected ${val1} to equal ${val2}`,
+        message: pass ? '' : `Expected ${val1} but got ${val2}`,
       });
     }
   };

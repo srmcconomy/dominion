@@ -17,6 +17,7 @@ export default class Replace extends Card {
         message: 'Choose an card to gain'
       });
       if (supply) {
+        const cardToGain = supply.cards.last();
         if (cardToGain.types.has('Action') || cardToGain.types.has('Treasure')) {
           await player.gainSpecificCard(cardToGain, cardToGain.supply, player.deck);
         } else {
