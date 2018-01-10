@@ -1,12 +1,14 @@
 import BaseCard from 'cards/BaseCard';
 
+const COST_FIELDS = ['coin', 'debt', 'potion'];
+
 export default class Card extends BaseCard {
-  constructor(game, id) {
-    if (typeof game === 'string') {
-      id = game;
-      game = null;
-    }
-    super(id);
+  ignoreCleanUp = false;
+  static types = new Map();
+  static VP = 0;
+
+  constructor(game, supply) {
+    super();
     if (game) game.cards.push(this);
 
     this.cost = {
@@ -16,15 +18,7 @@ export default class Card extends BaseCard {
       ...this.cost,
     };
 
-    this.ignoreCleanUp = false;
-  }
-
-  static types = new Map();
-  static supplyCategory = 'kingdom';
-  static VP = 0;
-
-  static getNumberInSupply(game) {
-    return 10;
+    this.supply = supply;
   }
 
   getVpValue(player) {
@@ -34,12 +28,6 @@ export default class Card extends BaseCard {
   getCost(player) {
     return { coin: 0, debt: 0, potion: 0, ...this.cost };
   }
-
-  static init(player) { }
-
-  static getDependencies(kingdomArray, game) { return []; }
-
-  static setup(game) { }
 
   endGameCleanUp(player) { }
 
@@ -54,4 +42,44 @@ export default class Card extends BaseCard {
   canTriggerOn(event) { return false; }
   willTriggerOn(event, cardLocation) { return false; }
   async onTrigger(event, cardLocation) { }
+
+  static Cost = class Cost {
+    coin = 0;
+    debt = 0;
+    potion = 0;
+
+    constructor({ coin = 0, debt = 0, potion = 0 }) {
+      this.coin = coin;
+      this.debt = debt;
+      this.potion = potion;
+    }
+
+    isGreaterThan(cost) {
+      return COST_FIELDS.every(field => this[field] >= cost[field]) && COST_FIELDS.some(field => this[field] > (cost[field] || 0));
+    }
+
+    isLessThan(cost) {
+      return COST_FIELDS.every(field => this[field] <= cost[field]) && COST_FIELDS.some(field => this[field] < (cost[field] || 0));
+    }
+
+    isGreaterThanEqualTo(cost) {
+      return !this.isLessThan(cost);
+    }
+
+    isLessThanEqualTo(cost) {
+      return !this.isGreaterThan(cost);
+    }
+
+    isEqualTo(cost) {
+      return COST_FIELDS.every(field => this[field] === (cost[field] || 0));
+    }
+
+    add(cost) {
+      return new Cost({
+        coin: this.coin + (cost.coin || 0),
+        debt: this.debt + (cost.debt || 0),
+        potion: this.potion + (cost.potion || 0),
+      });
+    }
+  }
 }

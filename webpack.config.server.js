@@ -10,9 +10,9 @@ module.exports = {
     app: [
       './src/server/server.js',
     ],
-    // tests: [
-    //   './src/tests/dirtyModels.js',
-    // ]
+    'tests.test': [
+      './src/tests/server/tests.js',
+    ]
   },
   externals: [nodeExternals()],
   target: 'node',

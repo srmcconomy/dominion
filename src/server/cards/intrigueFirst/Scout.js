@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 import Pile from 'utils/Pile';
 
 export default class Scout extends Card {
-  static cost = { coin: 4 };
+  static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action']);
   async onPlay(player) {
     const cardsInspected = new Pile();

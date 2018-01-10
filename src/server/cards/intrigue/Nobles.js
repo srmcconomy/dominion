@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Nobles extends Card {
-  static cost = { coin: 6 };
+  static cost = new Card.Cost({ coin: 6 });
   static VP = 2;
   static types = new Set(['Action', 'Victory']);
   static getNumberInSupply(game) {

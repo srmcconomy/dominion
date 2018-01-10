@@ -2,11 +2,11 @@ import Card from 'cards/Card';
 import Pile from 'utils/Pile';
 
 export default class Saboteur extends Card {
-  static cost = { coin: 5 };
+  static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action', 'Attack']);
-  async onPlay(player) {
+  async onPlay(player, event) {
     await player.forEachOtherPlayer(async other => {
-      if (await other.handleOwnReactions('attack', player, this)) {
+      if (event.handledByPlayer.get(other)) {
         return;
       }
 
@@ -21,7 +21,7 @@ export default class Saboteur extends Card {
             max: 1,
             predicate: s => (
               s.cards.size > 0 &&
-              player.costsLessThanEqualTo(s.cards.last(), { coin: card.cost.coin - 2 })
+              s.cards.last().cost.isLessThanEqualTo(card.cost.add({ coin: -2 }))
             ),
             message: 'Select a card to gain'
           });

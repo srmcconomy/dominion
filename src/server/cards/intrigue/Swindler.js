@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Swindler extends Card {
-  static cost = { coin: 3 };
+  static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {
     player.money += 2;

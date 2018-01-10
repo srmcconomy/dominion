@@ -36,6 +36,21 @@ class Mats {
   }
 }
 
+@DirtyModel
+class SupplyTokens {
+  @trackDirty
+  plusAction = null;
+
+  @trackDirty
+  plusBuy = null;
+
+  @trackDirty
+  plusCard = null;
+
+  @trackDirty
+  plusCoin = null;
+}
+
 class Event {
   constructor(eventName, triggeringPlayer, game, args) {
     this.name = eventName;
@@ -65,6 +80,9 @@ export default class Player extends Model {
 
   @trackDirty
   mats = new Mats();
+
+  @trackDirty
+  supplyTokens = new SupplyTokens();
 
   tavernMat = new Pile();
 
@@ -116,9 +134,10 @@ export default class Player extends Model {
 
   constructor(name, game, socket) {
     super();
-
-    this.socket = new AsyncSocket(socket);
-    this.socket.onReconnect(() => this.socket.emit('state', this.game.createDirty(this, true)));
+    if (socket) {
+      this.socket = new AsyncSocket(socket);
+      this.socket.onReconnect(() => this.socket.emit('state', this.game.createDirty(this, true)));
+    }
     this.game = game;
     game.players.set(this.id, this);
     this.actions = 1;
@@ -396,7 +415,6 @@ export default class Player extends Model {
     }
     if (this.deck.size > 0) {
       this.moveCard(this.deck, cards, { num: Math.min(num - numTaken, this.deck.size) });
-      console.log(cards);
     }
     this.game.log(`${this.name} draws ${cards.length} card${cards.length !== 1 ? 's' : ''}`);
     if (putInHand) {
@@ -440,42 +458,6 @@ export default class Player extends Model {
     return tempCost;
   }
 
-  costsLessThanEqualTo(card, cost) {
-    if (!card) return false;
-    const tempCardCost = this.getCardCost(card);
-    const tempCost = { coin: 0, debt: 0, potion: 0, ...cost };
-
-    return (
-      tempCardCost.coin <= tempCost.coin &&
-      tempCardCost.debt <= tempCost.debt &&
-      tempCardCost.potion <= tempCost.potion
-    );
-  }
-
-  costsMoreThanEqualTo(card, cost) {
-    if (!card) return false;
-    const tempCardCost = this.getCardCost(card);
-    const tempCost = { coin: 0, debt: 0, potion: 0, ...cost };
-
-    return (
-      tempCardCost.coin >= tempCost.coin &&
-      tempCardCost.debt >= tempCost.debt &&
-      tempCardCost.potion >= tempCost.potion
-    );
-  }
-
-  costsEqualTo(card, cost) {
-    if (!card) return false;
-    const tempCardCost = this.getCardCost(card);
-    const tempCost = { coin: 0, debt: 0, potion: 0, ...cost };
-
-    return (
-      tempCardCost.coin === tempCost.coin &&
-      tempCardCost.debt === tempCost.debt &&
-      tempCardCost.potion === tempCost.potion
-    );
-  }
-
   returnToSupply(card, from = this.hand) {
     this.moveCard(card, from, this.game.supplies.get(card.title).cards);
   }
@@ -512,6 +494,21 @@ export default class Player extends Model {
     });
   }
 
+  async handleVanillaBonusTokens(card) {
+    if (this.supplyTokens.plusAction === this.game.supplies.get(card.title)) {
+      this.actions++;
+    }
+    if (this.supplyTokens.plusBuy === this.game.supplies.get(card.title)) {
+      this.buys++;
+    }
+    if (this.supplyTokens.plusCard === this.game.supplies.get(card.title)) {
+      await this.draw(1);
+    }
+    if (this.supplyTokens.plusCoin === this.game.supplies.get(card.title)) {
+      this.money++;
+    }
+  }
+
   async play(card) {
     this.game.log(`${this.name} plays ${card.name}`);
     this.game.padding += 4;
@@ -519,6 +516,7 @@ export default class Player extends Model {
     this.cardsPlayedThisTurn.push(card);
     this.moveCard(card, this.hand, this.playArea);
     const event = await this.handleTriggers('play', { card }, [card]);
+    await this.handleVanillaBonusTokens(card);
     if (!event.handledByPlayer.get(this)) {
       await card.onPlay(this, firstEvent);
     }
@@ -710,6 +708,7 @@ export default class Player extends Model {
       console.log('selected');
       console.log(response);
       if (validate(response)) return response;
+      payload.lastInputWasInvalid = true;
     }
   }
 

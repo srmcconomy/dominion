@@ -43,10 +43,12 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
+    "chalk": "^2.3.0",
     "classnames": "^2.2.5",
     "core-decorators": "^0.20.0",
     "eventemitter-decorator": "^0.1.2",
     "immutable": "^3.8.2",
+    "jest": "^22.0.4",
     "js-cookie": "^2.1.4",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",

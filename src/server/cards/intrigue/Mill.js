@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Mill extends Card {
-  static cost = { coin: 4 };
+  static cost = new Card.Cost({ coin: 4 });
   static VP = 1;
   static types = new Set(['Action', 'Victory']);
   async onPlay(player) {
