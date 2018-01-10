@@ -11,13 +11,6 @@ export default class Card extends BaseCard {
     super();
     if (game) game.cards.push(this);
 
-    this.cost = {
-      coin: 0,
-      debt: 0,
-      potion: 0,
-      ...this.cost,
-    };
-
     this.supply = supply;
   }
 
@@ -55,11 +48,11 @@ export default class Card extends BaseCard {
     }
 
     isGreaterThan(cost) {
-      return COST_FIELDS.every(field => this[field] >= cost[field]) && COST_FIELDS.some(field => this[field] > (cost[field] || 0));
+      return COST_FIELDS.every(field => this[field] >= (cost[field] || 0)) && COST_FIELDS.some(field => this[field] > (cost[field] || 0));
     }
 
     isLessThan(cost) {
-      return COST_FIELDS.every(field => this[field] <= cost[field]) && COST_FIELDS.some(field => this[field] < (cost[field] || 0));
+      return COST_FIELDS.every(field => this[field] <= (cost[field] || 0)) && COST_FIELDS.some(field => this[field] < (cost[field] || 0));
     }
 
     isGreaterThanEqualTo(cost) {

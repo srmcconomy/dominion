@@ -56,6 +56,7 @@ class Event {
     this.name = eventName;
     this.triggeringPlayer = triggeringPlayer;
     this.handledByPlayer = new Map();
+    this.handledForCard = new Set();
     game.players.forEach(player => this.handledByPlayer.set(player, false));
     if (args) {
       Object.keys(args).forEach(key => { this[key] = args[key]; });
@@ -225,7 +226,14 @@ export default class Player extends Model {
               []
           ),
         },
-        { title: 'other', getAllCards: () => otherCardsToCheck },
+        {
+          title: 'other',
+          getAllCards: () => otherCardsToCheck.filter(c => (
+            !this.hand.includes(c) &&
+            !this.playArea.includes(c) &&
+            (!this.mats.tavern || !this.mats.tavern.includes(c))
+          )),
+        },
       ].forEach(({ title, getAllCards }) => {
         cards.optional[title] = getAllCards().filter(card => !handledCards.has(card) && card.canTriggerOn(event, this, title === 'persistent' ? 'persistent' : 'normal'));
         cards.mandatory[title] = getAllCards().filter(card => !handledCards.has(card) && card.willTriggerOn(event, this, title === 'persistent' ? 'persistent' : 'normal'));
@@ -333,19 +341,18 @@ export default class Player extends Model {
 
   async discard(card, from = this.hand) {
     this.game.log(`${this.name} discards ${card.name}`);
-    const event = await this.handleTriggers('discard', { card, from }, [card]);
+    const event = await this.handleTriggers('discard', { cards: [card], from }, [card]);
     if (!event.handledByPlayer.get(this)) {
       this.moveCard(card, from, this.discardPile);
     }
   }
 
-  async discardAll(pile) {
-    const num = pile.length;
-    while (pile.length > 0) {
-      const card = pile.last();
-      const event = await this.handleTriggers('discard', { card, pile }, [card]);
-      if (!event.handledByPlayer.get(this)) {
-        this.moveCard(card, pile, this.discardPile);
+  async discardAll(cards, from = this.hand) {
+    this.game.log(`${this.name} discards ${cards.map(c => c.title).join(', ')}`);
+    const event = await this.handleTriggers('discard', { cards, from }, cards);
+    for (const card of cards) {
+      if (!event.handledForCard.has(card)) {
+        this.moveCard(card, from, this.discardPile);
       }
     }
     this.game.log(`${this.name} discards ${num} card${num !== 1 ? 's' : ''}`);
@@ -463,11 +470,9 @@ export default class Player extends Model {
   }
 
   async cleanup() {
-    let card;
-    while (card = this.playArea.find(c => !c.ignoreCleanUp)) {
-      await this.discard(card, this.playArea);
-    }
-    await this.discardAll(this.hand);
+    await this.discardAll([...this.hand]);
+    const cards = this.playArea.filter(c => !c.ignoreCleanUp);
+    await this.discardAll(cards, this.playArea);
   }
 
   async endOfGameCleanUp() {

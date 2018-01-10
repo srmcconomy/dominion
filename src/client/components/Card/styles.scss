@@ -97,6 +97,9 @@
 
 .action.traveller {
   background-image: url(assets/images/cards/backgrounds/normal/action-traveller.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action.png);
+  }
 }
 
 .action.reserve.victory {

@@ -1,4 +1,3 @@
-import Card from 'cards/Card';
 import 'supplies/basic';
 import 'supplies/base';
 import 'supplies/baseSecond';
@@ -6,6 +5,7 @@ import 'supplies/intrigue';
 import 'supplies/intrigueFirst';
 import 'supplies/seaside';
 import 'supplies/cornucopia';
+import 'supplies/adventures';
 import Copper from 'cards/basic/Copper';
 import Estate from 'cards/basic/Estate';
 import Model from 'models/Model';
@@ -92,6 +92,7 @@ export default class Game extends Model {
       'NativeVillage',
       'PirateShip',
       'Island',
+      'Page',
     ];
   }
 
@@ -217,6 +218,12 @@ export default class Game extends Model {
         this.supplies.get(a).cost.coin - this.supplies.get(b).cost.coin
       ));
     });
+
+    let reserveGame = false;
+    this.supplies.forEach(s => {
+      if (s.types.has('Reserve')) reserveGame = true;
+    });
+
     this.players.forEach(player => {
       if (this.startingDeck) {
         console.log('starting deck');
@@ -229,6 +236,10 @@ export default class Game extends Model {
           ...Array(3).fill().map(() => new Estate(this)),
         );
         player.deck.shuffle();
+      }
+
+      if (reserveGame) {
+        player.mats.tavern = new Pile();
       }
     });
     this.players.forEach(player => {
