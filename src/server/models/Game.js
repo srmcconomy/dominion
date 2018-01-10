@@ -40,6 +40,9 @@ export default class Game extends Model {
   trash = new Pile();
 
   @trackDirty
+  prizePile = new Pile();
+
+  @trackDirty
   cards = [];
 
   @trackDirty(() => arr => arr.map(({ id }) => id))
@@ -58,6 +61,10 @@ export default class Game extends Model {
   startingPlayerIndex = null;
 
   eventQueue = [];
+
+  padding = 0;
+
+  turnNumber = 1;
 
   getStateFor(player) {
     return { ...this.createDirty(player, true) };
@@ -129,7 +136,12 @@ export default class Game extends Model {
       let score = player.vpTokens;
       player.endOfGameCleanUp();
       player.deck.forEach(c => {
-        score += c.getVpValue(player);
+        const cardScore = c.getVpValue(player);
+        if (cardScore) {
+          this.log(`${player.name}\'s ${c.title} is worth ${cardScore}`);
+          console.log(`${player.name}\'s ${c.title} is worth ${cardScore}`);
+        }
+        score += cardScore;
       });
       this.log(`${player.name} has ${score} victory points`);
       console.log(`${player.name} has ${score} victory points`);
@@ -233,6 +245,7 @@ export default class Game extends Model {
       }
     });
     this.clean();
+    this.turnNumber = 1;
     await this.loop();
   }
 
@@ -257,10 +270,27 @@ export default class Game extends Model {
         this.endOfGame();
         break;
       }
-      this.currentPlayerIndex++;
+
+      let additionalTurn = false;
+      if (this.previousPlayer) {
+        if (this.currentPlayer.id !== this.previousPlayer.id) {
+          this.currentPlayer.playArea.forEach(c => {
+            if (c.title === 'Outpost') additionalTurn = true;
+          });
+        }
+      }
+      if (additionalTurn === false) {
+        this.currentPlayerIndex++;
+      }
+
       if (this.currentPlayerIndex === this.players.size) {
         this.currentPlayerIndex = 0;
       }
+      if (this.currentPlayerIndex === this.startingPlayerIndex && additionalTurn === false) {
+        this.turnNumber++;
+      }
+
+      this.previousPlayer = this.currentPlayer;
       this.currentPlayer = this.playerOrder[this.currentPlayerIndex];
     }
   }

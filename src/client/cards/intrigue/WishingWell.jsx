@@ -7,8 +7,8 @@ export default class WishingWell extends Card {
   static cost = <Coin>3</Coin>;
   static description = (
     <div>
-      <div>+1 Card</div>
-      <div>+1 Action</div>
+      <div><strong>+1 Card</strong></div>
+      <div><strong>+1 Action</strong></div>
       <div>Name a card, then reveal the top card of your deck.  If you named it, put it into your hand.</div>
     </div>
   );

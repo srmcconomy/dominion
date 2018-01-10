@@ -6,8 +6,8 @@ export default class Courtyard extends Card {
   static cost = <Coin>2</Coin>;
   static description = (
     <div>
-      <p><strong>+3 Cards</strong></p>
-      <p>Put a card from your hand onto your deck</p>
+      <div><strong>+3 Cards</strong></div>
+      <div>Put a card from your hand onto your deck</div>
     </div>
   );
   static types = ['Action'];

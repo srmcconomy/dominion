@@ -22,6 +22,7 @@ export default class Courtier extends Card {
     const numChoices = Math.min(card.types.size, keys.length);
     for (let i = 0; i < numChoices; ++i) {
       const choice = await player.selectOption(keys, `Choose ${numChoices}`);
+      player.game.log(`${player.name} chooses: ${keys[choice]}`);
       await choices[keys[choice]]();
       keys.splice(choice, 1);
     }

@@ -18,11 +18,11 @@ export default class SecretChamber extends Card {
     }
   }
 
-  shouldReactTo(event) {
-    return event === 'attack';
+  canTriggerOn(event, player) {
+    return event.name === 'play-first' && player !== event.triggeringPlayer && event.card.types.has('Attack') && player.hand.includes(this);
   }
 
-  async reactTo(event, player) {
+  async onTrigger(event, player) {
     await player.draw(2);
     const cards = await player.selectCards({
       min: 2,

@@ -90,6 +90,8 @@ export default class Player extends Model {
 
   nativeVillageMat = new Pile();
 
+  asidePile = new Pile();
+
   @trackDirty
   name;
 
@@ -337,11 +339,23 @@ export default class Player extends Model {
     }
   }
 
+  async discardAll(pile) {
+    const num = pile.length;
+    while (pile.length > 0) {
+      const card = pile.last();
+      const event = await this.handleTriggers('discard', { card, pile }, [card]);
+      if (!event.handledByPlayer.get(this)) {
+        this.moveCard(card, pile, this.discardPile);
+      }
+    }
+    this.game.log(`${this.name} discards ${num} card${num !== 1 ? 's' : ''}`);
+  }
+
   async gainSpecificCard(card, from, to = this.discardPile) {
     const event = await this.handleTriggers('would-gain', { card }, [card]);
     this.game.log(`${this.name} gains ${card.name}`);
     if (!event.handledByPlayer.get(this)) {
-      this.moveCard(from, to);
+      this.moveCard(card, from, to);
       await this.handleTriggers('gain', { card }, [card]);
     }
   }
@@ -363,6 +377,7 @@ export default class Player extends Model {
       return null;
     }
     const card = supply.cards.last();
+    this.game.log(`${this.name} buys ${card.name}`);
     await this.handleTriggers('buy', { card }, [card]);
     this.cardsBoughtThisTurn.push(card);
     await this.gain(name, to);
@@ -401,7 +416,7 @@ export default class Player extends Model {
     if (this.deck.size > 0) {
       this.moveCard(this.deck, cards, { num: Math.min(num - numTaken, this.deck.size) });
     }
-    this.game.log(`${this.name} draws ${cards.length} cards`);
+    this.game.log(`${this.name} draws ${cards.length} card${cards.length !== 1 ? 's' : ''}`);
     if (putInHand) {
       this.hand.push(...cards);
     }
@@ -414,6 +429,10 @@ export default class Player extends Model {
 
   pickUp(card, from = this.playArea) {
     this.moveCard(card, from, this.hand);
+  }
+
+  setAside(card, from = this.playArea) {
+    this.moveCard(card, from, this.asidePile);
   }
 
   flipJourneyToken() {
@@ -430,6 +449,7 @@ export default class Player extends Model {
 
     tempCost.coin -= this.cardsPlayedThisTurn.filter(c => c.title === 'Bridge').length;
     tempCost.coin -= this.playArea.filter(c => c.title === 'Highway' || c.title === 'BridgeTroll').length;
+    tempCost.coin -= 2 * this.playArea.filter(c => c.title === 'Princess').length;
     if (card.types.has('Action')) {
       tempCost.coin -= 2 * this.playArea.filter(c => c.title === 'Quarry').length;
     }
@@ -443,13 +463,11 @@ export default class Player extends Model {
   }
 
   async cleanup() {
-    while (this.hand.size > 0) {
-      await this.discard(this.hand.last());
-    }
     let card;
     while (card = this.playArea.find(c => !c.ignoreCleanUp)) {
       await this.discard(card, this.playArea);
     }
+    await this.discardAll(this.hand);
   }
 
   async endOfGameCleanUp() {
@@ -493,6 +511,7 @@ export default class Player extends Model {
 
   async play(card) {
     this.game.log(`${this.name} plays ${card.name}`);
+    this.game.padding += 4;
     const firstEvent = await this.handleTriggers('play-first', { card }, [card]);
     this.cardsPlayedThisTurn.push(card);
     this.moveCard(card, this.hand, this.playArea);
@@ -502,6 +521,7 @@ export default class Player extends Model {
       await card.onPlay(this, firstEvent);
     }
     await this.handleTriggers('after-play', { card }, [card]);
+    this.game.padding -= 4;
   }
 
   async forEachOtherPlayer(func) {
@@ -649,7 +669,10 @@ export default class Player extends Model {
   }
 
   async takeTurn() {
+    this.game.padding = 0;
+    this.game.log(`Turn: ${this.game.turnNumber}`);
     this.game.log(`${this.name} starts their turn`);
+    this.game.padding += 4;
     this.actions = 1;
     this.buys = 1;
     this.money = 0;

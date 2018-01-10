@@ -5,9 +5,7 @@ import Coin from 'components/Coin';
 export default class Pawn extends Card {
   static cost = <Coin>2</Coin>;
   static description = (
-    <div>
-      <span>Choose two: +1 Card; +1 Action; +1 Buy, +<Coin>1</Coin>. The choices must be different</span>
-    </div>
+    <div>Choose two: <strong>+1 Card</strong>; <strong>+1 Action</strong>; <strong>+1 Buy</strong>; +<Coin>1</Coin>. The choices must be different</div>
   );
   static types = ['Action'];
 }

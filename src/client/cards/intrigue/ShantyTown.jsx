@@ -7,8 +7,8 @@ export default class ShantyTown extends Card {
   static cost = <Coin>3</Coin>;
   static description = (
     <div>
-      <span>+2 Actions</span>
-      <span>Reveal your hand. If you have no Action cards in hand, +2 Cards.</span>
+      <div><strong>+2 Actions</strong></div>
+      <div>Reveal your hand. If you have no Action cards in hand, <strong>+2 Cards</strong>.</div>
     </div>
   );
   static types = ['Action'];

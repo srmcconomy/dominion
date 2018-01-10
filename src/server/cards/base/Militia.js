@@ -10,7 +10,11 @@ export default class Militia extends Card {
         return;
       }
       if (other.hand.size > 3) {
-        const cards = await other.selectCards({ min: other.hand.size - 3, max: other.hand.size - 3, message: 'Discard down to three cards in hand' });
+        const cards = await other.selectCards({
+          min: other.hand.size - 3,
+          max: other.hand.size - 3,
+          message: 'Discard down to three cards in hand'
+        });
         for (let i = 0; i < cards.length; i++) {
           await other.discard(cards[i]);
         }
