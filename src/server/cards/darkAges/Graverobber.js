@@ -12,10 +12,10 @@ export default class Graverobber extends Card {
           const [card] = await player.selectCards({
             min: 1,
             max: 1,
-            pile: player.game.trash.filter(c => c.types.has('Action')),
+            pile: player.game.trash.filter(c => (c.types.has('Action') && player.costsMoreThanEqualTo(c, { coin: 3 }) && player.costsLessThanEqualTo(c, { coin: 6 }))),
             message: 'Choose an action to gain' });
           if (card) {
-            await player.gainSpecificCard(card, player.game.trash);
+            await player.gainSpecificCard(card, player.game.trash, player.deck);
           }
         }
         break;
