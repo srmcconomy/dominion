@@ -87,6 +87,13 @@
   }
 }
 
+.action.ruins {
+  background-image: url(assets/images/cards/backgrounds/normal/action-ruins.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action-ruins.png);
+  }
+}
+
 .action.shelter {
   background-image: url(assets/images/cards/backgrounds/normal/action-shelter.png);
 }
