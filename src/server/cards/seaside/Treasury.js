@@ -13,7 +13,7 @@ export default class Treasury extends Card {
     return (
       event.name === 'discard' &&
       event.triggeringPlayer === player &&
-      event.card === this &&
+      event.cards.includes(this) &&
       !player.cardsGainedThisTurn.some(card => card.types.has('Victory')) &&
       player.playArea.includes(this)
     );
@@ -21,6 +21,6 @@ export default class Treasury extends Card {
 
   async onTrigger(event, player) {
     await player.topDeck(this, player.playArea);
-    event.handledByPlayer.set(player, true);
+    event.handledForCard.add(this);
   }
 }

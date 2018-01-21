@@ -13,7 +13,7 @@ export default class HornOfPlenty extends Card {
       max: 1,
       predicate: s => (
         s.cards.size > 0 &&
-        player.costsLessThanEqualTo(s.cards.last(), { coin: uniqueNames.length })
+        player.cardCostsLessThanEqualTo(s.cards.last(), { coin: uniqueNames.length })
       ),
       message: 'Choose an card to gain'
     });

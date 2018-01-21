@@ -6,6 +6,10 @@
   display: inline-block;
   background-position: center;
   background-repeat: no-repeat;
+  :global(.description) & {
+    margin-top: -0.5em;
+    font-size: 1.2em;
+  }
   > div {
     display: flex;
     align-items: center;

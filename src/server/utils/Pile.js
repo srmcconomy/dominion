@@ -9,6 +9,10 @@ export default class Pile extends Model {
     this._map = map;
   }
 
+  toString() {
+    return `Pile: [${this._list.map(c => c.title).join(', ')}]`;
+  }
+
   createDirty() {
     return this._list.map(card => card.id);
   }

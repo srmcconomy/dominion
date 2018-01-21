@@ -18,6 +18,7 @@ import 'cards/intrigue';
 import 'cards/intrigueFirst';
 import 'cards/seaside';
 import 'cards/cornucopia';
+import 'cards/adventures';
 
 import styles from './styles.scss';
 

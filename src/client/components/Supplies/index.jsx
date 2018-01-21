@@ -8,7 +8,7 @@ import styles from './styles.scss';
 
 const cx = classnames.bind(styles);
 
-function Supplies({ supplies: { treasure, victory, kingdom, nonsupply } }) {
+function Supplies({ supplies: { treasure, victory, kingdom, nonSupply } }) {
   return (
     <div className={cx('supplies')}>
       <div className={cx('victory')}>
@@ -19,6 +19,9 @@ function Supplies({ supplies: { treasure, victory, kingdom, nonsupply } }) {
       </div>
       <div className={cx('victory')}>
         {treasure.map(title => <Supply key={title} title={title} small />)}
+      </div>
+      <div className={cx('non-supply')}>
+        {nonSupply.map(title => <Supply key={title} title={title} small />)}
       </div>
     </div>
   );
