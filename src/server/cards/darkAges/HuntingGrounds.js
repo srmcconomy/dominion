@@ -8,7 +8,9 @@ export default class HuntingGrounds extends Card {
   }
 
   willTriggerOn(event, player) {
-    return event.name === 'trash' && event.triggeringPlayer === player && event.card === this;
+    return event.name === 'trash' &&
+    event.triggeringPlayer === player &&
+    event.card === this;
   }
 
   async onTrigger(event, player) {
