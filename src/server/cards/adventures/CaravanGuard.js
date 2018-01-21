@@ -10,11 +10,6 @@ export default class CaravanGuard extends Card {
   }
 
   canTriggerOn(event, player) {
-    if (event.name === 'play-first') {
-      console.log(event.card.types.has('Attack'));
-      console.log(event.triggeringPlayer !== player);
-      console.log(player.hand.includes(this));
-    }
     return event.name === 'play-first' && event.card.types.has('Attack') && event.triggeringPlayer !== player && player.hand.includes(this);
   }
 

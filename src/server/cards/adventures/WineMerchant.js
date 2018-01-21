@@ -14,6 +14,6 @@ export default class WineMerchant extends Card {
   }
 
   async onTrigger(event, player) {
-    player.moveCard(this, player.mats.tavern, player.playArea);
+    await player.discard(this, player.mats.tavern);
   }
 }

@@ -18,24 +18,28 @@ export default class Raze extends Card {
           max: 1,
           message: 'Choose a card to trash',
         });
-        await player.trash(trashedCard);
+        if (trashedCard) {
+          await player.trash(trashedCard);
+        }
         break;
     }
 
-    const topCards = player.lookAtTopOfDeck(trashedCard.cost.coin);
-    if (topCards.length > 0) {
-      const [cardToPutInHand] = await player.selectCards({
-        min: 1,
-        max: 1,
-        pile: topCards,
-        message: 'Choose a card to put in your hand. The rest will be discarded',
-      });
-      if (cardToPutInHand) {
-        player.moveCard(cardToPutInHand, player.deck, player.hand);
-      }
-      for (const card of topCards) {
-        if (card !== cardToPutInHand) {
-          await player.discard(card, player.deck);
+    if (trashedCard) {
+      const topCards = player.lookAtTopOfDeck(trashedCard.cost.coin);
+      if (topCards.length > 0) {
+        const [cardToPutInHand] = await player.selectCards({
+          min: 1,
+          max: 1,
+          pile: topCards,
+          message: 'Choose a card to put in your hand. The rest will be discarded',
+        });
+        if (cardToPutInHand) {
+          player.moveCard(cardToPutInHand, player.deck, player.hand);
+        }
+        for (const card of topCards) {
+          if (card !== cardToPutInHand) {
+            await player.discard(card, player.deck);
+          }
         }
       }
     }

@@ -14,7 +14,9 @@ export default class Hero extends Card {
       ),
       message: 'Choose a Treasure card to gain'
     });
-    await player.gain(supply.title);
+    if (supply) {
+      await player.gain(supply.title);
+    }
   }
 
   canTriggerOn(event, player) {

@@ -4,7 +4,7 @@ export default class Soldier extends Card {
   static cost = new Card.Cost({ coin: 3 });
   static types = new Set('Action', 'Attack', 'Traveller');
   async onPlay(player, event) {
-    player.money += 2 + player.playArea.filter(card => card.types.has('Attack')).length;
+    player.money += 2 + player.playArea.filter(card => card.types.has('Attack') && card !== this).length;
     await player.forEachOtherPlayer(async other => {
       if (event.handledByPlayer.get(other)) {
         return;

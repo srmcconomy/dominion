@@ -12,6 +12,7 @@ export default class Giant extends Card {
           return;
         }
         const [card] = other.lookAtTopOfDeck(1);
+        player.game.log(`${other.name} reveals ${card.title}`);
         if (card && card.cost.potion === 0 && card.cost.debt === 0 && card.cost.coin >= 3 && card.cost.coin <= 6) {
           await other.trash(card, other.deck);
         } else {

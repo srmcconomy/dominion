@@ -7,6 +7,7 @@ export default class Magpie extends Card {
     await player.draw(1);
     player.actions++;
     const [card] = player.lookAtTopOfDeck(1);
+    player.game.log(`${player.name} reveals ${card.title}`);
     if (card) {
       if (card.types.has('Treasure')) {
         player.moveCard(card, player.deck, player.hand);

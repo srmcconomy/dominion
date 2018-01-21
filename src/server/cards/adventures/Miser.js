@@ -17,7 +17,9 @@ export default class Miser extends Card {
           predicate: card => card.title === 'Copper',
           message: 'Choose a copper to put on the Tavern mat',
         });
-        player.moveCard(copper, player.hand, player.mats.tavern);
+        if (copper) {
+          player.moveCard(copper, player.hand, player.mats.tavern);
+        }
         break;
       }
       case 1:
