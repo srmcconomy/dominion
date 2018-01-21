@@ -1,5 +1,5 @@
 import { test, beforeEach, expect, log } from '../../testingFramework';
-import { createGame, setHand, respondWithFirstCard, respondWithSupply, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCardFromHand, respondWithCardsFromHand, respondWithChoice, skipToNextTurn } from '../../toolbox';
+import { createGame, setHand, respondWithFirstCard, respondWithSupply, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards, respondWithChoice, skipToNextTurn } from '../../toolbox';
 
 export default () => {
   let game;
@@ -13,7 +13,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Warrior']);
     await waitForNextInput();
-    respondWithCardFromHand('Warrior');
+    respondWithCard('Warrior');
     await waitForNextInput();
     expect(player.hand.length).toBe(6);
   });
@@ -24,9 +24,9 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Warrior']);
     await waitForNextInput();
-    respondWithCardFromHand('Warrior');
+    respondWithCard('Warrior');
     await waitForNextInput();
-    respondWithCardsFromHand([]); // choose treasures
+    respondWithCards([]); // choose treasures
     await waitForNextInput();
     respondWithChoice(0); // end turn
 
@@ -45,9 +45,9 @@ export default () => {
     game.supplies.get('Hero').cards.clear();
 
     await waitForNextInput();
-    respondWithCardFromHand('Warrior');
+    respondWithCard('Warrior');
     await waitForNextInput();
-    respondWithCardsFromHand([]); // choose treasures
+    respondWithCards([]); // choose treasures
     await waitForNextInput();
     respondWithChoice(0); // end turn
 
@@ -61,9 +61,9 @@ export default () => {
 
     await waitForNextInput();
 
-    respondWithCardFromHand('Warrior');
+    respondWithCard('Warrior');
     await waitForNextInput();
-    respondWithCardsFromHand([]); // choose treasures
+    respondWithCards([]); // choose treasures
     await waitForNextInput();
     respondWithChoice(0); // end turn
     await waitForNextInput();

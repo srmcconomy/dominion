@@ -1,5 +1,5 @@
 import { test, beforeEach, expect, log } from '../../testingFramework';
-import { createGame, setHand, respondWithFirstCard, respondWithSupply, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCardFromHand, respondWithCardsFromHand, respondWithChoice, skipToNextTurn } from '../../toolbox';
+import { createGame, setHand, respondWithFirstCard, respondWithSupply, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards, respondWithChoice, skipToNextTurn } from '../../toolbox';
 
 export default () => {
   let game;
@@ -13,7 +13,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'TreasureHunter']);
     await waitForNextInput();
-    respondWithCardFromHand('TreasureHunter');
+    respondWithCard('TreasureHunter');
     await waitForNextInput();
     expect(player.actions).toBe(1);
     expect(player.money).toBe(1);
@@ -28,16 +28,15 @@ export default () => {
 
     await waitForNextInput();
     otherPlayer.buys = numCardsToBuy;
-    respondWithCardsFromHand([]);
+    respondWithCards([]);
     for (let i = 0; i < numCardsToBuy; i++) {
       await waitForNextInput();
       respondWithSupply('Copper');
     }
-
     await skipToNextTurn(player);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'TreasureHunter']);
     await waitForNextInput();
-    respondWithCardFromHand('TreasureHunter');
+    respondWithCard('TreasureHunter');
     await waitForNextInput();
     expect(player.cardsGainedThisTurn.length).toBe(numCardsToBuy);
     expect(player.cardsGainedThisTurn).toNotHaveSome(c => c.title !== 'Silver');
@@ -47,9 +46,9 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'TreasureHunter']);
     await waitForNextInput();
-    respondWithCardFromHand('TreasureHunter');
+    respondWithCard('TreasureHunter');
     await waitForNextInput();
-    respondWithCardsFromHand([]); // choose treasures
+    respondWithCards([]); // choose treasures
     await waitForNextInput();
     respondWithChoice(0); // end turn
 
@@ -68,9 +67,9 @@ export default () => {
     game.supplies.get('Warrior').cards.clear();
 
     await waitForNextInput();
-    respondWithCardFromHand('TreasureHunter');
+    respondWithCard('TreasureHunter');
     await waitForNextInput();
-    respondWithCardsFromHand([]); // choose treasures
+    respondWithCards([]); // choose treasures
     await waitForNextInput();
     respondWithChoice(0); // end turn
 
@@ -84,9 +83,9 @@ export default () => {
 
     await waitForNextInput();
 
-    respondWithCardFromHand('TreasureHunter');
+    respondWithCard('TreasureHunter');
     await waitForNextInput();
-    respondWithCardsFromHand([]); // choose treasures
+    respondWithCards([]); // choose treasures
     await waitForNextInput();
     respondWithChoice(0); // end turn
     await waitForNextInput();

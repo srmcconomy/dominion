@@ -1,5 +1,5 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, respondWithFirstCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCardFromHand, respondWithCardsFromHand, respondWithChoice, skipToNextTurn } from '../../toolbox';
+import { createGame, setHand, respondWithFirstCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards, respondWithChoice, skipToNextTurn } from '../../toolbox';
 
 export default () => {
   let game;
@@ -13,7 +13,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'CoinOfTheRealm']);
     await waitForNextInput();
-    respondWithCardFromHand('CoinOfTheRealm');
+    respondWithCard('CoinOfTheRealm');
     await waitForNextInput();
     expect(player.money).toBe(1);
   });
@@ -22,7 +22,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'CoinOfTheRealm']);
     await waitForNextInput();
-    respondWithCardFromHand('CoinOfTheRealm');
+    respondWithCard('CoinOfTheRealm');
     await waitForNextInput();
     expect(player.hand.length).toBe(4);
     expect(player.playArea.length).toBe(0);
@@ -33,11 +33,11 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'CoinOfTheRealm']);
     await waitForNextInput();
-    respondWithCardFromHand('CoinOfTheRealm');
+    respondWithCard('CoinOfTheRealm');
     await skipToNextTurn(player);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Smithy']);
     await waitForNextInput();
-    respondWithCardFromHand('Smithy');
+    respondWithCard('Smithy');
     await waitForNextInput();
     respondWithFirstCard();
     await waitForNextInput();

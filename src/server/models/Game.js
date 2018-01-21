@@ -88,7 +88,7 @@ export default class Game extends Model {
       'Militia',
       'Moat',
       'Village',
-      'Merchant',
+      'CoinOfTheRealm',
       'NativeVillage',
       'PirateShip',
       'Island',

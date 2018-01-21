@@ -20,7 +20,7 @@ export default class Swindler extends Card {
         max: 1,
         predicate: s => (
           s.cards.size > 0 &&
-          player.costsEqualTo(s.cards.last(), card.getCost())
+          player.cardCostsEqualTo(s.cards.last(), card)
         ),
         message: `Choose a card to replace ${other.name}'s ${card.title}`,
       });

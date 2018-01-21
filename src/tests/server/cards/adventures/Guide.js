@@ -1,5 +1,5 @@
 import { test, beforeEach, expect, log } from '../../testingFramework';
-import { createGame, setHand, setStartingDeck, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCardFromHand, respondWithCardsFromHand, respondWithChoice, skipToNextTurn, respondWith, respondWithFirstCard } from '../../toolbox';
+import { createGame, setHand, setStartingDeck, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards, respondWithChoice, skipToNextTurn, respondWith, respondWithFirstCard } from '../../toolbox';
 
 export default () => {
   let game;
@@ -13,7 +13,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Guide']);
     await waitForNextInput();
-    respondWithCardFromHand('Guide');
+    respondWithCard('Guide');
     await waitForNextInput();
 
     expect(player.hand.length).toBe(5);
@@ -24,7 +24,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Guide']);
     await waitForNextInput();
-    respondWithCardFromHand('Guide');
+    respondWithCard('Guide');
     await waitForNextInput();
 
     expect(player.playArea.length).toBe(0);
@@ -36,7 +36,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Guide']);
     await waitForNextInput();
-    respondWithCardFromHand('Guide');
+    respondWithCard('Guide');
 
     await skipToNextTurn(player);
     setHand(player, ['Duchy', 'Duchy', 'Duchy', 'Duchy', 'Duchy']);
@@ -57,9 +57,9 @@ export default () => {
     setHand(player, ['Copper', 'Copper', 'Copper', 'Duchy', 'Gear']);
 
     await waitForNextInput();
-    respondWithCardFromHand('Gear');
+    respondWithCard('Gear');
     await waitForNextInput();
-    respondWithCardFromHand('Duchy');
+    respondWithCard('Duchy');
     await waitForNextInput();
 
     expect(player.hand.length).toBe(5);
@@ -77,9 +77,9 @@ export default () => {
     setHand(player, ['Copper', 'Copper', 'Copper', 'Duchy', 'Gear']);
 
     await waitForNextInput();
-    respondWithCardFromHand('Gear');
+    respondWithCard('Gear');
     await waitForNextInput();
-    respondWithCardsFromHand([]);
+    respondWithCards([]);
     await waitForNextInput();
 
     expect(player.hand.length).toBe(6);

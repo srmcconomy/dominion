@@ -1,5 +1,5 @@
 import { test, beforeEach, expect, log } from '../../testingFramework';
-import { createGame, setHand, respondWithFirstCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCardFromHand, respondWithCardsFromHand, respondWithChoice, skipToNextTurn, respondWith } from '../../toolbox';
+import { createGame, setHand, respondWithFirstCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards, respondWithChoice, skipToNextTurn, respondWith } from '../../toolbox';
 
 export default () => {
   let game;
@@ -12,7 +12,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Dungeon']);
     await waitForNextInput();
-    respondWithCardFromHand('Dungeon');
+    respondWithCard('Dungeon');
     await waitForNextInput();
 
     expect(player.actions).toBe(1);
@@ -24,9 +24,9 @@ export default () => {
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Dungeon']);
 
     await waitForNextInput();
-    respondWithCardFromHand('Dungeon');
+    respondWithCard('Dungeon');
     await waitForNextInput();
-    respondWithCardsFromHand(['Copper', 'Copper']);
+    respondWithCards(['Copper', 'Copper']);
     await waitForNextInput();
 
     expect(player.hand.length).toBe(4);
@@ -37,16 +37,16 @@ export default () => {
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Dungeon']);
 
     await waitForNextInput();
-    respondWithCardFromHand('Dungeon');
+    respondWithCard('Dungeon');
     await waitForNextInput();
-    respondWithCardsFromHand(['Copper', 'Copper']);
+    respondWithCards(['Copper', 'Copper']);
 
     await skipToNextTurn(player);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Copper']);
     await waitForNextInput();
 
     expect(player.hand.length).toBe(7);
-    respondWithCardsFromHand(['Copper', 'Copper']);
+    respondWithCards(['Copper', 'Copper']);
     await waitForNextInput();
     expect(player.hand.length).toBe(5);
   });

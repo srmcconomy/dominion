@@ -1,5 +1,5 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCardFromHand, respondWithCardsFromHand } from '../../toolbox';
+import { createGame, setHand, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards } from '../../toolbox';
 
 export default () => {
   let game;
@@ -12,7 +12,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Militia']);
     await waitForNextInput();
-    respondWithCardFromHand('Militia');
+    respondWithCard('Militia');
     await waitForNextInput();
     expect(player.money).toBe(2);
   });
@@ -23,12 +23,12 @@ export default () => {
     const otherPlayer = game.playerOrder.find(p => p !== player);
     setHand(otherPlayer, ['Copper', 'Copper', 'Copper', 'Copper', 'Copper']);
     await waitForNextInput();
-    respondWithCardFromHand('Militia');
+    respondWithCard('Militia');
 
     let { player: inputPlayer, lastInputWasValid } = await waitForNextInput();
     expect(inputPlayer).toBe(otherPlayer);
     expect(lastInputWasValid).toBe(true);
-    respondWithCardsFromHand(['Copper', 'Copper']);
+    respondWithCards(['Copper', 'Copper']);
 
     ({ player: inputPlayer, lastInputWasValid } = await waitForNextInput());
     expect(lastInputWasValid).toBe(true);
@@ -42,12 +42,12 @@ export default () => {
     const otherPlayer = game.playerOrder.find(p => p !== player);
     setHand(otherPlayer, ['Copper', 'Copper', 'Copper', 'Copper', 'Moat']);
     await waitForNextInput();
-    respondWithCardFromHand('Militia');
+    respondWithCard('Militia');
 
     let { player: inputPlayer, lastInputWasValid } = await waitForNextInput();
     expect(inputPlayer).toBe(otherPlayer);
     expect(lastInputWasValid).toBe(true);
-    respondWithCardFromHand('Moat');
+    respondWithCard('Moat');
 
     ({ player: inputPlayer, lastInputWasValid } = await waitForNextInput());
     expect(lastInputWasValid).toBe(true);

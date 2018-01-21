@@ -1,5 +1,5 @@
 import { test, beforeEach, expect, log } from '../../testingFramework';
-import { createGame, setHand, respondWithFirstCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCardFromHand, respondWithCardsFromHand, respondWithChoice, skipToNextTurn } from '../../toolbox';
+import { createGame, setHand, respondWithFirstCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards, respondWithChoice, skipToNextTurn } from '../../toolbox';
 
 export default () => {
   let game;
@@ -12,7 +12,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Amulet']);
     await waitForNextInput();
-    respondWithCardFromHand('Amulet');
+    respondWithCard('Amulet');
     await waitForNextInput();
     respondWithChoice(0);
     await waitForNextInput();
@@ -26,11 +26,11 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Amulet']);
     await waitForNextInput();
-    respondWithCardFromHand('Amulet');
+    respondWithCard('Amulet');
     await waitForNextInput();
     respondWithChoice(1);
     await waitForNextInput();
-    respondWithCardFromHand('Copper');
+    respondWithCard('Copper');
     await waitForNextInput();
 
     expect(player.money).toBe(0);
@@ -42,7 +42,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Amulet']);
     await waitForNextInput();
-    respondWithCardFromHand('Amulet');
+    respondWithCard('Amulet');
     await waitForNextInput();
     respondWithChoice(2);
     await waitForNextInput();
@@ -56,7 +56,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Amulet']);
     await waitForNextInput();
-    respondWithCardFromHand('Amulet');
+    respondWithCard('Amulet');
     await waitForNextInput();
     respondWithChoice(0);
     await skipToNextTurn(player);
@@ -74,7 +74,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Amulet']);
     await waitForNextInput();
-    respondWithCardFromHand('Amulet');
+    respondWithCard('Amulet');
     await waitForNextInput();
     respondWithChoice(0);
     await skipToNextTurn(player);
@@ -82,7 +82,7 @@ export default () => {
     await waitForNextInput();
     respondWithChoice(1);
     await waitForNextInput();
-    respondWithCardFromHand('Copper');
+    respondWithCard('Copper');
     await waitForNextInput();
 
     expect(player.money).toBe(0);
@@ -94,7 +94,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Amulet']);
     await waitForNextInput();
-    respondWithCardFromHand('Amulet');
+    respondWithCard('Amulet');
     await waitForNextInput();
     respondWithChoice(0);
     await skipToNextTurn(player);

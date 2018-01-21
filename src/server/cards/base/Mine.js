@@ -17,8 +17,8 @@ export default class Mine extends Card {
         max: 1,
         predicate: s => (
           s.cards.size > 0 &&
-          s.cards.last().cost.isLessThanEqualTo({ coin: card.cost.coin + 3 }) &&
-          s.cards.last().types.has('Treasure')
+          s.cards.last().types.has('Treasure') &&
+          player.cardCostsLessThanEqualTo(s.cards.last(), { coin: card.cost.coin + 3 })
         ),
         message: 'Choose a Treasure card to gain'
       });

@@ -22,7 +22,7 @@ export default class Messenger extends Card {
     const [supply] = await player.selectSupplies({
       min: 1,
       max: 1,
-      predicate: s => s.cards.length > 0 && s.cards.last().cost.isLessThanEqualTo({ coin: 4 }),
+      predicate: s => s.cards.length > 0 && player.cardCostsLessThanEqualTo(s.cards.last(), { coin: 4 }),
     });
     if (supply) {
       await player.gain(supply.title);

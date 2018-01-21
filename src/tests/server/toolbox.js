@@ -1,5 +1,6 @@
 import Game from 'models/Game';
 import Player from 'models/Player';
+import Card from 'cards/Card';
 
 import { log } from './testingFramework';
 
@@ -60,6 +61,7 @@ function takeTurnStub(player) {
   return async function takeTurn() {
     currentPlayer = player;
     if (pauseAt.has('start-of-turn')) {
+      currentInput = null;
       await waitForResume();
     }
     return oldTakeTurn();
@@ -113,28 +115,27 @@ export function respondWithFirstCard() {
   });
 }
 
-export function respondWithCardFromHand(cardName) {
+export function respondWithCards(cardNames) {
   if (!currentInput.selectCards) {
     throw new Error('Invalid response: not expecting card selection');
   }
+  const includedIDs = new Set();
   respondWith({
     type: 'select-cards',
-    data: [currentPlayer.hand.find(card => card.title === cardName).id],
+    data: cardNames.map(cardName => {
+      const cardID = currentInput.selectCards.cards.find(id => Card.fromID(id).title === cardName && !includedIDs.has(id));
+      if (!cardID) {
+        throw new Error('Invalid response: card may not be selected');
+      }
+      includedIDs.add(cardID);
+      return cardID;
+    }),
   });
 }
 
-export function respondWithCardsFromHand(cardNames) {
-  if (!currentInput.selectCards) {
-    throw new Error('Invalid response: not expecting card selection');
-  }
-  const cards = [];
-  cardNames.forEach(title => {
-    cards.push(currentPlayer.hand.find(card => card.title === title && !cards.includes(card.id)).id);
-  });
-  respondWith({
-    type: 'select-cards',
-    data: cards
-  });
+
+export function respondWithCard(cardName) {
+  return respondWithCards([cardName]);
 }
 
 export function respondWithSupply(title) {
@@ -160,7 +161,7 @@ export function respondWithChoice(choice) {
 export async function waitForNextInput() {
   resumeResolve();
   await waitForPause();
-  return { player: currentPlayer, input: currentInput, lastInputWasValid: currentInput.lastInputWasInvalid === undefined };
+  return { player: currentPlayer, input: currentInput, lastInputWasValid: currentInput ? currentInput.lastInputWasInvalid === undefined : true };
 }
 
 export function setHand(player, cards) {
@@ -183,11 +184,12 @@ export async function skipToNextTurn(player) {
       if (input.selectOption) {
         respondWithChoice(0);
       } else if (input.selectCards) {
-        respondWithCardsFromHand([]);
+        respondWithCards([]);
       }
       ({ input, player: inputPlayer } = await waitForNextInput());
     }
   } else {
+    pauseAt.add('start-of-turn');
     ({ input, player: inputPlayer } = await waitForNextInput());
   }
   pauseAt.add('start-of-turn');
@@ -195,8 +197,9 @@ export async function skipToNextTurn(player) {
     if (input.selectOption) {
       respondWithChoice(0);
     } else if (input.selectCards) {
-      respondWithCardsFromHand([]);
+      respondWithCards([]);
     }
     ({ input, player: inputPlayer } = await waitForNextInput());
   }
+  pauseAt.delete('start-of-turn');
 }

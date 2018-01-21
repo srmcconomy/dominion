@@ -1,5 +1,5 @@
 import { test, beforeEach, expect, log } from '../../testingFramework';
-import { createGame, setHand, respondWithFirstCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCardFromHand, respondWithCardsFromHand, respondWithChoice, skipToNextTurn } from '../../toolbox';
+import { createGame, setHand, respondWithFirstCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards, respondWithChoice, skipToNextTurn } from '../../toolbox';
 
 export default () => {
   let game;
@@ -12,7 +12,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Raze']);
     await waitForNextInput();
-    respondWithCardFromHand('Raze');
+    respondWithCard('Raze');
     await waitForNextInput();
     expect(player.actions).toBe(1);
   });
@@ -21,7 +21,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Raze']);
     await waitForNextInput();
-    respondWithCardFromHand('Raze');
+    respondWithCard('Raze');
     await waitForNextInput();
     respondWithChoice(0);
     await waitForNextInput();
@@ -38,11 +38,11 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Raze']);
     await waitForNextInput();
-    respondWithCardFromHand('Raze');
+    respondWithCard('Raze');
     await waitForNextInput();
     respondWithChoice(1);
     await waitForNextInput();
-    respondWithCardFromHand('Copper');
+    respondWithCard('Copper');
     await waitForNextInput();
 
     expect(game.trash.last().title).toBe('Copper');

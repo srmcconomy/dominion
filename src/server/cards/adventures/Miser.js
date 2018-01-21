@@ -2,11 +2,11 @@ import Card from 'cards/Card';
 
 export default class Miser extends Card {
   static cost = new Card.Cost({ coin: 4 });
-  static types = new Set('Action');
+  static types = new Set(['Action']);
   async onPlay(player) {
     const numCoppers = player.mats.tavern.filter(card => card.title === 'Copper').length;
     const choice = await player.selectOption([
-      'Put a copper from your hand onto the Tavern mat',
+      'Put a Copper from your hand onto the Tavern mat',
       `+${numCoppers} Coins`
     ]);
     switch (choice) {

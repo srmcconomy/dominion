@@ -1,5 +1,5 @@
 import { test, beforeEach, expect, log } from '../../testingFramework';
-import { createGame, setHand, respondWithFirstCard, setStartingDeck, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCardFromHand, respondWithCardsFromHand, respondWithChoice, skipToNextTurn, respondWithSupply } from '../../toolbox';
+import { createGame, setHand, respondWithFirstCard, setStartingDeck, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards, respondWithChoice, skipToNextTurn, respondWithSupply } from '../../toolbox';
 
 export default () => {
   let game;
@@ -13,7 +13,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Messenger']);
     await waitForNextInput();
-    respondWithCardFromHand('Messenger');
+    respondWithCard('Messenger');
     await waitForNextInput();
     expect(player.buys).toBe(2);
     expect(player.money).toBe(2);
@@ -23,7 +23,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Messenger']);
     await waitForNextInput();
-    respondWithCardFromHand('Messenger');
+    respondWithCard('Messenger');
     await waitForNextInput();
     respondWithChoice(0);
     await waitForNextInput();
@@ -36,7 +36,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Messenger']);
     await waitForNextInput();
-    respondWithCardFromHand('Messenger');
+    respondWithCard('Messenger');
     await waitForNextInput();
     respondWithChoice(1);
     await waitForNextInput();
@@ -50,7 +50,7 @@ export default () => {
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Copper']);
     await waitForNextInput();
     player.money = 4;
-    respondWithCardsFromHand([]);
+    respondWithCards([]);
     await waitForNextInput();
     respondWithSupply('Messenger');
     await waitForNextInput();
@@ -70,7 +70,7 @@ export default () => {
 
     await waitForNextInput();
     player.money = 4;
-    respondWithCardsFromHand([]);
+    respondWithCards([]);
     await waitForNextInput();
     respondWithSupply('Messenger');
     await waitForNextInput();
@@ -89,7 +89,7 @@ export default () => {
     await waitForNextInput();
     player.money = 4;
     player.buys = 2;
-    respondWithCardsFromHand([]);
+    respondWithCards([]);
     await waitForNextInput();
     respondWithSupply('Copper');
     await waitForNextInput();

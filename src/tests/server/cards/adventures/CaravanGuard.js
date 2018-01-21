@@ -1,5 +1,5 @@
 import { test, beforeEach, expect, log } from '../../testingFramework';
-import { createGame, setHand, respondWithFirstCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCardFromHand, respondWithCardsFromHand, respondWithChoice, skipToNextTurn, respondWith } from '../../toolbox';
+import { createGame, setHand, respondWithFirstCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards, respondWithChoice, skipToNextTurn, respondWith } from '../../toolbox';
 
 export default () => {
   let game;
@@ -12,7 +12,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'CaravanGuard']);
     await waitForNextInput();
-    respondWithCardFromHand('CaravanGuard');
+    respondWithCard('CaravanGuard');
     await waitForNextInput();
 
     expect(player.actions).toBe(1);
@@ -23,7 +23,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'CaravanGuard']);
     await waitForNextInput();
-    respondWithCardFromHand('CaravanGuard');
+    respondWithCard('CaravanGuard');
     await waitForNextInput();
     await skipToNextTurn(player);
     await waitForNextInput();
@@ -39,7 +39,7 @@ export default () => {
     setHand(otherPlayer, ['Copper', 'Copper', 'Copper', 'Copper', 'Militia']);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'CaravanGuard']);
     await waitForNextInput();
-    respondWithCardFromHand('Militia');
+    respondWithCard('Militia');
     const { player: inputPlayer } = await waitForNextInput();
     expect(inputPlayer).toBe(player);
     respondWithFirstCard();
@@ -56,12 +56,12 @@ export default () => {
     setHand(otherPlayer, ['Copper', 'Copper', 'Copper', 'Copper', 'Militia']);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'CaravanGuard']);
     await waitForNextInput();
-    respondWithCardFromHand('Militia');
+    respondWithCard('Militia');
     const { player: inputPlayer } = await waitForNextInput();
     expect(inputPlayer).toBe(player);
     respondWithFirstCard();
     await waitForNextInput();
-    respondWithCardsFromHand(['Copper', 'Copper']);
+    respondWithCards(['Copper', 'Copper']);
 
     await skipToNextTurn(player);
     await waitForNextInput();

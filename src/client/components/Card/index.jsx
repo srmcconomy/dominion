@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames/bind';
+import AutoSizeText from 'components/AutoSizeText';
+import AutoSizeBlock from 'components/AutoSizeBlock';
 
 import styles from './styles.scss';
 
@@ -24,7 +26,7 @@ export default class Card extends Component {
         {value}
       </div>
     ];
-    if (supply) {
+    if (!supply) {
       ret.push(
         <div key="right" className={cx('value', 'right')}>
           {value}
@@ -66,15 +68,15 @@ export default class Card extends Component {
           />
           <div className={cx('card', [...types].map(type => type.toLowerCase()))}>
             <div className={cx('name')}>
-              <span>{title}</span>
+              <AutoSizeText maxFontSize={fullArt ? 1.75 : 1.5}>{title}</AutoSizeText>
             </div>
             {!fullArt && !supply && (
               <div className={cx('description')}>
-                <span>{description}</span>
+                <AutoSizeBlock maxFontSize={1}>{description}</AutoSizeBlock>
               </div>
             )}
             <div className={cx('types')}>
-              <span>{[...types].join('-')}</span>
+              <AutoSizeText maxFontSize={1.3}>{[...types].join(' - ')}</AutoSizeText>
             </div>
             <div className={cx('icon', set)} />
             {this.renderValue()}

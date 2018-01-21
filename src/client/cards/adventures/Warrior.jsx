@@ -7,7 +7,6 @@ export default class Warrior extends Card {
   static description = (
     <div>
       <div><strong>+2 Cards</strong></div>
-      <div>+<Coin>1</Coin></div>
       <div>Once per traveller you have in play (including this), each other player discards the top card of their deck and trashes it if it costs <Coin>3</Coin> or <Coin>4</Coin>.</div>
       <Line />
       <div>When you discard this from play, you may exchange it for a Hero.</div>

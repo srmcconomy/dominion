@@ -18,10 +18,6 @@ export default class Card extends BaseCard {
     return this.VP;
   }
 
-  getCost(player) {
-    return { coin: 0, debt: 0, potion: 0, ...this.cost };
-  }
-
   endGameCleanUp(player) { }
 
   toJSON() {
@@ -48,19 +44,19 @@ export default class Card extends BaseCard {
     }
 
     isGreaterThan(cost) {
-      return COST_FIELDS.every(field => this[field] >= (cost[field] || 0)) && COST_FIELDS.some(field => this[field] > (cost[field] || 0));
+      return this.isGreaterThanEqualTo(cost) && COST_FIELDS.some(field => this[field] > (cost[field] || 0));
     }
 
     isLessThan(cost) {
-      return COST_FIELDS.every(field => this[field] <= (cost[field] || 0)) && COST_FIELDS.some(field => this[field] < (cost[field] || 0));
+      return this.isLessThanEqualTo(cost) && COST_FIELDS.some(field => this[field] < (cost[field] || 0));
     }
 
     isGreaterThanEqualTo(cost) {
-      return !this.isLessThan(cost);
+      return COST_FIELDS.every(field => this[field] >= (cost[field] || 0));
     }
 
     isLessThanEqualTo(cost) {
-      return !this.isGreaterThan(cost);
+      return COST_FIELDS.every(field => this[field] <= (cost[field] || 0));
     }
 
     isEqualTo(cost) {
@@ -72,6 +68,14 @@ export default class Card extends BaseCard {
         coin: this.coin + (cost.coin || 0),
         debt: this.debt + (cost.debt || 0),
         potion: this.potion + (cost.potion || 0),
+      });
+    }
+
+    subtract(cost) {
+      return new Cost({
+        coin: this.coin - (cost.coin || 0),
+        debt: this.debt - (cost.debt || 0),
+        potion: this.potion - (cost.potion || 0),
       });
     }
   }

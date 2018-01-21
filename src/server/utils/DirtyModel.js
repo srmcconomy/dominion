@@ -130,21 +130,20 @@ export function trackDirty(target, key, descriptor, serializer) {
     dirtyFields.set(target, new Set());
   }
   dirtyFields.get(target).add(key);
+
+  let setter;
   if (descriptor.set) {
-    throw new Error('nope');
-  }
-  const { initializer } = descriptor;
-  if (initializer) {
-    if (!needsInit.has(target)) {
-      needsInit.set(target, new Set());
+    setter = descriptor.set;
+  } else {
+    const { initializer } = descriptor;
+    if (initializer) {
+      if (!needsInit.has(target)) {
+        needsInit.set(target, new Set());
+      }
+      needsInit.get(target).add(key);
     }
-    needsInit.get(target).add(key);
-  }
-  delete descriptor.initializer;
-  delete descriptor.writable;
-  return {
-    ...descriptor,
-    get() {
+
+    descriptor.get = function get() {
       if (!storedFields.has(this)) {
         storedFields.set(this, new Map());
       }
@@ -156,7 +155,25 @@ export function trackDirty(target, key, descriptor, serializer) {
         initialized.get(this).add(key);
       }
       return storedFields.get(this).get(key);
-    },
+    };
+
+    setter = function set(value) {
+      if (initializer && (!initialized.has(this) || !initialized.get(this).has(key))) {
+        if (!initialized.has(this)) {
+          initialized.set(this, new Set());
+        }
+        initialized.get(this).add(key);
+      }
+      if (!storedFields.has(this)) {
+        storedFields.set(this, new Map());
+      }
+      storedFields.get(this).set(key, value);
+    };
+  }
+  delete descriptor.initializer;
+  delete descriptor.writable;
+  return {
+    ...descriptor,
     set(value) {
       if (!storedFields.has(this)) {
         storedFields.set(this, new Map());
@@ -183,15 +200,9 @@ export function trackDirty(target, key, descriptor, serializer) {
         dirtyListeners.get(this).set(key, listener);
       }
 
-      if (initializer && (!initialized.has(this) || !initialized.get(this).has(key))) {
-        if (!initialized.has(this)) {
-          initialized.set(this, new Set());
-        }
-        initialized.get(this).add(key);
-      }
       emitDirty(this);
       dirtyMap.get(this).add(key);
-      storedFields.get(this).set(key, value);
+      setter.call(this, value);
     },
   };
 }

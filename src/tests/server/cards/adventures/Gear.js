@@ -1,5 +1,5 @@
 import { test, beforeEach, expect, log } from '../../testingFramework';
-import { createGame, setHand, setStartingDeck, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCardFromHand, respondWithCardsFromHand, respondWithChoice, skipToNextTurn, respondWith } from '../../toolbox';
+import { createGame, setHand, setStartingDeck, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards, respondWithChoice, skipToNextTurn, respondWith } from '../../toolbox';
 
 export default () => {
   let game;
@@ -12,7 +12,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Gear']);
     await waitForNextInput();
-    respondWithCardFromHand('Gear');
+    respondWithCard('Gear');
     await waitForNextInput();
 
     expect(player.hand.length).toBe(6);
@@ -24,9 +24,9 @@ export default () => {
     setHand(player, ['Copper', 'Copper', 'Duchy', 'Province', 'Gear']);
 
     await waitForNextInput();
-    respondWithCardFromHand('Gear');
+    respondWithCard('Gear');
     await waitForNextInput();
-    respondWithCardsFromHand(['Duchy', 'Province']);
+    respondWithCards(['Duchy', 'Province']);
     await waitForNextInput();
 
     expect(player.hand.length).toBe(4);
@@ -45,9 +45,9 @@ export default () => {
     setHand(player, ['Copper', 'Copper', 'Copper', 'Duchy', 'Gear']);
 
     await waitForNextInput();
-    respondWithCardFromHand('Gear');
+    respondWithCard('Gear');
     await waitForNextInput();
-    respondWithCardFromHand('Duchy');
+    respondWithCard('Duchy');
     await waitForNextInput();
 
     expect(player.hand.length).toBe(5);
@@ -65,9 +65,9 @@ export default () => {
     setHand(player, ['Copper', 'Copper', 'Copper', 'Duchy', 'Gear']);
 
     await waitForNextInput();
-    respondWithCardFromHand('Gear');
+    respondWithCard('Gear');
     await waitForNextInput();
-    respondWithCardsFromHand([]);
+    respondWithCards([]);
     await waitForNextInput();
 
     expect(player.hand.length).toBe(6);

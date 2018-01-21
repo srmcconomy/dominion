@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 
 export default class Transmogrify extends Card {
   static cost = new Card.Cost({ coin: 4 });
-  static types = new Set('Action', 'Reserve');
+  static types = new Set(['Action', 'Reserve']);
   async onPlay(player) {
     player.actions++;
     player.moveCard(this, player.playArea, player.mats.tavern);
@@ -13,6 +13,7 @@ export default class Transmogrify extends Card {
   }
 
   async onTrigger(event, player) {
+    player.moveCard(this, player.mats.tavern, player.playArea);
     const [card] = await player.selectCards({
       min: 1,
       max: 1,
@@ -23,7 +24,7 @@ export default class Transmogrify extends Card {
       const [supply] = await player.selectSupplies({
         min: 1,
         max: 1,
-        predicate: s => s.length > 0 && s.last().cost.isLessThanEqualTo(card.cost.add({ coin: 1 })),
+        predicate: async s => s.cards.length > 0 && player.cardCostsEqualTo(s.cards.last(), (await player.getCardCost(card)).add({ coin: 1 })),
       });
       if (supply) {
         await player.gain(supply.title, player.hand);
