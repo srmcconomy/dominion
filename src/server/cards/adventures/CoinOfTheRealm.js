@@ -5,7 +5,7 @@ export default class CoinOfTheRealm extends Card {
   static types = new Set(['Treasure', 'Reserve']);
   onPlay(player) {
     player.money++;
-    player.moveCard(this, player.playArea, player.mats.tavern);
+    player.putOnTavernMat(this);
   }
 
   canTriggerOn(event, player) {

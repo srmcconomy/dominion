@@ -6,7 +6,7 @@ export default class Ratcatcher extends Card {
   async onPlay(player) {
     await player.draw(1);
     player.actions++;
-    player.moveCard(this, player.playArea, player.mats.tavern);
+    player.putOnTavernMat(this);
   }
 
   canTriggerOn(event, player) {

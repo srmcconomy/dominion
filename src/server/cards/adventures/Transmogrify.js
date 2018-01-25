@@ -5,7 +5,7 @@ export default class Transmogrify extends Card {
   static types = new Set(['Action', 'Reserve']);
   async onPlay(player) {
     player.actions++;
-    player.moveCard(this, player.playArea, player.mats.tavern);
+    player.putOnTavernMat(this);
   }
 
   canTriggerOn(event, player) {
