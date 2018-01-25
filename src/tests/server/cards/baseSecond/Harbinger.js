@@ -1,5 +1,5 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, respondWithFirstCard, setDiscardPile, respondWithCardFromHand, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, respondWithFirstCard, setDiscardPile, respondWithCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
@@ -12,7 +12,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Harbinger']);
     await waitForNextInput();
-    respondWithCardFromHand('Harbinger');
+    respondWithCard('Harbinger');
     await waitForNextInput();
     expect(player.actions).toBe(1);
     expect(player.hand.length).toBe(5);
@@ -23,7 +23,7 @@ export default () => {
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Harbinger']);
     setDiscardPile(player, ['Gold']);
     await waitForNextInput();
-    respondWithCardFromHand('Harbinger');
+    respondWithCard('Harbinger');
     await waitForNextInput();
     respondWithFirstCard();
     await waitForNextInput();

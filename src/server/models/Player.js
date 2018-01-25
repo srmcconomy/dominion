@@ -132,6 +132,8 @@ export default class Player extends Model {
   @trackDirty
   vpTokens = 0;
 
+  score = 0;
+
   @trackDirty
   journeyToken = 'faceUp';
 
@@ -176,6 +178,7 @@ export default class Player extends Model {
     this.potion = 0;
     this.buys = 0;
     this.vpTokens = 0;
+    this.score = 0;
     this.name = name;
     this.journeyToken = 'faceUp';
     this.turnPhase = 'actionPhase';
@@ -564,12 +567,12 @@ export default class Player extends Model {
     }
   }
 
-  async play(card) {
+  async play(card, from = this.hand) {
     this.game.log(`${this.name} plays ${card.name}`);
     this.game.padding += 4;
     const firstEvent = await this.handleTriggers('play-first', { card }, [card]);
     this.cardsPlayedThisTurn.push(card);
-    this.moveCard(card, this.hand, this.playArea);
+    this.moveCard(card, from, this.playArea);
     const event = await this.handleTriggers('play', { card }, [card]);
     await this.handleVanillaBonusTokens(card);
     if (!event.handledByPlayer.get(this)) {

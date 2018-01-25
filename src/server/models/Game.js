@@ -77,7 +77,7 @@ export default class Game extends Model {
       suppliesTitles.push(kingdomSupplies.splice(
         Math.floor(Math.random() * kingdomSupplies.length),
         1,
-      ).title);
+      )[0].title);
     }
     if (false) {
       return suppliesTitles;
@@ -134,7 +134,7 @@ export default class Game extends Model {
   endOfGame() {
     const scores = [];
     this.players.forEach(player => {
-      let score = player.vpTokens;
+      player.score = player.vpTokens;
       player.endOfGameCleanUp();
       player.deck.forEach(c => {
         const cardScore = c.getVpValue(player);
@@ -142,11 +142,11 @@ export default class Game extends Model {
           this.log(`${player.name}\'s ${c.title} is worth ${cardScore}`);
           console.log(`${player.name}\'s ${c.title} is worth ${cardScore}`);
         }
-        score += cardScore;
+        player.score += cardScore;
       });
-      this.log(`${player.name} has ${score} victory points`);
-      console.log(`${player.name} has ${score} victory points`);
-      scores.push({ player, name: player.name, score });
+      this.log(`${player.name} has ${player.score} victory points`);
+      console.log(`${player.name} has ${player.score} victory points`);
+      scores.push({ player, name: player.name, score: player.score });
     });
 
     const hadExtraTurn = Array(this.playerOrder.length).fill(false);
