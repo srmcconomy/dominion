@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Menagerie extends Card {
-  static cost = { coin: 3 };
+  static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Action']);
   async onPlay(player) {
     player.actions++;

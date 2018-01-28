@@ -133,6 +133,15 @@ export function respondWithCards(cardNames) {
   });
 }
 
+export function respondWithNoCards() {
+  if (!currentInput.selectCards) {
+    throw new Error('Invalid response: not expecting card selection');
+  }
+  respondWith({
+    type: 'select-cards',
+    data: [],
+  });
+}
 
 export function respondWithCard(cardName) {
   return respondWithCards([cardName]);

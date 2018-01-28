@@ -220,6 +220,7 @@ export default class Player extends Model {
       await async([
         { title: 'hand', getAllCards: () => [...this.hand] },
         { title: 'playArea', getAllCards: () => [...this.playArea] },
+        { title: 'setAside', getAllCards: () => [...this.asidePile] },
         { title: 'reserve', getAllCards: () => (this.mats.tavern ? [...this.mats.tavern] : []) },
         {
           title: 'persistent',
@@ -458,7 +459,7 @@ export default class Player extends Model {
   }
 
   putOnTavernMat(card, from = this.playArea) {
-    if (from.includes(card)){
+    if (from.includes(card)) {
       this.game.log(`${this.name} moves ${card.title} to their tavern mat`);
       this.moveCard(card, from, this.mats.tavern);
     }
@@ -539,14 +540,20 @@ export default class Player extends Model {
     while (this.discardPile.size > 0) {
       this.moveCard(this.discardPile.last(), this.discardPile, this.deck);
     }
-    while (this.mats.tavern.size > 0) {
-      this.moveCard(this.mats.tavern.last(), this.mats.tavern, this.deck);
+    if (this.mats.tavern) {
+      while (this.mats.tavern.size > 0) {
+        this.moveCard(this.mats.tavern.last(), this.mats.tavern, this.deck);
+      }
     }
-    while (this.mats.island.size > 0) {
-      this.moveCard(this.mats.island.last(), this.mats.island, this.deck);
+    if (this.mats.island) {
+      while (this.mats.island.size > 0) {
+        this.moveCard(this.mats.island.last(), this.mats.island, this.deck);
+      }
     }
-    while (this.mats.nativeVillage.size > 0) {
-      this.moveCard(this.mats.nativeVillage.last(), this.mats.nativeVillage, this.deck);
+    if (this.mats.nativeVillage) {
+      while (this.mats.nativeVillage.size > 0) {
+        this.moveCard(this.mats.nativeVillage.last(), this.mats.nativeVillage, this.deck);
+      }
     }
     this.deck.forEach(c => {
       c.endGameCleanUp(this);

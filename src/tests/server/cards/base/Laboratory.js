@@ -6,6 +6,7 @@ export default () => {
 
   beforeEach(async () => {
     game = await createGame();
+    game.getKingdomCards = () => ['Laboratory'];
   });
 
   test('should give 1 Action and 2 draw', async () => {

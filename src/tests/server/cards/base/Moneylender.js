@@ -6,6 +6,7 @@ export default () => {
 
   beforeEach(async () => {
     game = await createGame();
+    game.getKingdomCards = () => ['Moneylender'];
   });
 
   test('should trash a copper for +$3', async () => {

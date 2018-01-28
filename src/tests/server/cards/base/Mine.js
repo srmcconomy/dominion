@@ -6,6 +6,7 @@ export default () => {
 
   beforeEach(async () => {
     game = await createGame();
+    game.getKingdomCards = () => ['Mine'];
   });
 
   test('should upgrade Copper to Silver', async () => {

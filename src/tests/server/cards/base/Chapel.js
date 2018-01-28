@@ -6,6 +6,7 @@ export default () => {
 
   beforeEach(async () => {
     game = await createGame();
+    game.getKingdomCards = () => ['Chapel'];
   });
 
   test('should trash 4 cards', async () => {

@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Remake extends Card {
-  static cost = { coin: 4 };
+  static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action']);
   async onPlay(player) {
     for (let i = 0; i < 2; i++) {
@@ -20,7 +20,7 @@ export default class Remake extends Card {
             tempCost.coin++;
             return (
               s.cards.size > 0 &&
-            player.costsEqualTo(s.cards.last(), tempCost)
+            player.cardCostsEqualTo(s.cards.last(), tempCost)
             );
           },
           message: 'Choose an card to gain'

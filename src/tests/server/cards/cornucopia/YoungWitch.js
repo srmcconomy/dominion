@@ -1,49 +1,56 @@
+import YoungWitch from 'cards/cornucopia/YoungWitch';
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards } from '../../toolbox';
+import { createGame, setHand, respondWithCard, respondWithCards, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
 
   beforeEach(async () => {
     game = await createGame();
-    game.getKingdomCards = () => ['Militia'];
+    game.getKingdomCards = () => ['YoungWitch'];
   });
 
-  test('should give two coins', async () => {
+  test('should curse', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
-    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Militia']);
-    await waitForNextInput();
-    respondWithCard('Militia');
-    await waitForNextInput();
-    expect(player.money).toBe(2);
-  });
-
-  test('should attack', async () => {
-    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
-    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Militia']);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'YoungWitch']);
     const otherPlayer = game.playerOrder.find(p => p !== player);
-    setHand(otherPlayer, ['Copper', 'Copper', 'Copper', 'Copper', 'Copper']);
     await waitForNextInput();
-    respondWithCard('Militia');
+    respondWithCard('YoungWitch');
+    await waitForNextInput();
+    respondWithCards(['Copper', 'Copper']);
+    await waitForNextInput();
+    expect(player.hand.length).toBe(4);
+    expect(otherPlayer.discardPile.last().title).toBe('Curse');
+  });
+
+  test('should be blocked by bane', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'YoungWitch']);
+    const otherPlayer = game.playerOrder.find(p => p !== player);
+    setHand(otherPlayer, ['Copper', 'Copper', 'Copper', 'Copper', YoungWitch.bane.title]);
+    await waitForNextInput();
+    respondWithCard('YoungWitch');
+    await waitForNextInput();
+    respondWithCards(['Copper', 'Copper']);
 
     let { player: inputPlayer, lastInputWasValid } = await waitForNextInput();
     expect(inputPlayer).toBe(otherPlayer);
     expect(lastInputWasValid).toBe(true);
-    respondWithCards(['Copper', 'Copper']);
+    respondWithCard(YoungWitch.bane.title);
 
     ({ player: inputPlayer, lastInputWasValid } = await waitForNextInput());
     expect(lastInputWasValid).toBe(true);
 
-    expect(otherPlayer.hand.length).toBe(3);
+    expect(otherPlayer.hand.length).toBe(5);
   });
 
   test('should be blocked by Moat', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
-    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Militia']);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'YoungWitch']);
     const otherPlayer = game.playerOrder.find(p => p !== player);
     setHand(otherPlayer, ['Copper', 'Copper', 'Copper', 'Copper', 'Moat']);
     await waitForNextInput();
-    respondWithCard('Militia');
+    respondWithCard('YoungWitch');
 
     let { player: inputPlayer, lastInputWasValid } = await waitForNextInput();
     expect(inputPlayer).toBe(otherPlayer);
