@@ -9,7 +9,7 @@ export default class Treasury extends Card {
     player.money++;
   }
 
-  willTriggerOn(event, player) {
+  canTriggerOn(event, player) {
     return (
       event.name === 'discard' &&
       event.triggeringPlayer === player &&
