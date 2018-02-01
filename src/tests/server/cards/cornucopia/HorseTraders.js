@@ -1,5 +1,5 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, respondWithCard, respondWithCards, skipToNextTurn, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, setDeck, respondWithCard, respondWithCards, skipToNextTurn, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
@@ -50,5 +50,31 @@ export default () => {
     expect(otherPlayer.hand.length).toBe(5);
     expect(otherPlayer.hand.some(c => c.title === 'HorseTraders')).toBe(true);
     expect(otherPlayer.asidePile.length).toBe(0);
+  });
+
+  test('should be found at end of game', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Militia']);
+    const otherPlayer = game.playerOrder.find(p => p !== player);
+    setHand(otherPlayer, ['Copper', 'Copper', 'Copper', 'Copper', 'HorseTraders']);
+    setDeck(otherPlayer, ['Copper', 'Copper', 'Copper', 'Copper', 'Gardens']);
+    await waitForNextInput();
+    respondWithCard('Militia');
+
+    let { player: inputPlayer, lastInputWasValid } = await waitForNextInput();
+    expect(inputPlayer).toBe(otherPlayer);
+    expect(lastInputWasValid).toBe(true);
+    respondWithCard('HorseTraders');
+
+    ({ player: inputPlayer, lastInputWasValid } = await waitForNextInput());
+    expect(lastInputWasValid).toBe(true);
+
+    respondWithCards(['Copper']);
+    await waitForNextInput();
+
+    expect(otherPlayer.hand.length).toBe(3);
+    expect(otherPlayer.asidePile.length).toBe(1);
+    game.endOfGame();
+    expect(otherPlayer.score).toBe(1);
   });
 };
