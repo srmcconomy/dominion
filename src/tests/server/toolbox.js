@@ -133,6 +133,15 @@ export function respondWithCards(cardNames) {
   });
 }
 
+export function respondWithNoCards() {
+  if (!currentInput.selectCards) {
+    throw new Error('Invalid response: not expecting card selection');
+  }
+  respondWith({
+    type: 'select-cards',
+    data: [],
+  });
+}
 
 export function respondWithCard(cardName) {
   return respondWithCards([cardName]);
@@ -170,6 +179,17 @@ export function setHand(player, cards) {
   player.hand.push(...newHand);
 }
 
+export function setDiscardPile(player, cards) {
+  const newDiscardPile = cards.map(title => new cardClasses[title](player.game));
+  player.discardPile.clear();
+  player.discardPile.push(...newDiscardPile);
+}
+
+export function setDeck(player, cards) {
+  const newDeck = cards.map(title => new cardClasses[title](player.game));
+  player.deck.clear();
+  player.deck.push(...newDeck);
+}
 
 export function setStartingDeck(cardNames) {
   currentGame.startingDeck = () => cardNames.map(title => new cardClasses[title](currentGame));

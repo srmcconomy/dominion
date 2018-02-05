@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class HornOfPlenty extends Card {
-  static cost = { coin: 5 };
+  static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Treasure']);
   async onPlay(player) {
     const uniqueNames = [];

@@ -4,7 +4,7 @@ export default class Duplicate extends Card {
   static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action', 'Reserve']);
   async onPlay(player) {
-    player.moveCard(this, player.playArea, player.mats.tavern);
+    player.putOnTavernMat(this);
   }
 
   async canTriggerOn(event, player) {

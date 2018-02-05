@@ -103,12 +103,6 @@ export default class Player extends Model {
   @trackDirty
   supplyWithTrashToken = null;
 
-  tavernMat = new Pile();
-
-  islandMat = new Pile();
-
-  nativeVillageMat = new Pile();
-
   asidePile = new Pile();
 
   @trackDirty
@@ -131,6 +125,8 @@ export default class Player extends Model {
 
   @trackDirty
   vpTokens = 0;
+
+  score = 0;
 
   @trackDirty
   journeyToken = 'faceUp';
@@ -176,6 +172,7 @@ export default class Player extends Model {
     this.potion = 0;
     this.buys = 0;
     this.vpTokens = 0;
+    this.score = 0;
     this.name = name;
     this.journeyToken = 'faceUp';
     this.turnPhase = 'actionPhase';
@@ -223,6 +220,7 @@ export default class Player extends Model {
       await async([
         { title: 'hand', getAllCards: () => [...this.hand] },
         { title: 'playArea', getAllCards: () => [...this.playArea] },
+        { title: 'setAside', getAllCards: () => [...this.asidePile] },
         { title: 'reserve', getAllCards: () => (this.mats.tavern ? [...this.mats.tavern] : []) },
         {
           title: 'persistent',
@@ -460,6 +458,13 @@ export default class Player extends Model {
     this.moveCard(card, from, this.asidePile);
   }
 
+  putOnTavernMat(card, from = this.playArea) {
+    if (from.includes(card)) {
+      this.game.log(`${this.name} moves ${card.title} to their tavern mat`);
+      this.moveCard(card, from, this.mats.tavern);
+    }
+  }
+
   flipJourneyToken() {
     if (this.journeyToken === 'faceUp') {
       this.journeyToken = 'faceDown';
@@ -530,19 +535,25 @@ export default class Player extends Model {
       this.moveCard(this.hand.last(), this.hand, this.deck);
     }
     while (this.playArea.size > 0) {
-      this.moveCard(this.hand.last(), this.playArea, this.deck);
+      this.moveCard(this.playArea.last(), this.playArea, this.deck);
     }
     while (this.discardPile.size > 0) {
-      this.moveCard(this.hand.last(), this.discardPile, this.deck);
+      this.moveCard(this.discardPile.last(), this.discardPile, this.deck);
     }
-    while (this.tavernMat.size > 0) {
-      this.moveCard(this.hand.last(), this.tavernMat, this.deck);
+    if (this.mats.tavern) {
+      while (this.mats.tavern.size > 0) {
+        this.moveCard(this.mats.tavern.last(), this.mats.tavern, this.deck);
+      }
     }
-    while (this.islandMat.size > 0) {
-      this.moveCard(this.hand.last(), this.islandMat, this.deck);
+    if (this.mats.island) {
+      while (this.mats.island.size > 0) {
+        this.moveCard(this.mats.island.last(), this.mats.island, this.deck);
+      }
     }
-    while (this.nativeVillageMat.size > 0) {
-      this.moveCard(this.hand.last(), this.nativeVillageMat, this.deck);
+    if (this.mats.nativeVillage) {
+      while (this.mats.nativeVillage.size > 0) {
+        this.moveCard(this.mats.nativeVillage.last(), this.mats.nativeVillage, this.deck);
+      }
     }
     this.deck.forEach(c => {
       c.endGameCleanUp(this);
@@ -564,12 +575,12 @@ export default class Player extends Model {
     }
   }
 
-  async play(card) {
+  async play(card, from = this.hand) {
     this.game.log(`${this.name} plays ${card.name}`);
     this.game.padding += 4;
     const firstEvent = await this.handleTriggers('play-first', { card }, [card]);
     this.cardsPlayedThisTurn.push(card);
-    this.moveCard(card, this.hand, this.playArea);
+    if (from.includes(card)) this.moveCard(card, from, this.playArea);
     const event = await this.handleTriggers('play', { card }, [card]);
     await this.handleVanillaBonusTokens(card);
     if (!event.handledByPlayer.get(this)) {

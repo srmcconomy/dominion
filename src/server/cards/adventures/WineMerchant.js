@@ -6,7 +6,7 @@ export default class WineMerchant extends Card {
   async onPlay(player) {
     player.money += 4;
     player.buys++;
-    player.moveCard(this, player.playArea, player.mats.tavern);
+    player.putOnTavernMat(this);
   }
 
   canTriggerOn(event, player) {

@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Followers extends Card {
-  static cost = { coin: 0 };
+  static cost = new Card.Cost({ coin: 0 });
   static types = new Set(['Action', 'Attack', 'Prize']);
   static supplyCategory = 'nonSupply';
   async onPlay(player, event) {
