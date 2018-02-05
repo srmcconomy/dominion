@@ -14,8 +14,10 @@ export default class Saboteur extends Card {
       let done = false;
       while ((done === false) && (other.deck.size + other.discardPile.size > 0)) {
         const [card] = await other.draw(1, false);
-        if (player.costsMoreThanEqualTo(card, { coin: 3 })) {
-          await other.trash(card, other.deck);
+        aside.push(card);
+        if (await player.cardCostsGreaterThanEqualTo(card, { coin: 3 })
+        && await player.cardCostsLessThanEqualTo(card, { coin: 6 })) {
+          await other.trash(card, aside);
           const [supply] = await other.selectSupplies({
             min: 1,
             max: 1,
@@ -27,8 +29,6 @@ export default class Saboteur extends Card {
           });
           if (supply) await other.gain(supply.title);
           done = true;
-        } else {
-          aside.push(card);
         }
       }
       while (aside.length > 0) {
