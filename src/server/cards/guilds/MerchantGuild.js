@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class MerchantGuild extends Card {
-  static cost = { coin: 0 };
+  static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action']);
   async onPlay(player) {
     player.buys++;

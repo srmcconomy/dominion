@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Masterpiece extends Card {
-  static cost = { coin: 3 };
+  static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Treasure']);
   async onPlay(player) {
     player.money++;

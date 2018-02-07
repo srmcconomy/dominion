@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Stonemason extends Card {
-  static cost = { coin: 2 };
+  static cost = new Card.Cost({ coin: 2 });
   static types = new Set(['Action']);
   async onPlay(player) {
     const [card] = await player.selectCards({
@@ -17,7 +17,7 @@ export default class Stonemason extends Card {
           max: 1,
           predicate: s => (
             s.cards.size > 0 &&
-            player.costsLessThan(s.cards.last(), card.cost)
+            player.cardCostsLessThan(s.cards.last(), card.cost)
           ),
           message: 'Choose an card to gain'
         });
@@ -41,7 +41,7 @@ export default class Stonemason extends Card {
           max: 1,
           predicate: s => (
             s.cards.size > 0 &&
-        player.costsEqualTo(s.cards.last(), tempCost)
+        player.cardCostsEqualTo(s.cards.last(), tempCost)
           ),
           message: 'Choose an card to gain'
         });

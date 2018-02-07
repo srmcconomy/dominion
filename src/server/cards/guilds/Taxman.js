@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Taxman extends Card {
-  static cost = { coin: 4 };
+  static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {
     const [card] = await player.selectCards({
@@ -34,7 +34,7 @@ export default class Taxman extends Card {
         max: 1,
         predicate: s => (
           s.cards.size > 0 &&
-          player.costsLessThanEqualTo(s.cards.last(), { coin: card.cost.coin + 3 }) &&
+          player.cardCostsLessThanEqualTo(s.cards.last(), { coin: card.cost.coin + 3 }) &&
           s.cards.last().types.has('Treasure')
         ),
         message: 'Choose a Treasure card to gain'

@@ -208,7 +208,6 @@ export default class Game extends Model {
 
   async start() {
     this.getSupplyCards().forEach((title) => {
-      console.log(title);
       const supply = new (Supply.classes.get(title))(this);
       supply.setup(this);
       this.supplies.set(title, supply);

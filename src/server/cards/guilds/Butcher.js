@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Butcher extends Card {
-  static cost = { coin: 0 };
+  static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action']);
   async onPlay(player) {
     player.coinTokens += 2;
@@ -33,7 +33,7 @@ export default class Butcher extends Card {
         max: 1,
         predicate: s => (
           s.cards.size > 0 &&
-          player.costsLessThanEqualTo(s.cards.last(), { coin: card.cost.coin + coinTokensPaid })
+          player.cardCostsLessThanEqualTo(s.cards.last(), { coin: card.cost.coin + coinTokensPaid })
         ),
         message: 'Choose an card to gain'
       });

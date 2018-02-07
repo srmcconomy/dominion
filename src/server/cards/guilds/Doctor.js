@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 import Pile from 'utils/Pile';
 
 export default class Doctor extends Card {
-  static cost = { coin: 3 };
+  static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Action']);
   async onPlay(player) {
     const [supply] = await player.selectSupplies({
