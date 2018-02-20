@@ -220,9 +220,18 @@ export default class Game extends Model {
       this.organizedSupplies[supply.category].push(title);
     });
     Object.keys(this.organizedSupplies).forEach(key => {
-      this.organizedSupplies[key].sort((a, b) => (
-        this.supplies.get(a).cost.coin - this.supplies.get(b).cost.coin
-      ));
+      this.organizedSupplies[key].sort((a, b) => {
+        if (this.supplies.get(a).cost.coin === this.supplies.get(b).cost.coin)
+        {
+          if (this.supplies.get(a).title < this.supplies.get(b).title) {
+            return -1;
+          } else if (this.supplies.get(a).title > this.supplies.get(b).title) {
+            return 1;
+          }
+          return 0;
+        }
+        return this.supplies.get(a).cost.coin - this.supplies.get(b).cost.coin;
+      });
     });
 
     let reserveGame = false;
