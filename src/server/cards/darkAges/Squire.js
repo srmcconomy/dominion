@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Squire extends Card {
-  static cost = { coin: 2 };
+  static cost = new Card.Cost({ coin: 2 });
   static types = new Set(['Action']);
   async onPlay(player) {
     player.money++;
@@ -23,7 +23,7 @@ export default class Squire extends Card {
   }
 
   willTriggerOn(event, player) {
-    return event.name === 'trash' && event.card === this && event.triggeringPlayer === player;
+    return event.name === 'trash' && event.cards.includes(this) && event.triggeringPlayer === player;
   }
 
   async onTrigger(event, player) {

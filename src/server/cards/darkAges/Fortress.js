@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Fortress extends Card {
-  static cost = { coin: 4 };
+  static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action']);
   async onPlay(player) {
     await player.draw(1);
@@ -11,12 +11,12 @@ export default class Fortress extends Card {
   willTriggerOn(event, player) {
     return event.name === 'trash' &&
     event.triggeringPlayer === player &&
-    event.card === this;
+    event.cards.includes(this);
   }
 
   async onTrigger(event, player) {
     player.game.log(`${player.name}'s Fortress returns to their hand`);
     player.moveCard(this, event.from, player.hand);
-    event.handledByPlayer.set(player, true);
+    event.handledForCard.add(this);
   }
 }

@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Cultist extends Card {
-  static cost = { coin: 5 };
+  static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action', 'Attack', 'Looter']);
   async onPlay(player, event) {
     await player.draw(2);
@@ -9,7 +9,7 @@ export default class Cultist extends Card {
       if (event.handledByPlayer.get(other)) {
         return;
       }
-      // other.gain('Ruins');
+      other.gain('Ruins');
     });
     const [card] = await player.selectCards({
       min: 0,
@@ -23,7 +23,7 @@ export default class Cultist extends Card {
   willTriggerOn(event, player) {
     return event.name === 'trash' &&
     event.triggeringPlayer === player &&
-    event.card === this;
+    event.cards.includes(this);
   }
 
   async onTrigger(event, player) {

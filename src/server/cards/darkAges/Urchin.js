@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Urchin extends Card {
-  static cost = { coin: 3 };
+  static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {
     await player.draw(1);
@@ -30,9 +30,5 @@ export default class Urchin extends Card {
   async onTrigger(event, player) {
     await player.trash(this, player.playArea);
     await player.gain('Mercenary');
-  }
-
-  static getDependencies() {
-    return ['Mercenary'];
   }
 }

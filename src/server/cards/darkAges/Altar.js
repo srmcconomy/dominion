@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Altar extends Card {
-  static cost = { coin: 6 };
+  static cost = new Card.Cost({ coin: 6 });
   static types = new Set(['Action']);
   async onPlay(player) {
     const [card] = await player.selectCards({
@@ -17,7 +17,7 @@ export default class Altar extends Card {
       max: 1,
       predicate: s => (
         s.cards.size > 0 &&
-          player.costsLessThanEqualTo(s.cards.last(), { coin: 5 })
+          player.cardCostsLessThanEqualTo(s.cards.last(), { coin: 5 })
       ),
       message: 'Choose an card to gain'
     });

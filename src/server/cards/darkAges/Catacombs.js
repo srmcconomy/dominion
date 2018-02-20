@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Catacombs extends Card {
-  static cost = { coin: 5 };
+  static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action']);
   async onPlay(player) {
     const cards = await player.lookAtTopOfDeck(3);
@@ -26,7 +26,7 @@ export default class Catacombs extends Card {
   willTriggerOn(event, player) {
     return event.name === 'trash' &&
     event.triggeringPlayer === player &&
-    event.card === this;
+    event.cards.includes(this);
   }
 
   async onTrigger(event, player) {
@@ -35,7 +35,7 @@ export default class Catacombs extends Card {
       max: 1,
       predicate: s => (
         s.cards.size > 0 &&
-        player.costsLessThan(s.cards.last(), this.cost)
+        player.cardCostsLessThan(s.cards.last(), this.cost)
       ),
       message: 'Choose an card to gain'
     });

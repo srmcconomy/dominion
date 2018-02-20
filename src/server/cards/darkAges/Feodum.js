@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Feodum extends Card {
-  static cost = { coin: 4 };
+  static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Victory']);
   static getNumberInSupply(game) {
     if (game.players.size === 2) return 8;
@@ -9,13 +9,13 @@ export default class Feodum extends Card {
   }
 
   getVpValue(player) {
-    return Math.floor(player.deck.filter(c => c.tiile === 'Silver').length / 3);
+    return Math.floor(player.deck.filter(c => c.title === 'Silver').length / 3);
   }
 
   willTriggerOn(event, player) {
     return event.name === 'trash' &&
     event.triggeringPlayer === player &&
-    event.card === this;
+    event.cards.includes(this);
   }
 
   async onTrigger(event, player) {

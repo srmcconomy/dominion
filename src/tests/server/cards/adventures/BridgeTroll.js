@@ -73,9 +73,9 @@ export default () => {
     await waitForNextInput();
 
     await skipToNextTurn(player);
+    setHand(player, ['Silver']);
     await waitForNextInput();
-    player.money = 2;
-    respondWithCards([]);
+    respondWithCard('Silver');
     await waitForNextInput();
     respondWithSupply('Silver');
     await waitForNextInput();

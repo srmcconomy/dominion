@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Marauder extends Card {
-  static cost = { coin: 4 };
+  static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action', 'Attack', 'Looter']);
   async onPlay(player, event) {
     await player.gain('Spoils');
@@ -9,7 +9,7 @@ export default class Marauder extends Card {
       if (event.handledByPlayer.get(other)) {
         return;
       }
-      // await other.gain('Ruins');
+      await other.gain('Ruins');
     });
   }
 }

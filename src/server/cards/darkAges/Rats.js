@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Rats extends Card {
-  static cost = { coin: 4 };
+  static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action']);
   static getNumberInSupply() {
     return 20;
@@ -26,7 +26,7 @@ export default class Rats extends Card {
   willTriggerOn(event, player) {
     return event.name === 'trash' &&
       event.triggeringPlayer === player &&
-      event.card === this;
+      event.cards.includes(this);
   }
 
   async onTrigger(event, player) {

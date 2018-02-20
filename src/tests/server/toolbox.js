@@ -12,6 +12,7 @@ import intrigueFirst from 'cards/intrigueFirst';
 import seaside from 'cards/seaside';
 import cornucopia from 'cards/cornucopia';
 import adventures from 'cards/adventures';
+import darkAges from 'cards/darkAges';
 
 const cardClasses = {
   ...basic,
@@ -22,6 +23,7 @@ const cardClasses = {
   ...seaside,
   ...cornucopia,
   ...adventures,
+  ...darkAges,
 };
 
 let currentPlayer;
@@ -189,6 +191,12 @@ export function setDeck(player, cards) {
   const newDeck = cards.map(title => new cardClasses[title](player.game));
   player.deck.clear();
   player.deck.push(...newDeck);
+}
+
+export function setTrash(game, cards) {
+  const newTrash = cards.map(title => new cardClasses[title](game));
+  game.trash.clear();
+  game.trash.push(...newTrash);
 }
 
 export function setStartingDeck(cardNames) {

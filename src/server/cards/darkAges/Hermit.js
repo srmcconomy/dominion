@@ -1,24 +1,30 @@
 import Card from 'cards/Card';
 
 export default class Hermit extends Card {
-  static cost = { coin: 3 };
+  static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Action']);
   async onPlay(player) {
     const [card] = await player.selectCards({
       min: 0,
       max: 1,
-      pile: [...player.hand, ...player.discardPile],
-      predicate: c => !c.types.has('Treasure'),
+      pile: [...player.hand, ...player.discardPile].filter(c => !c.types.has('Treasure')),
       message: 'Select a Card to trash'
     });
-    if (card) await player.trash(card);
+    if (card) {
+      if (player.discardPile.includes(card)) {
+        await player.trash(card, player.discardPile);
+      }
+      else {
+        await player.trash(card);
+      }
+    }
 
     const [supply] = await player.selectSupplies({
       min: 1,
       max: 1,
       predicate: s => (
         s.cards.size > 0 &&
-        player.costsLessThanEqualTo(s.cards.last(), { coin: 3 })
+        player.cardCostsLessThanEqualTo(s.cards.last(), { coin: 3 })
       ),
       message: 'Choose an card to gain'
     });
@@ -30,7 +36,7 @@ export default class Hermit extends Card {
   willTriggerOn(event, player) {
     return event.name === 'discard' &&
        event.triggeringPlayer === player &&
-       event.card === this &&
+       (event.cards ? event.cards.includes(this) : false) &&
        player.playArea.includes(this) &&
        player.cardsBoughtThisTurn.length === 0;
   }
@@ -38,10 +44,6 @@ export default class Hermit extends Card {
   async onTrigger(event, player) {
     await player.trash(this, player.playArea);
     await player.gain('Madman');
-    event.handledByPlayer.set(player, true);
-  }
-
-  static getDependencies() {
-    return ['Madman'];
+    event.handledForCard.add(this);
   }
 }

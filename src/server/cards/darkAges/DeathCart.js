@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class DeathCart extends Card {
-  static cost = { coin: 4 };
+  static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action', 'Looter']);
   async onPlay(player) {
     player.money += 5;
@@ -26,7 +26,7 @@ export default class DeathCart extends Card {
   }
 
   async onTrigger(event, player) {
-    // await player.gain('Ruins');
-    // await player.gain('Ruins');
+    await player.gain('Ruins');
+    await player.gain('Ruins');
   }
 }

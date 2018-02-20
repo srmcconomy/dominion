@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class PoorHouse extends Card {
-  static cost = { coin: 1 };
+  static cost = new Card.Cost({ coin: 1 });
   static types = new Set(['Action']);
   async onPlay(player) {
     player.revealHand();

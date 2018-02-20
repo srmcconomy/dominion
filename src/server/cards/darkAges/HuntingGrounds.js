@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class HuntingGrounds extends Card {
-  static cost = { coin: 6 };
+  static cost = new Card.Cost({ coin: 6 });
   static types = new Set(['Action']);
   async onPlay(player) {
     await player.draw(4);
@@ -10,7 +10,7 @@ export default class HuntingGrounds extends Card {
   willTriggerOn(event, player) {
     return event.name === 'trash' &&
     event.triggeringPlayer === player &&
-    event.card === this;
+    event.cards.includes(this);
   }
 
   async onTrigger(event, player) {

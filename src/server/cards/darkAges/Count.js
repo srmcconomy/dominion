@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Count extends Card {
-  static cost = { coin: 5 };
+  static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action']);
   async onPlay(player) {
     const choice1 = await player.selectOption(['Discard 2 cards', 'Put a card from your hand onto your deck', 'Gain a Copper']);
@@ -42,9 +42,7 @@ export default class Count extends Card {
         player.money += 3;
         break;
       case 1:
-        for (let i = player.hand.length - 1; i >= 0; i--) {
-          await player.trash(player.hand._list[i]);
-        }
+        await player.trashAll([...player.hand]);
         break;
       case 2:
         await player.gain('Duchy');

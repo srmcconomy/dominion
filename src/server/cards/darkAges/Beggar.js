@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Beggar extends Card {
-  static cost = { coin: 2 };
+  static cost = new Card.Cost({ coin: 2 });
   static types = new Set(['Action', 'Reaction']);
   async onPlay(player) {
     for (let i = 0; i < 3; i++) {
