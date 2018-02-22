@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from 'cards/Card';
 import Coin from 'components/Coin';
+import Line from 'components/Line';
 
 export default class MarketSquare extends Card {
   static title = 'Market Square';
@@ -9,7 +10,7 @@ export default class MarketSquare extends Card {
       <div><strong>+1 Card</strong></div>
       <div><strong>+1 Action</strong></div>
       <div><strong>+1 Buy</strong></div>
-      <div>---------------------</div>
+      <Line />
       <div>When one of your cards is trashed, you may discard this from your hand to gain a Gold.</div>
     </div>
   );
