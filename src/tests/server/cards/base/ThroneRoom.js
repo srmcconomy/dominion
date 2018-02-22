@@ -52,6 +52,7 @@ export default () => {
     await skipToNextTurn(player);
     await waitForNextInput();
     expect(player.money).toBe(4);
+    expect(player.playArea.length).toBe(2);
   });
 
   test('should be able to TR, TR, Caravan, Dungeon', async () => {
@@ -79,6 +80,7 @@ export default () => {
     expect(player.actions).toBe(4);
     await skipToNextTurn(player);
     setDeck(player, ['Gold', 'Estate', 'Silver', 'Estate', 'Estate', 'Estate']);
+    expect(player.playArea.length).toBe(3);
     await waitForNextInput();
     respondWithCard('Caravan');
     await waitForNextInput();

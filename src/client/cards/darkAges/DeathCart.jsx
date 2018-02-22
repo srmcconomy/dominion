@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from 'cards/Card';
 import Coin from 'components/Coin';
+import Line from 'components/Line';
 
 export default class DeathCart extends Card {
   static title = 'Death Cart';
@@ -8,7 +9,7 @@ export default class DeathCart extends Card {
     <div>
       <div>+<Coin>5</Coin></div>
       <div>You may trash an Action card from your hand. If you don't, trash this.</div>
-      <div>-------------</div>
+      <Line />
       <div>When you gain this, gain 2 Ruins.</div>
     </div>
   );

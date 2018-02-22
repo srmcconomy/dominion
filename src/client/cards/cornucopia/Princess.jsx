@@ -1,12 +1,13 @@
 import React from 'react';
 import Card from 'cards/Card';
 import Coin from 'components/Coin';
+import Line from 'components/Line';
 
 export default class Princess extends Card {
   static description = (
     <div>
       <div><strong>+1 Buy</strong></div>
-      <div>-------------</div>
+      <Line />
       <div>While this is in play, cards cost <Coin>2</Coin> less, but not less than <Coin>0</Coin>.</div>
       <div><em>(This is not in the Supply.)</em></div>
     </div>

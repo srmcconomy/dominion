@@ -19,10 +19,12 @@ export default class YoungWitchSupply extends SupplyFactory(YoungWitch) {
         possibleBanes.push(c);
       }
     });
-    YoungWitch.bane = possibleBanes[Math.floor(Math.random() * possibleBanes.length)];
-    game.log(`${YoungWitch.bane.title} is Young Witch's Bane`);
-    dependencies.push(YoungWitch.bane.title);
-    dependencies.push(...YoungWitch.bane.getDependencies(kingdomArray, game));
+    if (possibleBanes.length > 0) {
+      YoungWitch.bane = possibleBanes[Math.floor(Math.random() * possibleBanes.length)];
+      game.log(`${YoungWitch.bane.title} is Young Witch's Bane`);
+      dependencies.push(YoungWitch.bane.title);
+      dependencies.push(...YoungWitch.bane.getDependencies(kingdomArray, game));
+    } else game.log('No Bane Pile Added; consider relaxing your black list');
     return dependencies;
   }
 }
