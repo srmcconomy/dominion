@@ -25,7 +25,7 @@ module.exports = {
         modules: false,
       }],
       'react',
-      'minify',
+      // 'minify',
     ],
     plugins: ['transform-decorators-legacy', 'transform-class-properties', 'transform-object-rest-spread', 'wildcard'],
   },

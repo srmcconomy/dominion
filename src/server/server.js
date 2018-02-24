@@ -4,6 +4,7 @@ import express from 'express';
 import http from 'http';
 import socketio from 'socket.io';
 import shortid from 'shortid';
+import path from 'path';
 
 import Game from 'models/Game';
 import Player from 'models/Player';
@@ -13,6 +14,10 @@ const server = http.Server(app);
 const io = socketio(server);
 const games = new Map();
 const tokens = new Map();
+
+console.log(__dirname);
+console.log(path.resolve(__dirname, '../dist'));
+app.use('/dist', express.static(path.resolve(__dirname, '../dist')));
 
 process.on('unhandledRejection', error => {
   console.error(error);
@@ -61,11 +66,11 @@ io.on('connection', socket => {
   });
 });
 
-const sourcePath = process.env.NODE_ENV === 'production' ?
-  '/dist' :
-  'http://localhost:9000/assets';
-
 app.get('/', (req, res) => {
+  console.log(req.originalUrl);
+  const sourcePath = process.env.NODE_ENV === 'production' ?
+    '/dist' :
+    `http://${req.get('host').replace('3000', '9000')}/assets`;
   res.send(
     `<html>
       <head>

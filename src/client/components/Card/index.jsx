@@ -62,7 +62,7 @@ export default class Card extends Component {
         <div className={cx('card-container')}>
           <div
             className={cx('image')}
-            style={{ backgroundImage: `url(${image})` }}
+            style={{ backgroundImage: `url(/dist/${image})` }}
           />
           <div className={cx('card', [...types].map(type => type.toLowerCase()))}>
             <div className={cx('name')}>

@@ -16,6 +16,10 @@ module.exports = {
   },
   externals: [nodeExternals()],
   target: 'node',
+  node: {
+    __dirname: false,
+    __filename: false,
+  },
   devtool: 'source-map',
   output: {
     chunkFilename: '[name].chunk.js',
