@@ -21,6 +21,7 @@ export default () => {
     await waitForNextInput();
     expect(player.hand.length).toBe(4);
     expect(otherPlayer.discardPile.last().title).toBe('Curse');
+    expect(game.supplies.get(YoungWitch.bane.title).cards.length).toBe(10);
   });
 
   test('should be blocked by bane', async () => {
@@ -43,6 +44,8 @@ export default () => {
 
     expect(otherPlayer.hand.length).toBe(5);
   });
+
+  test('a spilt pile bane should work for all cards in the pile');
 
   test('should be blocked by Moat', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);

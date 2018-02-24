@@ -24,13 +24,13 @@ export default class SecretChamber extends Card {
 
   async onTrigger(event, player) {
     await player.draw(2);
-    const cards = await player.selectCards({
-      min: 2,
-      max: 2,
-      message: 'Choose 2 cards to place on top of your deck',
-    });
-    for (let i = 0; i < cards.length; i++) {
-      await player.topDeck(cards[i]);
+    for (let i = 0; i < 2; i++) {
+      const [card] = await player.selectCards({
+        min: 1,
+        max: 1,
+        message: `Select ${i === 0 ? 'first' : 'second'} card to put on your deck`,
+      });
+      await player.topDeck(card);
     }
   }
 }

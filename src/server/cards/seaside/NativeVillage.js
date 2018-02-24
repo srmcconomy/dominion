@@ -7,11 +7,11 @@ export default class NativeVillage extends Card {
   async onPlay(player) {
     player.actions += 2;
     const [card] = player.lookAtTopOfDeck(1);
+    const choice = await player.selectOption([
+      'Place on Native Village mat',
+      'Pick up entire mat into your hand'
+    ]);
     if (card) {
-      const choice = await player.selectOption([
-        'Place on Native Village mat',
-        'Pick up entire mat into your hand'
-      ]);
       switch (choice) {
         case 0:
           player.moveCard(card, player.deck, player.mats.nativeVillage);
