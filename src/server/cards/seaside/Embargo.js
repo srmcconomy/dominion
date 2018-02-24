@@ -17,11 +17,12 @@ export default class Embargo extends Card {
       } else {
         supply.tokens.embargo = 1;
       }
+      player.game.log(`${player.name} adds an embargo token to the ${supply.title} supply: ${supply.tokens.embargo}`);
     }
   }
 
   willTriggerOn(event, player, persistent) {
-    return persistent === 'persistent' && event.triggeringPlayer === player && player.game.supplies.get(event.card.title).tokens.embargo > 0;
+    return persistent && event.triggeringPlayer === player && player.game.supplies.get(event.card.title).tokens.embargo > 0;
   }
 
   async onTrigger(event, player) {

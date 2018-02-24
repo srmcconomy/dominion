@@ -27,7 +27,7 @@ export default class SecretPassage extends Card {
     } else {
       const [pos] = res;
       player.hand.delete(card);
-      player.deck.splice(player.deck.map.get(pos.id), 0, card);
+      player.deck.splice(player.deck._map.get(pos.id), 0, card);
     }
 
   }

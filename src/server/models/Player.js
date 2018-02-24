@@ -537,6 +537,9 @@ export default class Player extends Model {
     while (this.playArea.size > 0) {
       this.moveCard(this.playArea.last(), this.playArea, this.deck);
     }
+    while (this.asidePile.size > 0) {
+      this.moveCard(this.asidePile.last(), this.asidePile, this.deck);
+    }
     while (this.discardPile.size > 0) {
       this.moveCard(this.discardPile.last(), this.discardPile, this.deck);
     }

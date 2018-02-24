@@ -4,7 +4,7 @@ export default class SeaHag extends Card {
   static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {
-    player.forEachOtherPlayer(async other => {
+    await player.forEachOtherPlayer(async other => {
       if (event.handledByPlayer.get(other)) {
         return;
       }

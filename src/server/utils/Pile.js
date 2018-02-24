@@ -126,8 +126,8 @@ export default class Pile extends Model {
   }
 
   first() {
-    if (this.list.length === 0) return null;
-    return this.list[0];
+    if (this._list.length === 0) return null;
+    return this._list[0];
   }
 
   last() {

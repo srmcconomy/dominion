@@ -22,8 +22,4 @@ export default class Mill extends Card {
       }
     }
   }
-  static getNumberInSupply(game) {
-    if (game.players.size === 2) return 8;
-    return 12;
-  }
 }

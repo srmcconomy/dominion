@@ -14,7 +14,7 @@ export default class Upgrade extends Card {
         max: 1,
         predicate: s => (
           s.cards.size > 0 &&
-          player.costsEqualTo(s.cards.last(), { coin: card.cost.coin + 1 })
+          player.cardCostsEqualTo(s.cards.last(), { coin: card.cost.coin + 1 })
         ),
         message: 'Choose an card to gain'
       });

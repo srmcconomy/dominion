@@ -6,34 +6,28 @@ export default class Navigator extends Card {
   static types = new Set(['Action']);
   async onPlay(player) {
     player.money += 2;
-    const cards = await player.lookAtTopOfDeck(5);
+    const cards = await player.draw(5, false);
     const cardsStr = cards.map(c => c.title).join(', ');
 
     const choice = await player.selectOption(['Keep on top', 'Discard all five'], cardsStr);
     switch (choice) {
       case 0:
       {
-        const cardsInspected = new Pile();
-        for (let i = 0; i < cards.length; i++) {
-          cardsInspected.push(cards[i]);
-        }
-        console.log(cardsInspected);
-        console.log(player.deck);
-        while (cardsInspected.size > 0) {
+        while (cards.size > 1) {
           const [card] = await player.selectCards({
             min: 1,
             max: 1,
-            pile: cardsInspected,
+            pile: cards,
             message: 'Select Card to put on top of deck'
           });
-          player.topDeck(card, player.deck);
-          cardsInspected.delete(card);
+          player.topDeck(card, cards);
         }
+        player.topDeck(cards.last(), cards);
         break;
       }
       case 1:
-        for (let i = 0; i < cards.size; i++) {
-          await player.discard(cards[i], player.deck);
+        while (cards.length > 0) {
+          await player.discard(cards.last(), cards);
         }
         break;
       default:
