@@ -69,6 +69,7 @@ export function expect(val1) {
 async function runSuite(currentSuite, regex) {
   let currentLog = '';
   let suitePass = true;
+  const testResults = { pass: 0, fail: 0, pending: 0 };
   if (currentSuite.name.match(regex)) {
     const suiteResults = [];
     for (const { testName, testFunc } of currentSuite.tests) {
@@ -94,9 +95,11 @@ async function runSuite(currentSuite, regex) {
     suiteResults.forEach(({ testName, testPass, results: res }) => {
       switch (testPass) {
         case 'pass':
+          testResults.pass++;
           currentLog += `${indent}  ${chalk.green('🗸')} ${testName}\n`;
           break;
         case 'fail':
+          testResults.fail++;
           currentLog += `${indent}  ${chalk.red('✕')} ${testName}\n`;
           res.forEach(({ pass, message }) => {
             if (!pass) {
@@ -105,30 +108,37 @@ async function runSuite(currentSuite, regex) {
           });
           break;
         case 'pending':
+          testResults.pending++;
           currentLog += `${indent}  ${chalk.blue('?')} ${testName}\n`;
           break;
       }
     });
     indent = `${indent}  `;
     for (const subSuite of currentSuite.suites) {
-      const { pass, log: subLog } = await runSuite(subSuite, /./);
+      const { pass, log: subLog, counts } = await runSuite(subSuite, /./);
       currentLog += subLog;
       suitePass = suitePass && pass;
+      testResults.pass += counts.pass;
+      testResults.fail += counts.fail;
+      testResults.pending += counts.pending;
     }
     indent = indent.substr(2);
   } else {
     indent = `${indent}  `;
     for (const subSuite of currentSuite.suites) {
-      const { pass, log: subLog } = await runSuite(subSuite, regex);
+      const { pass, log: subLog, counts } = await runSuite(subSuite, regex);
       currentLog += subLog;
       suitePass = suitePass && pass;
+      testResults.pass += counts.pass;
+      testResults.fail += counts.fail;
+      testResults.pending += counts.pending;
     }
     indent = indent.substr(2);
   }
   if (currentLog) {
     currentLog = `${indent}${suitePass ? chalk.bgGreen.bold(' PASS ') : chalk.bgRed.bold(' FAIL ')} ${currentSuite.name}\n${currentLog}`;
   }
-  return { pass: suitePass, log: currentLog };
+  return { pass: suitePass, log: currentLog, counts: testResults };
 }
 
 class Suite {
@@ -165,8 +175,14 @@ function buildSuites(outerSuites, outerBeforeEachFunc) {
 export async function runTests(regex) {
   log();
   const allSuites = buildSuites(suites, () => {});
+  const testResults = { pass: 0, fail: 0, pending: 0 };
   for (const currentSuite of allSuites) {
-    log((await runSuite(currentSuite, regex)).log);
+    const result = (await runSuite(currentSuite, regex));
+    testResults.pass += result.counts.pass;
+    testResults.fail += result.counts.fail;
+    testResults.pending += result.counts.pending;
+    log(result.log);
   }
+  log(`${indent}${testResults.fail === 0 ? chalk.bgGreen.bold(' PASS ') : chalk.bgRed.bold(' FAIL ')} ${testResults.pass} tests pass out of ${testResults.pass + testResults.fail}. ${testResults.pending} pending tests`);
   log();
 }

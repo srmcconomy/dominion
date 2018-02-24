@@ -4,6 +4,7 @@ const COST_FIELDS = ['coin', 'debt', 'potion'];
 
 export default class Card extends BaseCard {
   ignoreCleanUp = false;
+  timesPlayed = 0;
   static types = new Map();
   static VP = 0;
 
