@@ -19,6 +19,7 @@ import 'cards/intrigueFirst';
 import 'cards/seaside';
 import 'cards/cornucopia';
 import 'cards/adventures';
+import 'cards/guilds';
 import 'cards/darkAges';
 
 import styles from './styles.scss';

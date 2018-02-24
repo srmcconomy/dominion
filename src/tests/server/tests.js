@@ -8,6 +8,7 @@ import './cards/adventures';
 import './cards/cornucopia';
 import './cards/intrigue';
 import './cards/seaside';
+import './cards/guilds';
 import './cards/darkAges';
 
 if (process.argv[3]) {

@@ -121,6 +121,9 @@ export default class Player extends Model {
   potion = 0;
 
   @trackDirty
+  coinTokens = 0;
+
+  @trackDirty
   buys = 0;
 
   @trackDirty
@@ -170,6 +173,7 @@ export default class Player extends Model {
     this.money = 0;
     this.debt = 0;
     this.potion = 0;
+    this.coinTokens = 0;
     this.buys = 0;
     this.vpTokens = 0;
     this.score = 0;
@@ -301,6 +305,10 @@ export default class Player extends Model {
     this.index = index;
   }
 
+  revealHand() {
+    this.game.log(`${this.name} reveals a hand of: ${this.hand.map(c => c.title).join(', ')}`);
+  }
+
   moveCard(card, fromPile, toPile, options) {
     if (card instanceof Pile) {
       options = toPile;
@@ -399,6 +407,7 @@ export default class Player extends Model {
       this.moveCard(card, from, to);
       this.cardsGainedThisTurn.push(card);
       await this.handleTriggers('gain', { card }, [card]);
+      return true;
     }
   }
 
@@ -647,6 +656,33 @@ export default class Player extends Model {
     return card;
   }
 
+  nextPlayer() {
+    return this.game.playerOrder[this.index === this.game.playerOrder.length - 1 ? 0 : this.index + 1];
+  }
+
+  async overpay() {
+    const tempCost = { coin: 0, potion: 0, debt: 0 };
+    while (this.money > 0 || this.potion > 0) {
+      const options = [];
+      if (this.money) options.push('Over Pay a Coin');
+      if (this.potion) options.push('Over Pay a Potion');
+      options.push('No more Overpay');
+      const message = `Overpay currently at ${tempCost.coin} Coin`;
+      if ([...this.game.supplies.values()].some(s => s.title === 'Potion'))  message = `Overpay currently at ${tempCost.coin} Coin, ${tempCost.potion} Potion`;
+      const choice = await this.selectOption(options, message);
+      if (choice === 0) {
+        this.money--;
+        tempCost.coin++;
+      } else if (choice === options.length - 1) {
+        break;
+      } else {
+        this.potion--;
+        tempCost.potion++;
+      }
+    }
+    return tempCost;
+  }
+
   async processTurnPhases() {
     let doneTurn = false;
     this.buyState = 'playTreasures';
@@ -670,10 +706,11 @@ export default class Player extends Model {
         case 'buyPhase':
           switch (this.buyState) {
             case 'playTreasures':
-              if (this.hand.some(card => card.types.has('Treasure'))) {
+              if (this.hand.some(card => card.types.has('Treasure')) || this.coinTokens > 0) {
                 console.log('ask for cards');
+                const options = this.coinTokens ? ['Play all treasures', 'Spend a Coin Token'] : ['Play all treasures'];
                 const res = await this.selectOptionOrCardsOrSupplies(
-                  ['Play all treasures'],
+                  options,
                   {
                     min: 0,
                     max: 1,
@@ -694,6 +731,9 @@ export default class Player extends Model {
                     }
                   }
                   this.buyState = 'buyCards';
+                } else if (res === 1) {
+                  this.coinTokens--;
+                  this.money++;
                 } else {
                   const [card] = res;
                   if (card) {
@@ -929,7 +969,4 @@ export default class Player extends Model {
     return this.selectOptionOrCardsOrSupplies(null, null, { min, max, predicate, includeNonSupply, includeEvents }, message);
   }
 
-  async revealHand() {
-    await Promise.resolve(this);
-  }
 }
