@@ -12,6 +12,7 @@ import intrigueFirst from 'cards/intrigueFirst';
 import seaside from 'cards/seaside';
 import cornucopia from 'cards/cornucopia';
 import adventures from 'cards/adventures';
+import guilds from 'cards/guilds';
 
 const cardClasses = {
   ...basic,
@@ -22,6 +23,7 @@ const cardClasses = {
   ...seaside,
   ...cornucopia,
   ...adventures,
+  ...guilds,
 };
 
 let currentPlayer;

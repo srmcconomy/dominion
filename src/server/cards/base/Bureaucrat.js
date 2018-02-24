@@ -13,7 +13,7 @@ export default class Bureaucrat extends Card {
         const [c] = await other.selectCards({ min: 1, max: 1, predicate: card => card.types.has('Victory'), message: 'Choose a Victory card to put onto your deck' });
         other.topDeck(c);
       } else {
-        player.game.log(`${other.name} shows ${other.hand.map(c => c.title).join(', ')}`);
+        other.revealHand();
       }
     });
   }

@@ -6,6 +6,7 @@ import 'supplies/intrigueFirst';
 import 'supplies/seaside';
 import 'supplies/cornucopia';
 import 'supplies/adventures';
+import 'supplies/guilds';
 import Copper from 'cards/basic/Copper';
 import Estate from 'cards/basic/Estate';
 import Model from 'models/Model';
@@ -207,7 +208,6 @@ export default class Game extends Model {
 
   async start() {
     this.getSupplyCards().forEach((title) => {
-      console.log(title);
       const supply = new (Supply.classes.get(title))(this);
       supply.setup(this);
       this.supplies.set(title, supply);

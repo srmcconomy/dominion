@@ -17,7 +17,7 @@ export default class Cutpurse extends Card {
           }
         }
       } else {
-        // other.revealHand();
+        other.revealHand();
       }
     });
   }
