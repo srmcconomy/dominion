@@ -7,14 +7,14 @@ import ReserveVictorySupplyFactory from '../ReserveVictorySupplyFactory';
 import ReserveSupplyFactory from '../ReserveSupplyFactory';
 
 const travellers = new Set([
-  'Champion',
-  'Disciple',
-  'Fugitive',
-  'Hero',
-  'Soldier',
-  'Teacher',
   'TreasureHunter',
   'Warrior',
+  'Hero',
+  'Champion',
+  'Soldier',
+  'Fugitive',
+  'Disciple',
+  'Teacher',
 ]);
 
 Object.keys(Cards).forEach(title => {

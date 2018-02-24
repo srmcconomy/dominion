@@ -472,6 +472,10 @@ export default class Player extends Model {
     this.hasMinusCoinToken = true;
   }
 
+  takeMinusCardToken() {
+    this.hasMinusCardToken = true;
+  }
+
   async convertToCosts(...costs) {
     const ret = [];
 

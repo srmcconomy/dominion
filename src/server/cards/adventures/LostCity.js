@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 
 export default class LostCity extends Card {
   static cost = new Card.Cost({ coin: 5 });
-  static types = new Set('Action');
+  static types = new Set(['Action']);
   async onPlay(player) {
     await player.draw(2);
     player.actions += 2;

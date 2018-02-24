@@ -16,7 +16,7 @@ export default class Save extends EventCard {
     player.moveCard(card, player.hand, this.aside);
   }
 
-  willTrigger(event) {
+  willTriggerOn(event) {
     return event.name === 'end-of-turn' && this.aside.length > 0;
   }
 

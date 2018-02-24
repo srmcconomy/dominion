@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 
 export default class Hireling extends Card {
   static cost = new Card.Cost({ coin: 6 });
-  static types = new Set('Action', 'Duration');
+  static types = new Set(['Action', 'Duration']);
   async onPlay() {
     this.ignoreCleanup = true;
   }

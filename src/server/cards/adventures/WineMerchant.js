@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 
 export default class WineMerchant extends Card {
   static cost = new Card.Cost({ coin: 5 });
-  static types = new Set('Action', 'Reserve');
+  static types = new Set(['Action', 'Reserve']);
   async onPlay(player) {
     player.money += 4;
     player.buys++;

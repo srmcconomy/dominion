@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 
 export default class Giant extends Card {
   static cost = new Card.Cost({ coin: 5 });
-  static types = new Set('Action', 'Attack');
+  static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {
     player.flipJourneyToken();
     if (player.journeyToken === 'faceUp') {
