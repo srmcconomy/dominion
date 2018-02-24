@@ -97,6 +97,9 @@
 
 .action.traveller {
   background-image: url(assets/images/cards/backgrounds/normal/action-traveller.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action.png);
+  }
 }
 
 .action.reserve.victory {
@@ -143,15 +146,13 @@
 .name {
   margin: 3.5%;
   height: 10%;
+  width: 65%;
+  align-self: center;
   display: flex;
   align-items: center;
   justify-content: center;
   span {
     font-family: Trajan;
-    font-size: 1.5em;
-    .full & {
-      font-size: 1.75em;
-    }
   }
 
   .supply & {
@@ -163,23 +164,24 @@
   }
 }
 
-.description {
-  margin: 70% 10% 20% 10%;
+:global(.description) {
+  margin: 62% 10% 18%;
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   span {
-    font-size: 1em;
     text-align: center;
   }
 }
 
 .types {
+  align-self: center;
+  margin-left: 5%;
   position: absolute;
   bottom: 3%;
   height: 8%;
-  width: 100%;
+  width: 67%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -198,10 +200,10 @@
     top: 4.5%;
   }
   &.left {
-    left: 5%;
+    left: 3%;
   }
   &.right {
-    right: 6%;
+    right: 3%;
   }
 }
 

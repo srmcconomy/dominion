@@ -5,11 +5,11 @@ import styles from './coin.scss';
 
 const cx = classnames.bind(styles);
 
-export default function Coin(props) {
+export default function Coin({ inline = true, children }) {
   return (
-    <div className={cx('coin', { small: props.small })}>
+    <div className={cx('coin', { inline })}>
       <div>
-        <span>{props.children}</span>
+        <span>{children}</span>
       </div>
     </div>
   );

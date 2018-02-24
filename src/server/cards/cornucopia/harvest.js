@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Harvest extends Card {
-  static cost = { coin: 5 };
+  static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action']);
   async onPlay(player) {
     const cards = player.lookAtTopOfDeck(4);

@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Fairgrounds extends Card {
-  static cost = { coin: 6 };
+  static cost = new Card.Cost({ coin: 6 });
   static types = new Set(['Victory']);
   static getNumberInSupply(game) {
     if (game.players.size === 2) return 8;

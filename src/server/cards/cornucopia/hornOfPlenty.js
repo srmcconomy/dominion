@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class HornOfPlenty extends Card {
-  static cost = { coin: 5 };
+  static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Treasure']);
   async onPlay(player) {
     const uniqueNames = [];
@@ -13,7 +13,7 @@ export default class HornOfPlenty extends Card {
       max: 1,
       predicate: s => (
         s.cards.size > 0 &&
-        player.costsLessThanEqualTo(s.cards.last(), { coin: uniqueNames.length })
+        player.cardCostsLessThanEqualTo(s.cards.last(), { coin: uniqueNames.length })
       ),
       message: 'Choose an card to gain'
     });

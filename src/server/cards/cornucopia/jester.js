@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Jester extends Card {
-  static cost = { coin: 5 };
+  static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {
     player.money += 2;
@@ -19,10 +19,10 @@ export default class Jester extends Card {
           const choice = await player.selectOption([`${other.name} gains ${card.title}`, `You gain ${card.title}`]);
           switch (choice) {
             case 0:
-              other.gain(card.title);
+              await other.gain(card.title);
               break;
             case 1:
-              player.gain(card.title);
+              await player.gain(card.title);
               break;
             default:
               break;

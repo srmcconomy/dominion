@@ -1,20 +1,21 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCardFromHand, respondWithCardsFromHand } from '../../toolbox';
+import { createGame, setHand, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards } from '../../toolbox';
 
 export default () => {
   let game;
 
   beforeEach(async () => {
     game = await createGame();
+    game.getKingdomCards = () => ['Chapel'];
   });
 
   test('should trash 4 cards', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Chapel']);
     await waitForNextInput();
-    respondWithCardFromHand('Chapel');
+    respondWithCard('Chapel');
     await waitForNextInput();
-    respondWithCardsFromHand(['Copper', 'Copper', 'Copper', 'Copper']);
+    respondWithCards(['Copper', 'Copper', 'Copper', 'Copper']);
     await waitForNextInput();
     expect(player.hand.length).toBe(0);
     expect(game.trash.length).toBe(4);
@@ -24,9 +25,9 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Chapel']);
     await waitForNextInput();
-    respondWithCardFromHand('Chapel');
+    respondWithCard('Chapel');
     await waitForNextInput();
-    respondWithCardsFromHand([]);
+    respondWithCards([]);
     const { lastInputWasValid } = await waitForNextInput();
     expect(lastInputWasValid).toBe(true);
     expect(player.hand.length).toBe(4);

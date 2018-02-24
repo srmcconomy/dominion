@@ -7,6 +7,7 @@ let results;
 let indent = '';
 
 export const log = console.log;
+process.log = log;
 console.log = () => {};
 
 export function suite(suiteName, suiteFunc) {
@@ -27,9 +28,41 @@ export function expect(val1) {
       const pass = val1 === val2;
       results.push({
         pass,
-        message: pass ? '' : `Expected ${val1} but got ${val2}`,
+        message: pass ? '' : `Expected ${val2} but got ${val1}`,
       });
-    }
+    },
+
+    toNotBe(val2) {
+      const pass = val1 !== val2;
+      results.push({
+        pass,
+        message: pass ? '' : `Did not expect ${val1}`,
+      });
+    },
+
+    toInclude(val2) {
+      const pass = val1 && val1.includes && val1.includes(val2);
+      results.push({
+        pass,
+        message: pass ? '' : `Expected ${val1} to include ${val2}`,
+      });
+    },
+
+    toHaveSome(pred) {
+      const pass = val1 && val1.some && val1.some(pred);
+      results.push({
+        pass,
+        message: pass ? '' : `Expected ${val1.toString()} to have an element where ${pred.toString()}`,
+      });
+    },
+
+    toNotHaveSome(pred) {
+      const pass = val1 && val1.some && !val1.some(pred);
+      results.push({
+        pass,
+        message: pass ? '' : `Expected ${val1.toString()} to not have an element where ${pred.toString()}`,
+      });
+    },
   };
 }
 
@@ -39,29 +72,41 @@ async function runSuite(currentSuite, regex) {
   if (currentSuite.name.match(regex)) {
     const suiteResults = [];
     for (const { testName, testFunc } of currentSuite.tests) {
-      let testPass = true;
-      results = [];
-      await currentSuite.beforeEachFunc();
-      try {
-        await testFunc();
-        if (results.some(({ pass }) => !pass)) {
-          testPass = false;
+      if (!testFunc) {
+        suiteResults.push({ testName, testPass: 'pending', results: [] });
+      } else {
+        let testPass = true;
+        results = [];
+        await currentSuite.beforeEachFunc();
+        try {
+          await testFunc();
+          if (results.some(({ pass }) => !pass)) {
+            testPass = false;
+            suitePass = false;
+          }
+          suiteResults.push({ testName, testPass: testPass ? 'pass' : 'fail', results });
+        } catch (err) {
           suitePass = false;
+          suiteResults.push({ testName, testPass: 'fail', results: [{ pass: false, message: err.stack }] });
         }
-        suiteResults.push({ testName, testPass, results });
-      } catch (err) {
-        suitePass = false;
-        suiteResults.push({ testName, testPass: false, results: [{ pass: false, message: `error occurred: ${err.stack}` }] });
       }
     }
     suiteResults.forEach(({ testName, testPass, results: res }) => {
-      currentLog += `${indent}  ${testPass ? chalk.green('🗸') : chalk.red('✕')} ${testName}\n`;
-      if (!testPass) {
-        res.forEach(({ pass, message }) => {
-          if (!pass) {
-            currentLog += `${indent}      ${chalk.red(message)}\n`;
-          }
-        });
+      switch (testPass) {
+        case 'pass':
+          currentLog += `${indent}  ${chalk.green('🗸')} ${testName}\n`;
+          break;
+        case 'fail':
+          currentLog += `${indent}  ${chalk.red('✕')} ${testName}\n`;
+          res.forEach(({ pass, message }) => {
+            if (!pass) {
+              currentLog += `${indent}      ${chalk.red(message)}\n`;
+            }
+          });
+          break;
+        case 'pending':
+          currentLog += `${indent}  ${chalk.blue('?')} ${testName}\n`;
+          break;
       }
     });
     indent = `${indent}  `;

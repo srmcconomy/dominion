@@ -3,7 +3,7 @@ import { suite } from '../../testingFramework';
 
 delete tests.Index;
 
-suite('Base Set', () => {
+suite('Base', () => {
   Object.keys(tests).forEach(testName => {
     suite(testName, tests[testName]);
   });

@@ -1,18 +1,19 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, respondWithCardFromHand, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, respondWithCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
 
   beforeEach(async () => {
     game = await createGame();
+    game.getKingdomCards = () => ['Village'];
   });
 
   test('should increase actions by 2', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Village']);
     await waitForNextInput();
-    respondWithCardFromHand('Village');
+    respondWithCard('Village');
     await waitForNextInput();
     expect(player.actions).toBe(2);
   });
@@ -21,7 +22,7 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Village']);
     await waitForNextInput();
-    respondWithCardFromHand('Village');
+    respondWithCard('Village');
     await waitForNextInput();
     expect(player.hand.length).toBe(5);
   });

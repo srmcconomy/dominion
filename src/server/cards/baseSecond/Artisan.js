@@ -9,14 +9,14 @@ export default class Artisan extends Card {
       max: 1,
       predicate: s => (
         s.cards.size > 0 &&
-        s.cards.last().cost.isLessThanEqualTo({ coin: 5 })
+        player.cardCostsLessThanEqualTo(s.cards.last(), { coin: 5 })
       ),
       message: 'Choose an card to gain'
     });
     if (supply) {
       await player.gain(supply.title, player.hand);
     }
-    const [card] = await player.selectCards({min:1, max:1, message:'Choose a card to put on top of your deck'});
+    const [card] = await player.selectCards({ min: 1, max: 1, message: 'Choose a card to put on top of your deck' });
     if (card) {
       await player.topDeck(card);
     }
