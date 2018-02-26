@@ -10,12 +10,9 @@ export default class SecretChamber extends Card {
       max: player.hand.length,
       message: 'Select cards to discard'
     });
-    if (cards) {
-      for (let i = 0; i < cards.length; i++) {
-        await player.discard(cards[i]);
-      }
-      player.money += cards.length;
-    }
+
+    player.money += cards.length;
+    await player.discardAll([...cards]);
   }
 
   canTriggerOn(event, player) {

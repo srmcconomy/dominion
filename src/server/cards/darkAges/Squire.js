@@ -9,9 +9,11 @@ export default class Squire extends Card {
     const choice = await player.selectOption(['+2 Actions', '+2 Buys', 'Gain a Silver'], 'Select one');
     switch (choice) {
       case 0:
+        player.game.log(`${player.name} chooses actions`);
         player.actions += 2;
         break;
       case 1:
+        player.game.log(`${player.name} chooses buys`);
         player.buys += 2;
         break;
       case 2:

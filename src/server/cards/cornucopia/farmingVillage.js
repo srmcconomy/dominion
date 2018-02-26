@@ -17,6 +17,7 @@ export default class FarmingVillage extends Card {
         aside.push(card);
       }
     }
-    await aside.asyncForEach(card => player.discard(card));
+
+    await player.discardAll([...aside], aside);
   }
 }

@@ -16,9 +16,7 @@ export default async function KnightAttack(player, event, knight) {
       if (card.types.has('Knight')) trashedKnight = true;
       if (cards.includes(card)) await other.trash(card, cards);
     }
-    while (cards.length) {
-      await other.discard(cards.last(), cards);
-    }
+    await other.discardAll([...cards], other.hand);
   });
   if (trashedKnight && player.playArea.includes(knight)) await player.trash(knight, player.playArea);
 }

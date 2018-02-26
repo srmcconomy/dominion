@@ -11,10 +11,12 @@ export default class Urchin extends Card {
         return;
       }
       if (other.hand.size > 4) {
-        const cards = await other.selectCards({ min: other.hand.size - 4, max: other.hand.size - 4, message: 'Discard down to four cards in hand' });
-        for (let i = 0; i < cards.length; i++) {
-          await other.discard(cards[i]);
-        }
+        const cards = await other.selectCards({
+          min: other.hand.size - 4,
+          max: other.hand.size - 4,
+          message: 'Discard down to four cards in hand'
+        });
+        await other.discardAll([...cards], other.hand);
       }
     });
   }

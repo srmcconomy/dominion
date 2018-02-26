@@ -5,9 +5,7 @@ export default class Tactician extends Card {
   static types = new Set(['Action', 'Duration']);
   async onPlay(player) {
     if (player.hand.size) {
-      while (player.hand.size) {
-        await player.discard(player.hand.last());
-      }
+      await player.discardAll([...player.hand]);
       this.ignoreCleanUp = true;
     } else {
       this.ignoreCleanUp = false;

@@ -11,16 +11,19 @@ export default class PirateShip extends Card {
     ]);
     switch (choice) {
       case 0:
+        player.game.log(`${player.name} gains $${player.mats.pirateShip}`);
         player.money += player.mats.pirateShip;
         break;
       case 1:
         {
+          player.game.log(`${player.name} plays Pirate Ship for its Attack`);
           let trashedTreasure = false;
           await player.forEachOtherPlayer(async other => {
             if (event.handledByPlayer.get(other)) {
               return;
             }
             const cards = await other.lookAtTopOfDeck(2);
+            player.game.log(`${other.name} reveals ${cards.map(c => c.title).join(', ')}`);
 
             if (cards.some(c => c.types.has('Treasure'))) {
               const cardsInspected = new Pile();

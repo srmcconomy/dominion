@@ -16,6 +16,6 @@ export default class Library extends Card {
         player.hand.push(card);
       }
     }
-    await aside.asyncForEach(card => player.discard(card));
+    await player.discardAll([...aside], aside);
   }
 }

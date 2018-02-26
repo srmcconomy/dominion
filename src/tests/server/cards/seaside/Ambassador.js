@@ -41,6 +41,10 @@ export default () => {
     expect(game.supplies.get('Estate').cards.length).toBe(7);
   });
 
+  test('Works with shelters'); // Nothing goes back
+
+  test('Works with spoils'); // Nothing goes back
+
   test('Can return to Split piles');
 
   test('should be blocked by Moat', async () => {

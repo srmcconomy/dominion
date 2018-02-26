@@ -21,7 +21,8 @@ export default class FortuneTeller extends Card {
           aside.push(card);
         }
       }
-      await aside.asyncForEach(card => other.discard(card));
+
+      await other.discardAll([...aside], aside);
     });
   }
 }

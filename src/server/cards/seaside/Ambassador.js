@@ -9,6 +9,7 @@ export default class Ambassador extends Card {
       max: 1,
       message: 'Reveal a card for your opponents to gain'
     });
+    player.game.log(`${player.name} reveals ${card.title}`);
     const cards = await player.selectCards({
       min: 0,
       max: 2,

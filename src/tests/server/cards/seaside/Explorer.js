@@ -17,6 +17,7 @@ export default () => {
     await waitForNextInput();
     expect(player.hand.length).toBe(5);
     expect(player.hand.filter(c => c.title === 'Silver').length).toBe(1);
+    expect(player.discardPile.length).toBe(0);
   });
 
   test('should gain gold with a province', async () => {

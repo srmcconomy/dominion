@@ -22,8 +22,6 @@ export default class Diplomat extends Card {
       max: 3,
       message: 'Choose 3 cards to discard',
     });
-    for (let i = 0; i < cards.length; i++) {
-      await player.discard(cards[i]);
-    }
+    await player.discardAll([...cards]);
   }
 }

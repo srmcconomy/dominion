@@ -13,9 +13,8 @@ export default class Mercenary extends Card {
         max: 2,
         message: 'Choose 2 cards to trash'
       });
-      for (let i = 0; i < cards.length; i++) {
-        await player.trash(cards[i]);
-      }
+
+      await player.trashAll([...cards]);
       if (cards.length === 2) {
         await player.draw(2);
         player.money += 2;
@@ -24,10 +23,13 @@ export default class Mercenary extends Card {
             return;
           }
           if (other.hand.size > 3) {
-            const cards = await other.selectCards({ min: other.hand.size - 3, max: other.hand.size - 3, message: 'Discard down to three cards in hand' });
-            for (let i = 0; i < cards.length; i++) {
-              await other.discard(cards[i]);
-            }
+            const cards2 = await other.selectCards({
+              min: other.hand.size - 3,
+              max: other.hand.size - 3,
+              message: 'Discard down to three cards in hand'
+            });
+
+            await other.discardAll([...cards2], other.hand);
           }
         });
       }

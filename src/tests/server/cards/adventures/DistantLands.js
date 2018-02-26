@@ -6,6 +6,7 @@ export default () => {
 
   beforeEach(async () => {
     game = await createGame();
+    game.getKingdomCards = () => ['DistantLands'];
   });
 
   test('DistantLands should be worth 0 if not on mat', async () => {

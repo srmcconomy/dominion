@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from 'cards/Card';
 import Coin from 'components/Coin';
+import Line from 'components/Line';
 
 export default class MerchantGuild extends Card {
   static title = 'Merchant Guild'
@@ -8,7 +9,7 @@ export default class MerchantGuild extends Card {
     <div>
       <div><strong>+1 Buy</strong></div>
       <div>+<Coin>1</Coin></div>
-      <div>--------------</div>
+      <Line />
       <div>While this is in play, when you buy a card, take a Coin token.</div>
     </div>
   );

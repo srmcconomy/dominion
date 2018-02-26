@@ -17,8 +17,6 @@ export default class WanderingMinstrel extends Card {
         });
         player.topDeck(card, cards);
       }
-      while (cards.length > 0) {
-        await player.discard(cards.last(), cards);
-      }
+      await player.discardAll([...cards]);
     }
 }

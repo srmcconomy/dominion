@@ -31,9 +31,7 @@ export default class Saboteur extends Card {
           done = true;
         }
       }
-      while (aside.length > 0) {
-        await other.discard(aside.last(), aside);
-      }
+      await player.discardAll([...aside], aside);
     });
   }
 }

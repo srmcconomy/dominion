@@ -1,5 +1,4 @@
 import Card from 'cards/Card';
-import Pile from 'utils/Pile';
 
 export default class Navigator extends Card {
   static cost = new Card.Cost({ coin: 4 });
@@ -26,9 +25,7 @@ export default class Navigator extends Card {
         break;
       }
       case 1:
-        while (cards.length > 0) {
-          await player.discard(cards.last(), cards);
-        }
+        await player.discardAll([...cards], cards);
         break;
       default:
         break;

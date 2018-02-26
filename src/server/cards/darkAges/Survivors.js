@@ -9,9 +9,7 @@ export default class Survivors extends Card {
     const choice = await player.selectOption([`Discard ${cards.map(c => c.title).join(', ')}`, 'Put them back']);
     switch (choice) {
       case 0:
-        while (cards.length) {
-          await player.discard(cards.last(), cards);
-        }
+        await player.discardAll([...cards], cards);
         break;
       case 1:
         while (cards.length) {
@@ -23,6 +21,7 @@ export default class Survivors extends Card {
           });
           if (card) await player.topDeck(card, cards);
         }
+        player.game.log(`${player.name} puts cards back on their deck`);
         break;
       default:
         break;

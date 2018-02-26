@@ -13,9 +13,7 @@ export default class Catacombs extends Card {
         }
         break;
       case 1:
-        for (let i = 0; i < cards.length; i++) {
-          await player.discard(cards[i], player.deck);
-        }
+        await player.discardAll([...cards], player.deck);
         await player.draw(3);
         break;
       default:

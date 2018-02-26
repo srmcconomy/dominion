@@ -15,7 +15,11 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Sentry');
     await waitForNextInput();
+    respondWithCard('Duchy');
+    await waitForNextInput();
     respondWithChoice(0);
+    await waitForNextInput();
+    respondWithCard('Duchy');
     await waitForNextInput();
     respondWithChoice(0);
     await waitForNextInput();
@@ -33,7 +37,11 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Sentry');
     await waitForNextInput();
+    respondWithCard('Duchy');
+    await waitForNextInput();
     respondWithChoice(1);
+    await waitForNextInput();
+    respondWithCard('Duchy');
     await waitForNextInput();
     respondWithChoice(1);
     await waitForNextInput();
@@ -51,11 +59,13 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Sentry');
     await waitForNextInput();
-    respondWithChoice(2);
+    respondWithCard('Duchy');
     await waitForNextInput();
     respondWithChoice(2);
     await waitForNextInput();
     respondWithCard('Province');
+    await waitForNextInput();
+    respondWithChoice(2);
     await waitForNextInput();
     expect(player.hand.length).toBe(5);
     expect(player.actions).toBe(1);

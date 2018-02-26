@@ -11,8 +11,6 @@ export default class Warehouse extends Card {
       max: 3,
       message: 'Discard three cards'
     });
-    for (let i = 0; i < cards.length; i++) {
-      await player.discard(cards[i]);
-    }
+    await player.discardAll([...cards]);
   }
 }

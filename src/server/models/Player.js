@@ -306,7 +306,11 @@ export default class Player extends Model {
   }
 
   revealHand() {
-    this.game.log(`${this.name} reveals a hand of: ${this.hand.map(c => c.title).join(', ')}`);
+    if (this.hand.length > 0) {
+      this.game.log(`${this.name} reveals a hand of: ${this.hand.map(c => c.title).join(', ')}`);
+    } else {
+      this.game.log(`${this.name} reveals an empty hand`);
+    }
   }
 
   moveCard(card, fromPile, toPile, options) {
@@ -373,12 +377,16 @@ export default class Player extends Model {
   }
 
   async trashAll(cards, from = this.hand) {
-    this.game.log(`${this.name} trashes ${cards.map(c => c.title).join(', ')}`);
-    const event = await this.handleTriggers('trash', { cards, from }, cards);
-    for (const card of cards) {
-      if (!event.handledForCard.has(card)) {
-        this.moveCard(card, from, this.game.trash);
+    if (cards.length > 0) {
+      this.game.log(`${this.name} trashes ${cards.map(c => c.title).join(', ')}`);
+      const event = await this.handleTriggers('trash', { cards, from }, cards);
+      for (const card of cards) {
+        if (!event.handledForCard.has(card)) {
+          this.moveCard(card, from, this.game.trash);
+        }
       }
+    } else {
+      this.game.log(`${this.name} trashes nothing`);
     }
   }
 
@@ -391,18 +399,26 @@ export default class Player extends Model {
   }
 
   async discardAll(cards, from = this.hand) {
-    this.game.log(`${this.name} discards ${cards.map(c => c.title).join(', ')}`);
-    const event = await this.handleTriggers('discard', { cards, from }, cards);
-    for (const card of cards) {
-      if (!event.handledForCard.has(card)) {
-        this.moveCard(card, from, this.discardPile);
+    if (cards.length > 0) {
+      this.game.log(`${this.name} discards ${cards.map(c => c.title).join(', ')}`);
+      const event = await this.handleTriggers('discard', { cards, from }, cards);
+      for (const card of cards) {
+        if (!event.handledForCard.has(card)) {
+          this.moveCard(card, from, this.discardPile);
+        }
       }
+    } else {
+      this.game.log(`${this.name} discards nothing`);
     }
   }
 
   async gainSpecificCard(card, from, to = this.discardPile) {
     const event = await this.handleTriggers('would-gain', { card }, [card]);
-    this.game.log(`${this.name} gains ${card.name}`);
+    if (to === this.discardPile) {
+      this.game.log(`${this.name} gains ${card.name}`);
+    } else {
+      this.game.log(`${this.name} gains ${card.name} to his/her SOMETHING pile`);
+    }
     if (!event.handledByPlayer.get(this)) {
       this.moveCard(card, from, to);
       this.cardsGainedThisTurn.push(card);
@@ -442,6 +458,7 @@ export default class Player extends Model {
 
   lookAtTopOfDeck(num) {
     if (this.deck.size < num) {
+      this.game.log(`${this.name} shuffles their deck`);
       this.discardPile.shuffle();
       this.moveCard(this.discardPile, this.deck, { num: this.discardPile.size, toWhere: 'bottom' });
     }
@@ -462,17 +479,19 @@ export default class Player extends Model {
     if (this.deck.size < num) {
       if (this.deck.size > 0) {
         numTaken = this.deck.size;
+        this.game.log(`${this.name} draws ${numTaken} card${numTaken !== 1 ? 's' : ''}`);
         this.moveCard(this.deck, cards, { num: numTaken });
       }
       if (this.discardPile.size > 0) {
         this.moveCard(this.discardPile, this.deck, { num: this.discardPile.size });
+        this.game.log(`${this.name} shuffles their deck`);
         this.deck.shuffle();
       }
     }
+    this.game.log(`${this.name} draws ${Math.min(num - numTaken, this.deck.size)} card${Math.min(num - numTaken, this.deck.size) !== 1 ? 's' : ''}`);
     if (this.deck.size > 0) {
       this.moveCard(this.deck, cards, { num: Math.min(num - numTaken, this.deck.size) });
     }
-    this.game.log(`${this.name} draws ${cards.length} card${cards.length !== 1 ? 's' : ''}`);
     if (putInHand) {
       this.hand.push(...cards);
     }
@@ -660,6 +679,10 @@ export default class Player extends Model {
     return this.game.playerOrder[this.index === this.game.playerOrder.length - 1 ? 0 : this.index + 1];
   }
 
+  previousPlayer() {
+    return this.game.playerOrder[this.index === 0 ? this.game.playerOrder.length - 1 : this.index - 1];
+  }
+
   async overpay() {
     const tempCost = { coin: 0, potion: 0, debt: 0 };
     while (this.money > 0 || this.potion > 0) {
@@ -668,7 +691,7 @@ export default class Player extends Model {
       if (this.potion) options.push('Over Pay a Potion');
       options.push('No more Overpay');
       const message = `Overpay currently at ${tempCost.coin} Coin`;
-      if ([...this.game.supplies.values()].some(s => s.title === 'Potion'))  message = `Overpay currently at ${tempCost.coin} Coin, ${tempCost.potion} Potion`;
+      if ([...this.game.supplies.values()].some(s => s.title === 'Potion')) message = `Overpay currently at ${tempCost.coin} Coin, ${tempCost.potion} Potion`;
       const choice = await this.selectOption(options, message);
       if (choice === 0) {
         this.money--;
@@ -680,6 +703,10 @@ export default class Player extends Model {
         tempCost.potion++;
       }
     }
+
+    if (tempCost.potion > 0) {
+      this.game.log(`${this.name} overpays ${tempCost.coin} coin and ${tempCost.potion} potion`);
+    } else this.game.log(`${this.name} overpays ${tempCost.coin} coin`);
     return tempCost;
   }
 
@@ -708,7 +735,10 @@ export default class Player extends Model {
             case 'playTreasures':
               if (this.hand.some(card => card.types.has('Treasure')) || this.coinTokens > 0) {
                 console.log('ask for cards');
-                const options = this.coinTokens ? ['Play all treasures', 'Spend a Coin Token'] : ['Play all treasures'];
+                const basicTreasures = this.hand.some(c => ['Copper', 'Silver', 'Gold', 'Platinum'].includes(c.title));
+                const options = [];
+                if (basicTreasures) options.push('Play treasures');
+                if (this.coinTokens > 0) options.push(['Spend a Coin Token', 'Don\'t']);
                 const res = await this.selectOptionOrCardsOrSupplies(
                   options,
                   {
@@ -721,19 +751,27 @@ export default class Player extends Model {
                   'Select a treasure to play',
                 );
                 if (res === 0) {
-                  let i = 0;
-                  while (i < this.hand.size) {
-                    const card = this.hand.get(i);
-                    if (card.types.has('Treasure')) {
-                      await this.play(card);
-                    } else {
-                      i++;
+                  if (basicTreasures) {
+                    let i = 0;
+                    while (i < this.hand.size) {
+                      const card = this.hand.get(i);
+                      if (['Copper', 'Silver', 'Gold', 'Platinum'].includes(card.title)) {
+                        await this.play(card);
+                      } else {
+                        i++;
+                      }
                     }
+                  } else {
+                    this.game.log(`${this.name} pays a coin token, (${this.coinTokens} remaining)`);
+                    this.coinTokens--;
+                    this.money++;
                   }
-                  this.buyState = 'buyCards';
                 } else if (res === 1) {
+                  this.game.log(`${this.name} pays a coin token, (${this.coinTokens} remaining)`);
                   this.coinTokens--;
                   this.money++;
+                } else if (res === 2) {
+                  this.buyState = 'buyCards';
                 } else {
                   const [card] = res;
                   if (card) {
@@ -827,6 +865,7 @@ export default class Player extends Model {
 
   async takeTurn() {
     this.game.padding = 0;
+    this.game.log('\u00A0');
     this.game.log(`Turn: ${this.game.turnNumber}`);
     this.game.log(`${this.name} starts their turn`);
     this.game.padding += 4;

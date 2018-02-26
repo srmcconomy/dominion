@@ -11,7 +11,7 @@ export default class HuntingParty extends Card {
     const uniqueNames = [];
     player.hand.forEach(c => {
       if (!uniqueNames.includes(c.title)) uniqueNames.push(c.title);
-    });    
+    });
     const aside = new Pile();
     while (player.deck.size + player.discardPile.size > 0) {
       const [card] = await player.draw(1, false);
@@ -23,6 +23,6 @@ export default class HuntingParty extends Card {
         aside.push(card);
       }
     }
-    await aside.asyncForEach(card => player.discard(card));
+    await player.discardAll([...aside], aside);
   }
 }

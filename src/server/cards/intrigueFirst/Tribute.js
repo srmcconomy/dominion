@@ -4,9 +4,7 @@ export default class Tribute extends Card {
   static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action']);
   async onPlay(player) {
-    const leftPlayer = player.game.playerOrder[
-      player.game.currentPlayerIndex + 1 === player.game.players.size ? 0 : player.game.currentPlayerIndex + 1
-    ];
+    const leftPlayer = player.nextPlayer();
     const cards = leftPlayer.lookAtTopOfDeck(2);
     player.game.log(`${leftPlayer.name} reveals ${cards.map(c => c.title).join(', ')}`);
     const cardNames = [];
@@ -17,6 +15,6 @@ export default class Tribute extends Card {
       if (cards[i].types.has('Treasure')) player.money += 2;
       if (cards[i].types.has('Victory')) await player.draw(2);
     }
-    cards.forEach(c => leftPlayer.discard(c, leftPlayer.deck));
+    await leftPlayer.discardAll([...cards], leftPlayer.deck);
   }
 }

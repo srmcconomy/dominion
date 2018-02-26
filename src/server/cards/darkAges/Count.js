@@ -13,9 +13,7 @@ export default class Count extends Card {
             max: 2,
             message: 'Choose 2 cards to discard'
           });
-          for (let i = 0; i < cards.length; i++) {
-            await player.discard(cards[i]);
-          }
+          await player.discardAll([...cards]);
         }
         break;
       case 1:
@@ -25,6 +23,7 @@ export default class Count extends Card {
             max: 1,
             message: 'Choose a Card to top deck'
           });
+          player.game.log(`${player.name} puts a card on top of their deck`);
           if (card) await player.topDeck(card);
         }
         break;
@@ -39,6 +38,7 @@ export default class Count extends Card {
     const choice2 = await player.selectOption(['+3 Coin', 'Trash your hand', 'Gain a Duchy']);
     switch (choice2) {
       case 0:
+        player.game.log(`${player.name} gets $3`);
         player.money += 3;
         break;
       case 1:

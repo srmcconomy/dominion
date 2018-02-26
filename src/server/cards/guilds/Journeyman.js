@@ -22,6 +22,6 @@ export default class Journeyman extends Card {
         cardsDrawn++;
       }
     }
-    await aside.asyncForEach(card => player.discard(card));
+    await player.discardAll([...aside], aside);
   }
 }

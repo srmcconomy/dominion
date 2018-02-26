@@ -6,9 +6,7 @@ export default class Harvest extends Card {
   async onPlay(player) {
     const cards = player.lookAtTopOfDeck(4);
     player.game.log(`${player.name} reveals ${cards.map(c => c.title).join(', ')}`);
-    for (let i = 0; i < cards.length; i++) {
-      await player.discard(cards[i], player.deck);
-    }
+    await player.discardAll([...cards], player.deck);
     const uniqueNames = [];
     cards.forEach(c => {
       if (!uniqueNames.includes(c.title)) uniqueNames.push(c.title);
