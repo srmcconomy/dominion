@@ -8,6 +8,7 @@ import 'supplies/cornucopia';
 import 'supplies/adventures';
 import 'supplies/guilds';
 import 'supplies/darkAges';
+import 'supplies/nocturn';
 import Copper from 'cards/basic/Copper';
 import Estate from 'cards/basic/Estate';
 import Hovel from 'cards/darkAges/Hovel';
@@ -98,7 +99,7 @@ export default class Game extends Model {
       'NativeVillage',
       'PirateShip',
       'Island',
-      'Page',
+      'Monastery',
     ];
   }
 

@@ -21,6 +21,7 @@ import 'cards/cornucopia';
 import 'cards/adventures';
 import 'cards/guilds';
 import 'cards/darkAges';
+import 'cards/nocturn';
 
 import styles from './styles.scss';
 

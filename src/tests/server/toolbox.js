@@ -14,6 +14,7 @@ import cornucopia from 'cards/cornucopia';
 import adventures from 'cards/adventures';
 import guilds from 'cards/guilds';
 import darkAges from 'cards/darkAges';
+import nocturn from 'cards/nocturn';
 
 const cardClasses = {
   ...basic,
@@ -26,6 +27,7 @@ const cardClasses = {
   ...adventures,
   ...guilds,
   ...darkAges,
+  ...nocturn,
 };
 
 let currentPlayer;
