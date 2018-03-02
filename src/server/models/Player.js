@@ -60,6 +60,7 @@ class Event {
     this.triggeringPlayer = triggeringPlayer;
     this.handledByPlayer = new Map();
     this.handledForCard = new Set();
+    this.destination = null;
     game.players.forEach(player => this.handledByPlayer.set(player, false));
     if (args) {
       Object.keys(args).forEach(key => { this[key] = args[key]; });
@@ -414,6 +415,7 @@ export default class Player extends Model {
 
   async gainSpecificCard(card, from, to = this.discardPile) {
     const event = await this.handleTriggers('would-gain', { card }, [card]);
+    if (event.destination) to = event.destination;
     if (to === this.discardPile) {
       this.game.log(`${this.name} gains ${card.name}`);
     } else {
@@ -819,7 +821,7 @@ export default class Player extends Model {
               if (this.buys > 0 && this.debt === 0) {
                 console.log('ask for supplies');
                 const res = await this.selectOptionOrCardsOrSupplies(
-                  ['End turn'],
+                  ['End buys'],
                   null,
                   {
                     min: 0,

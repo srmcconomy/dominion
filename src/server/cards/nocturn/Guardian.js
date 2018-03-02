@@ -1,19 +1,18 @@
 import Card from 'cards/Card';
 import { Set } from 'immutable';
 
-export default class Lighthouse extends Card {
+export default class Guardian extends Card {
   static cost = new Card.Cost({ coin: 2 });
-  static types = new Set(['Action', 'Duration']);
+  static types = new Set(['Night', 'Duration']);
   async onPlay(player) {
-    player.actions++;
-    player.money++;
     this.ignoreCleanUp = true;
   }
 
   willTriggerOn(event, player) {
     return (
       (event.name === 'play-first' && event.card.types.has('Attack') && player !== event.triggeringPlayer && player.playArea.includes(this)) ||
-      (event.name === 'start-of-turn' && event.triggeringPlayer === player && player.playArea.includes(this))
+      (event.name === 'start-of-turn' && event.triggeringPlayer === player && player.playArea.includes(this)) ||
+      (event.name === 'would-gain' && event.card === this && event.triggeringPlayer === player)
     );
   }
 
@@ -25,6 +24,9 @@ export default class Lighthouse extends Card {
       case 'start-of-turn':
         player.money++;
         this.ignoreCleanUp = false;
+        break;
+      case 'would-gain':
+        event.destination = player.hand;
         break;
     }
   }
