@@ -866,9 +866,14 @@ export default class Player extends Model {
           }
           break;
         case 'nightPhase':
-          if (this.turnPhase === 'nightPhase') {
-            this.turnPhase = 'cleanUpPhase';
+          if (this.hand.some(card => card.types.has('Night'))) {
+            const [card] = await this.selectCards({ min: 0, max: 1, predicate: c => c.types.has('Night'), message: 'Select an night card to play' });
+            if (card) {
+              await this.play(card);
+              break;
+            }
           }
+          this.turnPhase = 'cleanUpPhase';
           break;
         case 'cleanUpPhase': {
           const event = await this.handleTriggers('cleanup');

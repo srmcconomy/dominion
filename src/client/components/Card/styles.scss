@@ -52,6 +52,13 @@
   }
 }
 
+.night {
+  background-image: url(assets/images/cards/backgrounds/normal/night.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/night.png);
+  }
+}
+
 .action.reserve {
   background-image: url(assets/images/cards/backgrounds/normal/action-reserve.png);
   .supply & {
@@ -106,6 +113,20 @@
   background-image: url(assets/images/cards/backgrounds/normal/action-traveller.png);
   .supply & {
     background-image: url(assets/images/cards/backgrounds/mini/action.png);
+  }
+}
+
+.action.night {
+  background-image: url(assets/images/cards/backgrounds/normal/action-night.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action-night.png);
+  }
+}
+
+.night.duration {
+  background-image: url(assets/images/cards/backgrounds/normal/night-duration.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/night-duration.png);
   }
 }
 
