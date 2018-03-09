@@ -47,5 +47,51 @@ export default () => {
     expect(player.playArea.length).toBe(0);
   });
 
-  test('should work with Throne Room'); // puts two cards on top, both go to hand, both are found at end of game
+  test('should work with Throne Room', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['ThroneRoom', 'Silver', 'Copper', 'Gold', 'Haven']);
+    await waitForNextInput();
+    respondWithCard('ThroneRoom');
+    await waitForNextInput();
+    respondWithCard('Haven');
+    await waitForNextInput();
+    respondWithCard('Gold');
+    await waitForNextInput();
+    respondWithCard('Silver');
+
+    await skipToNextTurn(player);
+    await waitForNextInput();
+    expect(player.playArea.length).toBe(2);
+    expect(player.hand.some(c => c.title === 'Gold')).toBe(true);
+    expect(player.hand.some(c => c.title === 'Silver')).toBe(true);
+
+    await skipToNextTurn(player);
+    await waitForNextInput();
+    expect(player.playArea.length).toBe(0);
+  });
+
+  test('cards should be found if throned', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['ThroneRoom', 'ThroneRoom', 'Haven', 'Province', 'Haven']);
+    setDeck(player, ['Copper', 'Gardens', 'Duchy', 'Duchy', 'Copper']);
+    await waitForNextInput();
+    respondWithCard('ThroneRoom');
+    await waitForNextInput();
+    respondWithCard('ThroneRoom');
+    await waitForNextInput();
+    respondWithCard('Haven');
+    await waitForNextInput();
+    respondWithCard('Province');
+    await waitForNextInput();
+    respondWithCard('Duchy');
+    await waitForNextInput();
+    respondWithCard('Haven');
+    await waitForNextInput();
+    respondWithCard('Duchy');
+    await waitForNextInput();
+    respondWithCard('Gardens');
+    await waitForNextInput();
+    game.endOfGame();
+    expect(player.score).toBe(13); //6+3+3+1+
+  });
 };

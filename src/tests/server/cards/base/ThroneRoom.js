@@ -53,6 +53,10 @@ export default () => {
     await waitForNextInput();
     expect(player.money).toBe(4);
     expect(player.playArea.length).toBe(2);
+
+    await skipToNextTurn(player);
+    await waitForNextInput();
+    expect(player.playArea.length).toBe(0);
   });
 
   test('should be able to TR, TR, Caravan, Dungeon', async () => {
@@ -78,6 +82,7 @@ export default () => {
     await waitForNextInput();
     expect(player.hand.length).toBe(3);
     expect(player.actions).toBe(4);
+
     await skipToNextTurn(player);
     setDeck(player, ['Gold', 'Estate', 'Silver', 'Estate', 'Estate', 'Estate']);
     expect(player.playArea.length).toBe(3);
@@ -92,6 +97,9 @@ export default () => {
     expect(player.hand.some(c => c.title === 'Silver')).toBe(true);
     expect(player.hand.some(c => c.title === 'Gold')).toBe(true);
     expect(player.actions).toBe(1);
+
+    await skipToNextTurn(player);
+    expect(player.playArea.length).toBe(0);
   });
 
   test('should work on cards that trash themselves', async () => {

@@ -669,8 +669,22 @@ export default class Player extends Model {
       }
       if (this.playArea.hasID(card.id) && card.types.has('Duration') && card.ignoreCleanUp) {
         throne.cards.push(card);
-        throne.ignoreCleanUp = card.ignoreCleanUp || throne.ignoreCleanUp;
+        throne.ignoreCleanUp |= card.ignoreCleanUp;
       }
+    }
+    if (throne.ignoreCleanUp) {
+        throne.willTriggerOn = (event, player) => event.name === 'cleanup' &&
+          event.triggeringPlayer === player &&
+          player.playArea.includes(throne);
+        throne.onTrigger = async (event, player) => {
+          throne.cards.forEach(c => {
+            if (!c.ignoreCleanUp) throne.cards.splice(throne.cards.indexOf(c));
+          });
+          throne.ignoreCleanUp = false;
+          throne.cards.forEach(c => {
+            throne.ignoreCleanUp |= c.ignoreCleanUp;
+          });
+        };
     }
     return card;
   }
