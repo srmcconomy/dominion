@@ -129,6 +129,4 @@ export default () => {
     expect(player.actions).toBe(2);
     expect(player.mats.tavern.length).toBe(1);
   });
-
-  test('Next Reshuffle funky things don\'t happen if this.cards is stale');
 };

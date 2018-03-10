@@ -44,6 +44,26 @@ export default () => {
     expect(player.money).toBe(0);
   });
 
-  test('should love Dame Josephine');
+  test('should love DameJosephine', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'DameJosephine', 'Courtier']);
+    await waitForNextInput();
+    respondWithCard('Courtier');
+    await waitForNextInput();
+    respondWithCard('DameJosephine');
+    await waitForNextInput();
+    respondWithChoice(0);
+    await waitForNextInput();
+    respondWithChoice(0);
+    await waitForNextInput();
+    respondWithChoice(0);
+    await waitForNextInput();
+    respondWithChoice(0);
+    await waitForNextInput();
+    expect(player.actions).toBe(1);
+    expect(player.buys).toBe(2);
+    expect(player.discardPile.last().title).toBe('Gold');
+    expect(player.money).toBe(3);
+  });
 
 };

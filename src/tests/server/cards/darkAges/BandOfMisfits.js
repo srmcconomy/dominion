@@ -9,5 +9,5 @@ export default () => {
     game.getKingdomCards = () => ['BandofMisfits'];
   });
 
-  test('card no implemented');
+  test('card not implemented');
 };

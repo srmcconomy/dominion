@@ -10,7 +10,7 @@ export default class Cutpurse extends Card {
         return;
       }
       if (other.hand.some(card => card.title === 'Copper')) {
-        await other.discard(other.hand.filter(card => card.title === 'Copper').last());
+        await other.discard(other.hand.find(card => card.title === 'Copper'));
       } else {
         other.revealHand();
       }

@@ -21,7 +21,7 @@ export default () => {
     await waitForNextInput();
     expect(player.hand.length).toBe(4);
     expect(otherPlayer.discardPile.last().title).toBe('Curse');
-    expect(game.supplies.get(YoungWitch.bane.title).cards.length).toBe(10);
+    expect(game.supplies.get(YoungWitch.bane.title).cost.coin <= 3).toBe(true);
   });
 
   test('should be blocked by bane', async () => {

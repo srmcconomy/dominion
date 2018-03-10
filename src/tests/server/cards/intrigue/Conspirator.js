@@ -40,4 +40,17 @@ export default () => {
     expect(player.actions).toBe(1);
     expect(player.money).toBe(4);
   });
+
+  test('should give cantrip if throned', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'ThroneRoom', 'Conspirator']);
+    await waitForNextInput();
+    respondWithCard('ThroneRoom');
+    await waitForNextInput();
+    respondWithCard('Conspirator');
+    await waitForNextInput();
+    expect(player.hand.length).toBe(4);
+    expect(player.actions).toBe(1);
+    expect(player.money).toBe(4);
+  });
 };

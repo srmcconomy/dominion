@@ -7,6 +7,5 @@ export default class BakerSupply extends SupplyFactory(Baker) {
     game.players.forEach(player => {
       player.coinTokens++;
     });
-    return 2;
   }
 }

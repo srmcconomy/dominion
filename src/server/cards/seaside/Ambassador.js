@@ -16,14 +16,21 @@ export default class Ambassador extends Card {
       predicate: c => c.name === card.title,
       message: 'Select 0-2 cards to return'
     });
-    for (let i = 0; i < cards.length; i++) {
-      await player.returnToSupply(cards[i]);
-    }
-    await player.forEachOtherPlayer(async other => {
-      if (event.handledByPlayer.get(other)) {
-        return;
+    let returnedCards = false;
+    if (player.game.supplies.get(card.title)) {
+      if (player.game.supplies.get(card.title).category !== 'nonSupply') {
+        for (let i = 0; i < cards.length; i++) {
+          await player.returnToSupply(cards[i]);
+          returnedCards = true;
+        }
+        await player.forEachOtherPlayer(async other => {
+          if (event.handledByPlayer.get(other)) {
+            return;
+          }
+          await other.gain(card.title);
+        });
       }
-      await other.gain(card.title);
-    });
+    }
+    if (!returnedCards) player.game.log(`${player.name} fails to return cards`);
   }
 }

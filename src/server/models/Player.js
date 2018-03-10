@@ -550,19 +550,19 @@ export default class Player extends Model {
   }
 
   async cardCostsLessThanEqualTo(cardOrCost1, cardOrCost2) {
-    return await this.compareCosts(cardOrCost1, cardOrCost2, 'isLessThanEqualTo');
+    return this.compareCosts(cardOrCost1, cardOrCost2, 'isLessThanEqualTo');
   }
   async cardCostsLessThan(cardOrCost1, cardOrCost2) {
-    return await this.compareCosts(cardOrCost1, cardOrCost2, 'isLessThan');
+    return this.compareCosts(cardOrCost1, cardOrCost2, 'isLessThan');
   }
   async cardCostsGreaterThanEqualTo(cardOrCost1, cardOrCost2) {
-    return await this.compareCosts(cardOrCost1, cardOrCost2, 'isGreaterThanEqualTo');
+    return this.compareCosts(cardOrCost1, cardOrCost2, 'isGreaterThanEqualTo');
   }
   async cardCostsGreaterThan(cardOrCost1, cardOrCost2) {
-    return await this.compareCosts(cardOrCost1, cardOrCost2, 'isGreaterThan');
+    return this.compareCosts(cardOrCost1, cardOrCost2, 'isGreaterThan');
   }
   async cardCostsEqualTo(cardOrCost1, cardOrCost2) {
-    return await this.compareCosts(cardOrCost1, cardOrCost2, 'isEqualTo');
+    return this.compareCosts(cardOrCost1, cardOrCost2, 'isEqualTo');
   }
 
   async getCardCost(card) {
@@ -675,6 +675,7 @@ export default class Player extends Model {
     if (throne.ignoreCleanUp) {
         throne.willTriggerOn = (event, player) => event.name === 'cleanup' &&
           event.triggeringPlayer === player &&
+          throne.cards.length > 0 &&
           player.playArea.includes(throne);
         throne.onTrigger = async (event, player) => {
           throne.cards.forEach(c => {

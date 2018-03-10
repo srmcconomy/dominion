@@ -17,7 +17,7 @@ export default () => {
     respondWithCard('Tactician');
     await waitForNextInput();
     expect(player.hand.length).toBe(0);
-    
+
     await skipToNextTurn(player);
     await waitForNextInput();
     expect(player.playArea.length).toBe(1);
@@ -34,7 +34,7 @@ export default () => {
     respondWithCard('Tactician');
     await waitForNextInput();
     expect(player.hand.length).toBe(0);
-    
+
     await skipToNextTurn(player);
     await waitForNextInput();
     expect(player.playArea.length).toBe(0);
@@ -43,5 +43,24 @@ export default () => {
     expect(player.buys).toBe(1);
   });
 
-  test('Should work with Throne Room'); //throne doesn't stay out since it doesn't work
+  test('Should work with Throne Room', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'ThroneRoom', 'Tactician']);
+    setDeck(player, Array(20).fill('Copper'));
+    await waitForNextInput();
+    respondWithCard('ThroneRoom');
+    await waitForNextInput();
+    respondWithCard('Tactician');
+    await waitForNextInput();
+    expect(player.hand.length).toBe(0);
+
+    await skipToNextTurn(player);
+    await waitForNextInput();
+    expect(player.playArea.length).toBe(2);
+    expect(player.actions).toBe(2);
+    expect(player.hand.length).toBe(10);
+    expect(player.buys).toBe(2);
+  });
+
+  test('Should work twice if throned with the +Card Token');
 };

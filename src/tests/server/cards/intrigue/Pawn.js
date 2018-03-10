@@ -25,7 +25,7 @@ export default () => {
     expect(player.money).toBe(0);
   });
 
-  test('should act as a cantrip', async () => {
+  test('should give money and buy', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Pawn']);
     await waitForNextInput();

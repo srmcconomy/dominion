@@ -28,7 +28,7 @@ export default () => {
   test('should place card where you want', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Silver', 'Copper', 'Copper', 'SecretPassage']);
-    setDeck(player, ['Gold', 'Silver', 'Copper', 'Copper', 'Copper']);
+    setDeck(player, ['Gold', 'Copper', 'Copper', 'Copper', 'Copper']);
     await waitForNextInput();
     respondWithCard('SecretPassage');
     await waitForNextInput();
