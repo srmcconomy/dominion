@@ -273,14 +273,26 @@ export default class Player extends Model {
       if (!card) break;
       handledCards.add(card);
       const persistent = cards.optional.persistent.includes(card) || cards.mandatory.persistent.includes(card);
-      await card.onTrigger(event, this, persistent ? 'persistent' : 'normal');
+      if (event.name === 'start-of-turn' && card.types.has('Duration')) {
+        for (let i = 0; i < card.timesPlayed; i++) {
+          await card.onTrigger(event, this, persistent ? 'persistent' : 'normal');
+        }
+      } else {
+        await card.onTrigger(event, this, persistent ? 'persistent' : 'normal');
+      }
       await refreshCards();
     }
 
     await async(Object.keys(cards.mandatory)).forEach(async key => {
       const list = cards.mandatory[key];
       await async(list).forEach(async ({ card }) => {
-        await card.onTrigger(event, this, key === 'persistent' ? 'persistent' : 'normal');
+        if (event.name === 'start-of-turn' && card.types.has('Duration')) {
+          for (let i = 0; i < card.timesPlayed; i++) {
+            await card.onTrigger(event, this, key === 'persistent' ? 'persistent' : 'normal');
+          }
+        } else {
+          await card.onTrigger(event, this, key === 'persistent' ? 'persistent' : 'normal');
+        }
       });
     });
   }
@@ -346,14 +358,26 @@ export default class Player extends Model {
 
   async trash(card, from = this.hand) {
     this.game.log(`${this.name} trashes ${card.name}`);
-    this.moveCard(card, from, this.game.trash);
-    await this.handleTriggers('trash', { card }, [card]);
+    const event = await this.handleTriggers('trash', { cards: [card], from }, [card]);
+    if (!event.handledForCard.has(card)) {
+      this.moveCard(card, from, this.game.trash);
+    }
+  }
+
+  async trashAll(cards, from = this.hand) {
+    this.game.log(`${this.name} trashes ${cards.map(c => c.title).join(', ')}`);
+    const event = await this.handleTriggers('trash', { cards, from }, cards);
+    for (const card of cards) {
+      if (!event.handledForCard.has(card)) {
+        this.moveCard(card, from, this.game.trash);
+      }
+    }
   }
 
   async discard(card, from = this.hand) {
     this.game.log(`${this.name} discards ${card.name}`);
     const event = await this.handleTriggers('discard', { cards: [card], from }, [card]);
-    if (!event.handledByPlayer.get(this)) {
+    if (!event.handledForCard.has(card)) {
       this.moveCard(card, from, this.discardPile);
     }
   }
@@ -498,19 +522,19 @@ export default class Player extends Model {
   }
 
   async cardCostsLessThanEqualTo(cardOrCost1, cardOrCost2) {
-    return this.compareCosts(cardOrCost1, cardOrCost2, 'isLessThanEqualTo');
+    return await this.compareCosts(cardOrCost1, cardOrCost2, 'isLessThanEqualTo');
   }
   async cardCostsLessThan(cardOrCost1, cardOrCost2) {
-    return this.compareCosts(cardOrCost1, cardOrCost2, 'isLessThan');
+    return await this.compareCosts(cardOrCost1, cardOrCost2, 'isLessThan');
   }
   async cardCostsGreaterThanEqualTo(cardOrCost1, cardOrCost2) {
-    return this.compareCosts(cardOrCost1, cardOrCost2, 'isGreaterThanEqualTo');
+    return await this.compareCosts(cardOrCost1, cardOrCost2, 'isGreaterThanEqualTo');
   }
   async cardCostsGreaterThan(cardOrCost1, cardOrCost2) {
-    return this.compareCosts(cardOrCost1, cardOrCost2, 'isGreaterThan');
+    return await this.compareCosts(cardOrCost1, cardOrCost2, 'isGreaterThan');
   }
   async cardCostsEqualTo(cardOrCost1, cardOrCost2) {
-    return this.compareCosts(cardOrCost1, cardOrCost2, 'isEqualTo');
+    return await this.compareCosts(cardOrCost1, cardOrCost2, 'isEqualTo');
   }
 
   async getCardCost(card) {
@@ -521,6 +545,7 @@ export default class Player extends Model {
   }
 
   returnToSupply(card, from = this.hand) {
+    this.game.log(`${this.name} returns ${card.title} to its supply`);
     this.moveCard(card, from, this.game.supplies.get(card.title).cards);
   }
 
@@ -580,6 +605,7 @@ export default class Player extends Model {
     this.game.padding += 4;
     const firstEvent = await this.handleTriggers('play-first', { card }, [card]);
     this.cardsPlayedThisTurn.push(card);
+    card.timesPlayed = this.cardsPlayedThisTurn.filter(c => c === card).length;
     if (from.includes(card)) this.moveCard(card, from, this.playArea);
     const event = await this.handleTriggers('play', { card }, [card]);
     await this.handleVanillaBonusTokens(card);
@@ -595,6 +621,27 @@ export default class Player extends Model {
     for (let i = this.index === this.game.playerOrder.length - 1 ? 0 : this.index + 1; i !== this.index; i = i === this.game.playerOrder.length - 1 ? 0 : i + 1) {
       await func(this.game.playerOrder[i]);
     }
+  }
+
+  async playMultiple(throne, count = 2) {
+    const [card] = await this.selectCards({
+      min: 0,
+      max: 1,
+      predicate: c => c.types.has('Action'),
+      message: `Choose an Action card to play ${count} times`
+    });
+    if (!throne.cards) throne.cards = [];
+    if (card) {
+      await this.play(card);
+      for (let i = 1; i < count; i++) {
+        await this.play(card, this.playArea);
+      }
+      if (this.playArea.hasID(card.id) && card.types.has('Duration') && card.ignoreCleanUp) {
+        throne.cards.push(card);
+        throne.ignoreCleanUp = card.ignoreCleanUp || throne.ignoreCleanUp;
+      }
+    }
+    return card;
   }
 
   async processTurnPhases() {

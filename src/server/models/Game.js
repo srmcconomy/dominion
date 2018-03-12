@@ -6,8 +6,12 @@ import 'supplies/intrigueFirst';
 import 'supplies/seaside';
 import 'supplies/cornucopia';
 import 'supplies/adventures';
+import 'supplies/darkAges';
 import Copper from 'cards/basic/Copper';
 import Estate from 'cards/basic/Estate';
+import Hovel from 'cards/darkAges/Hovel';
+import Necropolis from 'cards/darkAges/Necropolis';
+import OvergrownEstate from 'cards/darkAges/OvergrownEstate';
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
@@ -126,6 +130,9 @@ export default class Game extends Model {
     const potionGame = kingdomArray.some(title => Supply.classes.get(title).cost.potion);
     if (potionGame) suppliesArray.push('Potion');
 
+    const looterGame = kingdomArray.some(title => Supply.classes.get(title).types.has('Looter'));
+    if (looterGame) suppliesArray.push('Ruins');
+
     kingdomArray.forEach(c => suppliesArray.push(c));
 
     return suppliesArray;
@@ -163,7 +170,7 @@ export default class Game extends Model {
     let winningScore = null;
     const winners = [];
     scores.forEach(s => {
-      if (s.score > winningScore) winningScore = s.score;
+      if (s.score >= winningScore) winningScore = s.score;
     });
     scores.forEach(s => {
       if (s.score === winningScore) {
@@ -207,22 +214,42 @@ export default class Game extends Model {
 
   async start() {
     this.getSupplyCards().forEach((title) => {
-      console.log(title);
       const supply = new (Supply.classes.get(title))(this);
       supply.setup(this);
       this.supplies.set(title, supply);
       this.organizedSupplies[supply.category].push(title);
     });
     Object.keys(this.organizedSupplies).forEach(key => {
-      this.organizedSupplies[key].sort((a, b) => (
-        this.supplies.get(a).cost.coin - this.supplies.get(b).cost.coin
-      ));
+      this.organizedSupplies[key].sort((a, b) => {
+        if (this.supplies.get(a).cost.coin === this.supplies.get(b).cost.coin)
+        {
+          if (this.supplies.get(a).title < this.supplies.get(b).title) {
+            return -1;
+          } else if (this.supplies.get(a).title > this.supplies.get(b).title) {
+            return 1;
+          }
+          return 0;
+        }
+        return this.supplies.get(a).cost.coin - this.supplies.get(b).cost.coin;
+      });
     });
 
     let reserveGame = false;
     this.supplies.forEach(s => {
       if (s.types.has('Reserve')) reserveGame = true;
     });
+
+    const darkAges = require.context('cards/darkAges', true);
+    let supplyCount = 0;
+    let darkAgesCount = 0;
+    this.supplies.forEach(s => {
+      if (s.category === 'kingdom') {
+        supplyCount++;
+        if (darkAges.keys().includes(`./${s.title}`)) darkAgesCount++;
+      }
+    });
+
+    const sheltersGame = Math.random() < darkAgesCount / (supplyCount || 1);
 
     this.players.forEach(player => {
       if (this.startingDeck) {
@@ -232,9 +259,13 @@ export default class Game extends Model {
         console.log(player.deck.map(c => c.title));
       } else {
         player.deck.push(
-          ...Array(7).fill().map(() => new Copper(this)),
-          ...Array(3).fill().map(() => new Estate(this)),
+          ...Array(7).fill().map(() => new Copper(this))
         );
+        if (sheltersGame) {
+          player.deck.push(new Hovel(this));
+          player.deck.push(new Necropolis(this));
+          player.deck.push(new OvergrownEstate(this));
+        } else player.deck.push(...Array(3).fill().map(() => new Estate(this)));
         player.deck.shuffle();
       }
 
