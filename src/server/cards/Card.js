@@ -21,6 +21,8 @@ export default class Card extends BaseCard {
 
   endGameCleanUp(player) { }
 
+  updateIgnoreCleanUp() { }
+
   toJSON() {
     return {
       id: this.id,

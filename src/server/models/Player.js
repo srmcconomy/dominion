@@ -579,6 +579,7 @@ export default class Player extends Model {
 
   async cleanup() {
     await this.discardAll([...this.hand]);
+    this.playArea.forEach( c => c.updateIgnoreCleanUp());
     const cards = this.playArea.filter(c => !c.ignoreCleanUp);
     await this.discardAll([...cards], this.playArea);
   }
@@ -672,21 +673,16 @@ export default class Player extends Model {
         throne.ignoreCleanUp |= card.ignoreCleanUp;
       }
     }
-    if (throne.ignoreCleanUp) {
-        throne.willTriggerOn = (event, player) => event.name === 'cleanup' &&
-          event.triggeringPlayer === player &&
-          throne.cards.length > 0 &&
-          player.playArea.includes(throne);
-        throne.onTrigger = async (event, player) => {
-          throne.cards.forEach(c => {
-            if (!c.ignoreCleanUp) throne.cards.splice(throne.cards.indexOf(c));
-          });
-          throne.ignoreCleanUp = false;
-          throne.cards.forEach(c => {
-            throne.ignoreCleanUp |= c.ignoreCleanUp;
-          });
-        };
-    }
+    throne.updateIgnoreCleanUp = () => {
+      throne.cards.forEach(c => {
+        if (!c.ignoreCleanUp) throne.cards.splice(throne.cards.indexOf(c));
+      });
+      throne.ignoreCleanUp = false;
+      throne.cards.forEach(c => {
+        throne.ignoreCleanUp |= c.ignoreCleanUp;
+      });
+    };
+
     return card;
   }
 
