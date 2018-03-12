@@ -374,7 +374,9 @@ export default class Player extends Model {
     const event = await this.handleTriggers('trash', { cards: [card], from }, [card]);
     if (!event.handledForCard.has(card)) {
       this.moveCard(card, from, this.game.trash);
+      return true;
     }
+    return false;
   }
 
   async trashAll(cards, from = this.hand) {
@@ -657,16 +659,18 @@ export default class Player extends Model {
     }
   }
 
-  async playMultiple(throne, count = 2) {
-    const [card] = await this.selectCards({
-      min: 0,
-      max: 1,
-      predicate: c => c.types.has('Action'),
-      message: `Choose an Action card to play ${count} times`
-    });
+  async playMultiple(throne, count = 2, card = null, pile = this.hand ) {
+    if (!card) {
+      [card] = await this.selectCards({
+        min: 0,
+        max: 1,
+        predicate: c => c.types.has('Action'),
+        message: `Choose an Action card to play ${count} times`
+      });
+    }
     if (!throne.cards) throne.cards = [];
     if (card) {
-      await this.play(card);
+      await this.play(card, pile);
       for (let i = 1; i < count; i++) {
         await this.play(card, this.playArea);
       }
@@ -733,6 +737,10 @@ export default class Player extends Model {
     } else this.game.log(`${this.name} overpays ${tempCost.coin} coin`);
     return tempCost;
   }
+
+  async receiveBoon() { }
+
+  async receiveHex() { }
 
   async processTurnPhases() {
     let doneTurn = false;
