@@ -1,6 +1,6 @@
 import YoungWitch from 'cards/cornucopia/YoungWitch';
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, respondWithCard, respondWithCards, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, respondWithCard, respondWithCards, respondWithNoCards, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
@@ -44,6 +44,10 @@ export default () => {
     await waitForNextInput();
     respondWithCard('YoungWitch');
     await waitForNextInput();
+    if (otherPlayer.hand.some(c => c.types.has('Reaction'))) {
+      respondWithNoCards();
+      await waitForNextInput();
+    }
     respondWithCards(['Copper', 'Copper']);
 
     let { player: inputPlayer, lastInputWasValid } = await waitForNextInput();

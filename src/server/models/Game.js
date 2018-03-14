@@ -100,6 +100,7 @@ export default class Game extends Model {
       'PirateShip',
       'Island',
       'Monastery',
+      'SecretCave',
     ];
   }
 
@@ -262,7 +263,7 @@ export default class Game extends Model {
         console.log(player.deck.map(c => c.title));
       } else {
         player.deck.push(
-          ...Array(7).fill().map(() => new Copper(this))
+          ...Array(7 - player.deck.length).fill().map(() => new Copper(this))
         );
         if (sheltersGame) {
           player.deck.push(new Hovel(this));
