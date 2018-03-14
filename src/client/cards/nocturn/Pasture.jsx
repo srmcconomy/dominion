@@ -3,6 +3,7 @@ import Card from 'cards/Card';
 import Coin from 'components/Coin';
 import Medium from 'components/Medium';
 import Line from 'components/Line';
+import VP from 'components/VP';
 
 export default class Pasture extends Card {
   static description = (

@@ -11,8 +11,10 @@ export default class MagicLamp extends Card {
       if (player.playArea.filter(c2 => c2.title === c.title).length === 1) singletonCount++;
     });
     if (singletonCount >= 6) {
-      if (await player.trash(this)) {
-        for (let i = 0; i < 3; i++) await player.gain('WillOWisp');
+      if (player.playArea.includes(this)) {
+        if (await player.trash(this, player.playArea)) {
+          for (let i = 0; i < 3; i++) await player.gain('Wish');
+        }
       }
     }
   }
