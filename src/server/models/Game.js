@@ -39,7 +39,7 @@ export default class Game extends Model {
   supplies = new DirtyMap();
 
   @trackDirty
-  organizedSupplies = { victory: [], treasure: [], kingdom: [], nonSupply: [] };
+  organizedSupplies = { victory: [], treasure: [], treasure2: [], kingdom: [], nonSupply: [] };
 
   @trackDirty
   trash = new Pile();

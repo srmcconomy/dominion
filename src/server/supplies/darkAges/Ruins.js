@@ -7,7 +7,7 @@ import Card from 'cards/Card';
 import Supply from '../Supply';
 
 export default class Ruins extends Supply {
-    static category = 'treasure';
+    static category = 'treasure2';
     static types = new Set(['Action', 'Ruins']);
     static cost = new Card.Cost({ coin: 0 });
     static title = 'Ruins';

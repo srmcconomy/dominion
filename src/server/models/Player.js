@@ -579,7 +579,7 @@ export default class Player extends Model {
 
   async cleanup() {
     await this.discardAll([...this.hand]);
-    this.playArea.forEach( c => c.updateIgnoreCleanUp());
+    this.playArea.forEach(c => c.updateIgnoreCleanUp());
     const cards = this.playArea.filter(c => !c.ignoreCleanUp);
     await this.discardAll([...cards], this.playArea);
   }
@@ -749,9 +749,12 @@ export default class Player extends Model {
                 const basicTreasures = this.hand.some(c => ['Copper', 'Silver', 'Gold', 'Platinum'].includes(c.title));
                 const options = [];
                 if (basicTreasures) options.push('Play treasures');
-                if (this.coinTokens > 0) options.push(['Spend a Coin Token', 'Don\'t']);
+                if (this.coinTokens > 0) {
+                  options.push('Spend a Coin Token');
+                  options.push('Don\'t');
+                }
                 const res = await this.selectOptionOrCardsOrSupplies(
-                  options,
+                  options.length > 0 ? options : null,
                   {
                     min: 0,
                     max: 1,
@@ -773,14 +776,14 @@ export default class Player extends Model {
                       }
                     }
                   } else {
-                    this.game.log(`${this.name} pays a coin token, (${this.coinTokens} remaining)`);
-                    this.coinTokens--;
+                    this.game.log(`${this.name} pays a coin token, (${--this.coinTokens} remaining)`);
                     this.money++;
                   }
                 } else if (res === 1) {
-                  this.game.log(`${this.name} pays a coin token, (${this.coinTokens} remaining)`);
-                  this.coinTokens--;
-                  this.money++;
+                  if (basicTreasures) {
+                    this.game.log(`${this.name} pays a coin token, (${--this.coinTokens} remaining)`);
+                    this.money++;
+                  } else this.buyState = 'buyCards';
                 } else if (res === 2) {
                   this.buyState = 'buyCards';
                 } else {

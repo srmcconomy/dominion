@@ -1,0 +1,25 @@
+.potion {
+  background-image: url(assets/images/potion.png);
+  width: 1.1em;
+  height: 1.1em;
+  background-size: contain;
+  display: inline-block;
+  background-position: center;
+  background-repeat: no-repeat;
+  :global(.description) & {
+    margin-top: -0.5em;
+    font-size: 1.2em;
+  }
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    > span {
+      margin-top: 1px;
+      line-height: 100%;
+      font-weight: 700;
+    }
+  }
+}
