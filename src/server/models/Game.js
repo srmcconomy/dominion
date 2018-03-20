@@ -9,11 +9,22 @@ import 'supplies/adventures';
 import 'supplies/guilds';
 import 'supplies/darkAges';
 import 'supplies/nocturn';
-import Copper from 'cards/basic/Copper';
 import Estate from 'cards/basic/Estate';
 import Hovel from 'cards/darkAges/Hovel';
 import Necropolis from 'cards/darkAges/Necropolis';
 import OvergrownEstate from 'cards/darkAges/OvergrownEstate';
+import TheEarthsGift from 'cards/nocturn/TheEarthsGift';
+import TheFieldsGift from 'cards/nocturn/TheFieldsGift';
+import TheFlamesGift from 'cards/nocturn/TheFlamesGift';
+import TheForestsGift from 'cards/nocturn/TheForestsGift';
+import TheMoonsGift from 'cards/nocturn/TheMoonsGift';
+import TheMountainsGift from 'cards/nocturn/TheMountainsGift';
+import TheRiversGift from 'cards/nocturn/TheRiversGift';
+import TheSeasGift from 'cards/nocturn/TheSeasGift';
+import TheSkysGift from 'cards/nocturn/TheSkysGift';
+import TheSunsGift from 'cards/nocturn/TheSunsGift';
+import TheSwampsGift from 'cards/nocturn/TheSwampsGift';
+import TheWindsGift from 'cards/nocturn/TheWindsGift';
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
@@ -122,8 +133,10 @@ export default class Game extends Model {
       this.log(`${kingdomArray[i]}`);
     }
 
-    kingdomArray.forEach(title => {
-      const dependencies = Supply.classes.get(title).getDependencies(kingdomArray, this);
+    kingdomArray.forEach(c => suppliesArray.push(c));
+
+    suppliesArray.forEach(title => {
+      const dependencies = Supply.classes.get(title).getDependencies(suppliesArray, this);
       dependencies.forEach(d => {
         if (!suppliesArray.includes(d)) {
           suppliesArray.push(d);
@@ -131,13 +144,31 @@ export default class Game extends Model {
       });
     });
 
-    const potionGame = kingdomArray.some(title => Supply.classes.get(title).cost.potion);
+    const potionGame = suppliesArray.some(title => Supply.classes.get(title).cost.potion);
     if (potionGame) suppliesArray.push('Potion');
 
-    const looterGame = kingdomArray.some(title => Supply.classes.get(title).types.has('Looter'));
+    const looterGame = suppliesArray.some(title => Supply.classes.get(title).types.has('Looter'));
     if (looterGame) suppliesArray.push('Ruins');
 
-    kingdomArray.forEach(c => suppliesArray.push(c));
+    const fateGame = suppliesArray.some(title => Supply.classes.get(title).types.has('Fate'));
+    if (fateGame) {
+      suppliesArray.push('WillOWisp');
+      this.boonPile = new Pile();
+      this.boonDiscardPile = new Pile();
+      this.boonPile.push(new TheEarthsGift(this));
+      this.boonPile.push(new TheFieldsGift(this));
+      this.boonPile.push(new TheFlamesGift(this));
+      this.boonPile.push(new TheForestsGift(this));
+      this.boonPile.push(new TheMoonsGift(this));
+      this.boonPile.push(new TheMountainsGift(this));
+      this.boonPile.push(new TheRiversGift(this));
+      this.boonPile.push(new TheSeasGift(this));
+      this.boonPile.push(new TheSkysGift(this));
+      this.boonPile.push(new TheSunsGift(this));
+      this.boonPile.push(new TheSwampsGift(this));
+      this.boonPile.push(new TheWindsGift(this));
+      this.boonPile.shuffle();
+    }
 
     return suppliesArray;
   }
@@ -243,6 +274,11 @@ export default class Game extends Model {
       if (s.types.has('Reserve')) reserveGame = true;
     });
 
+    let fateGame = false;
+    this.supplies.forEach(s => {
+      if (s.types.has('Fate')) fateGame = true;
+    });
+
     const darkAges = require.context('cards/darkAges', true);
     let supplyCount = 0;
     let darkAgesCount = 0;
@@ -262,9 +298,9 @@ export default class Game extends Model {
         player.deck.push(...this.startingDeck());
         console.log(player.deck.map(c => c.title));
       } else {
-        player.deck.push(
-          ...Array(7 - player.deck.length).fill().map(() => new Copper(this))
-        );
+        while (player.deck.length < 7) {
+        player.moveCard(this.supplies.get('Copper').cards.last(), this.supplies.get('Copper').cards, player.deck);
+        }
         if (sheltersGame) {
           player.deck.push(new Hovel(this));
           player.deck.push(new Necropolis(this));
@@ -273,9 +309,8 @@ export default class Game extends Model {
         player.deck.shuffle();
       }
 
-      if (reserveGame) {
-        player.mats.tavern = new Pile();
-      }
+      if (reserveGame) player.mats.tavern = new Pile();
+      if (fateGame) player.boonPile = new Pile();
     });
     this.players.forEach(player => {
       this.playerOrder.push(player);

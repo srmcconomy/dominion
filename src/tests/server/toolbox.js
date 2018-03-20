@@ -215,8 +215,10 @@ export async function skipToNextTurn(player) {
     while (inputPlayer === player) {
       if (input.selectOption) {
         respondWithChoice(0);
-      } else if (input.selectCards) {
+      } else if (input.selectCards.min === 0) {
         respondWithCards([]);
+      } else if (input.selectCards.min > 0) {
+        respondWithFirstCard();
       }
       ({ input, player: inputPlayer } = await waitForNextInput());
     }
@@ -228,8 +230,10 @@ export async function skipToNextTurn(player) {
   while (inputPlayer !== player) {
     if (input.selectOption) {
       respondWithChoice(0);
-    } else if (input.selectCards) {
+    } else if (input.selectCards.min === 0) {
       respondWithCards([]);
+    } else if (input.selectCards.min > 0) {
+      respondWithFirstCard();
     }
     ({ input, player: inputPlayer } = await waitForNextInput());
   }

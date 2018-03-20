@@ -141,6 +141,8 @@ export default class Player extends Model {
 
   cardsBoughtThisTurn = [];
 
+  boonsReceivedThisTurn = [];
+
   persistentEffects = new Map();
 
   game = null;
@@ -659,7 +661,7 @@ export default class Player extends Model {
     }
   }
 
-  async playMultiple(throne, count = 2, card = null, pile = this.hand ) {
+  async playMultiple(throne, count = 2, card = null, pile = this.hand) {
     if (!card) {
       [card] = await this.selectCards({
         min: 0,
@@ -738,7 +740,21 @@ export default class Player extends Model {
     return tempCost;
   }
 
-  async receiveBoon() { }
+  async receiveBoon(num = 1) {
+    if (this.game.boonPile < num) {
+      this.game.boonDiscardPile.shuffle();
+      this.moveCard(this.game.boonDiscardPile, this.game.boonPile, { num: this.game.boonDiscardPile.size });
+    }
+
+    num = Math.min(num, this.game.boonPile.size);
+    while (num-- > 0) {
+      const boon = this.game.boonPile.last();
+      this.game.log(`${this.name} receives boon: ${boon.title}, ${this.game.boonPile.length} ${this.game.boonDiscardPile.length}`);
+      this.boonsReceivedThisTurn.push(boon);
+      await boon.effect(this);
+      if (this.game.boonPile.includes(boon)) this.moveCard(boon, this.game.boonPile, this.game.boonDiscardPile);
+    }
+  }
 
   async receiveHex() { }
 
@@ -919,6 +935,7 @@ export default class Player extends Model {
     this.cardsGainedThisTurn = [];
     this.cardsBoughtThisTurn = [];
     this.eventsBoughtThisTurn = [];
+    this.boonsReceivedThisTurn = [];
 
     await this.processTurnPhases();
   }
