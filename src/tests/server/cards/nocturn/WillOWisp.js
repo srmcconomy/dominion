@@ -24,6 +24,7 @@ export default () => {
     expect(player.hand.length).toBe(6);
     expect(player.hand.last().title).toBe('Estate');
     expect(player.deck.length).toBe(0);
+    expect(player.actions).toBe(1);
   });
 
   test('should not draw more expensive cards', async () => {
@@ -36,5 +37,18 @@ export default () => {
     expect(player.hand.length).toBe(5);
     expect(player.deck.last().title).toBe('Gold');
     expect(player.deck.length).toBe(1);
+    expect(player.actions).toBe(1);
+  });
+
+  test('should not fail with empty deck', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'WillOWisp']);
+    setDeck(player, []);
+    await waitForNextInput();
+    respondWithCard('WillOWisp');
+    await waitForNextInput();
+    expect(player.hand.length).toBe(4);
+    expect(player.deck.length).toBe(0);
+    expect(player.actions).toBe(1);
   });
 };

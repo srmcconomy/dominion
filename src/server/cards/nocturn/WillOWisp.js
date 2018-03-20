@@ -8,7 +8,9 @@ export default class WillOWisp extends Card {
     await player.draw(1);
     player.actions++;
     const [card] = player.lookAtTopOfDeck(1);
-    if (await player.cardCostsLessThanEqualTo(card, { coin: 2 })) player.pickUp(card, player.deck);
-
+    if (card) {
+      player.game.log(`${player.name} reveals ${card.title}`);
+      if (await player.cardCostsLessThanEqualTo(card, { coin: 2 })) player.pickUp(card, player.deck);
+    }
   }
 }

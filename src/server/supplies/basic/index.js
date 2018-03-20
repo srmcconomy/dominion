@@ -15,7 +15,7 @@ import Colony from 'cards/basic/Colony';
 
 import Curse from 'cards/basic/Curse';
 
-Supply.classes.set('Copper', SupplyFactory(Copper, game => 60 - (7 * game.players.size), 'treasure'));
+Supply.classes.set('Copper', SupplyFactory(Copper, () => 60, 'treasure'));
 Supply.classes.set('Silver', SupplyFactory(Silver, () => 40, 'treasure'));
 Supply.classes.set('Gold', SupplyFactory(Gold, () => 30, 'treasure'));
 Supply.classes.set('Platinum', SupplyFactory(Platinum, () => 12, 'treasure'));

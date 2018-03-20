@@ -1,4 +1,4 @@
-import { test, beforeEach, expect, log } from '../../testingFramework';
+import { test, beforeEach, expect } from '../../testingFramework';
 import { createGame, setHand, respondWithCard, respondWithCards, respondWithChoice, skipToNextTurn, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
@@ -54,7 +54,6 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Copper');
     await waitForNextInput();
-    log(player.playArea.last());
     expect(player.playArea.length).toBe(1);
     expect(player.playArea.last().setAside[0].length).toBe(2);
     expect(player.playArea.last().ignoreCleanUp).toBe(true);

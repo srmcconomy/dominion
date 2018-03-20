@@ -12,6 +12,7 @@ export default () => {
   test('should add Haunted Mirror to starting deck', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     await waitForNextInput();
+    expect(game.supplies.get('Copper').cards.length).toBe(48);
     expect(player.hand.filter(c => c.title === 'HauntedMirror').length + player.deck.filter(c => c.title === 'HauntedMirror').length).toBe(1);
     expect(player.hand.filter(c => c.title === 'Copper').length + player.deck.filter(c => c.title === 'Copper').length).toBe(6);
     expect(player.hand.filter(c => c.title === 'Estate').length + player.deck.filter(c => c.title === 'Estate').length).toBe(3);

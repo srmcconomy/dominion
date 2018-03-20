@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Shepherd extends Card {
-  static cost = new Card.Cost({ coin: 5 });
+  static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action']);
   async onPlay(player) {
     player.actions++;

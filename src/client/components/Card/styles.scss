@@ -171,6 +171,20 @@
   background-image: url(assets/images/cards/backgrounds/normal/reaction-shelter.png);
 }
 
+.boon {
+  background-image: url(assets/images/cards/backgrounds/normal/action.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action.png);
+  }
+}
+
+.state {
+  background-image: url(assets/images/cards/backgrounds/normal/action.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action.png);
+  }
+}
+
 .name {
   margin: 3.5%;
   height: 10%;
