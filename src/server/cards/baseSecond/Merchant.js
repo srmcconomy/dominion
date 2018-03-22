@@ -12,7 +12,7 @@ export default class Merchant extends Card {
 
   willTriggerOn(event, player, persistent) {
     return persistent && (
-      event.name === 'cleanup' ||
+      (event.name === 'cleanup' && event.triggeringPlayer === player) ||
       (event.name === 'play' && event.triggeringPlayer === player && event.card.title === 'Silver')
     ) ? { conflicts: false } : false;
   }

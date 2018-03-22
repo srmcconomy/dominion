@@ -260,4 +260,6 @@ export default () => {
     expect(game.boonDiscardPile.length).toBe(1);
     expect(player.boonPile.length).toBe(0);
   });
+
+  test('Make sure reshuffle is proced correctly and stuff');
 };

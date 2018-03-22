@@ -747,20 +747,31 @@ export default class Player extends Model {
     return tempCost;
   }
 
-  async receiveBoon(num = 1) {
+  async takeBoon(num = 1, receiveNow = true) {
     if (this.game.boonPile < num) {
       this.game.boonDiscardPile.shuffle();
       this.moveCard(this.game.boonDiscardPile, this.game.boonPile, { num: this.game.boonDiscardPile.size });
     }
 
     num = Math.min(num, this.game.boonPile.size);
+    const boons = new Pile();
     while (num-- > 0) {
       const boon = this.game.boonPile.last();
-      this.game.log(`${this.name} receives boon: ${boon.title}, ${this.game.boonPile.length} ${this.game.boonDiscardPile.length}`);
-      this.boonsReceivedThisTurn.push(boon);
-      await boon.effect(this);
-      if (this.game.boonPile.includes(boon)) this.moveCard(boon, this.game.boonPile, this.game.boonDiscardPile);
+      if (receiveNow) {
+        await this.receiveBoon(boon, this.game.boonPile);
+        return boon;
+      } else {
+        this.moveCard(boon, this.game.boonPile, boons);
+        return boons;
+      }
     }
+  }
+
+  async receiveBoon(boon, from) {
+    this.game.log(`${this.name} receives boon: ${boon.title}, ${this.game.boonPile.length} ${this.game.boonDiscardPile.length}`);
+    this.boonsReceivedThisTurn.push(boon);
+    await boon.effect(this, from);
+    if (from.includes(boon)) this.moveCard(boon, from, this.game.boonDiscardPile);
   }
 
   async receiveHex() { }

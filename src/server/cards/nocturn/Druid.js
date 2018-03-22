@@ -14,8 +14,9 @@ export default class Druid extends Card {
     });
 
     if (boon) {
+      player.game.log(`${player.name} receives boon: ${boon.title}, ${player.game.boonPile.length} ${player.game.boonDiscardPile.length}`);
       player.boonsReceivedThisTurn.push(boon);
-      await boon.effect(player);
+      await boon.effect(player, player.game.druidBoons);
       if (player.boonPile.includes(boon)) player.moveCard(boon, player.boonPile, player.game.druidBoons);
     }
   }

@@ -4,11 +4,11 @@ export default class TheForestsGift extends Card {
   static cost = new Card.Cost({ coin: 0 });
   static types = new Set(['Boon']);
   static supplyCategory = 'nonSupply';
-  async effect(player) {
+  async effect(player, from) {
     player.buys++;
     player.money++;
-    if (player.game.boonPile.includes(this)) {
-      player.moveCard(this, player.game.boonPile, player.boonPile);
+    if (from.includes(this)) {
+      player.moveCard(this, from, player.boonPile);
       player.addPersistentEffect('end-of-turn', this);
     }
   }
