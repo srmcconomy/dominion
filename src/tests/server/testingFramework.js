@@ -48,6 +48,14 @@ export function expect(val1) {
       });
     },
 
+    toHave(val2) {
+      const pass = val1 && val1.has && val1.has(val2);
+      results.push({
+        pass,
+        message: pass ? '' : `Expected ${val1} to have ${val2}`,
+      });
+    },
+
     toHaveSome(pred) {
       const pass = val1 && val1.some && val1.some(pred);
       results.push({

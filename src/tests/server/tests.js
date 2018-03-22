@@ -2,6 +2,7 @@ import 'source-map-support/register';
 
 import { runTests } from './testingFramework';
 
+import './cards/basic';
 import './cards/base';
 import './cards/baseSecond';
 import './cards/adventures';

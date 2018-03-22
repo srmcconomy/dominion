@@ -79,7 +79,7 @@ async function emitStub(type, { payload }) {
   return nextResponse;
 }
 
-export async function createGame({ numPlayers = 2 } = {}) {
+export async function createGame(numPlayers = 2) {
   currentGame = new Game();
   for (let i = 0; i < numPlayers; i++) {
     const player = new Player(`Player${i}`, currentGame);

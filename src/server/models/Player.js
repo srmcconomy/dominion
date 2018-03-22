@@ -987,7 +987,7 @@ export default class Player extends Model {
         case 'select-supply':
           return filteredSupplies && res.data.every(name => filteredSupplies.some(supply => supply.title === name));
         case 'select-option':
-          return res.data >= 0 && res.data < choices.length;
+          return choices ? (res.data >= 0 && res.data < choices.length) : false;
         default:
           return false;
       }
