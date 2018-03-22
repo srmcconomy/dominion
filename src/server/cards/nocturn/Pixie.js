@@ -6,24 +6,20 @@ export default class Pixie extends Card {
   async onPlay(player) {
     await player.draw(1);
     player.actions++;
-    if (player.game.boonPile.length === 0) {
-      player.moveCard(player.game.boonDiscardPile, player.game.boonPile, { num: player.game.boonDiscardPile.size });
-      player.game.boonPile.shuffle();
-    }
-    const boon = player.game.boonPile.last();
-    player.game.log(`Top Boon is: ${boon.title}`);
+    const boons = await player.takeBoon(1, false);
+    const boon = boons.last();
+    player.game.log(`${player.name} looks at boon: ${boon.title}`);
     const [card] = await player.selectCards({
       min: 0,
       max: 1,
-      pile: player.game.boonPile.filter(b => b === boon),
+      pile: boons.filter(b => b === boon),
       message: 'Trash Pixie to receive this twice?'
     });
     if (card) {
-      await player.receiveBoon();
-      player.boonsReceivedThisTurn.push(boon);
-      await boon.effect(player);
+      await player.receiveBoon(boon, boons);
+      await player.receiveBoon(boon, boons);
     } else {
-      player.moveCard(boon, player.game.boonPile, player.game.boonDiscardPile);
+      player.moveCard(boon, boons, player.game.boonDiscardPile);
     }
   }
 }

@@ -5,6 +5,6 @@ export default class Bard extends Card {
   static types = new Set(['Action', 'Fate']);
   async onPlay(player) {
     player.money += 2;
-    await player.receiveBoon();
+    await player.takeBoon();
   }
 }

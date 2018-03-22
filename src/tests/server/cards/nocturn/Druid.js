@@ -15,7 +15,7 @@ export default () => {
     expect(game.druidBoons.length).toBe(3);
   });
 
-  test('should give 1 of everything', async () => {
+  test('should receive a set aside boon', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Druid']);
     await waitForNextInput();
@@ -25,5 +25,6 @@ export default () => {
     respondWithFirstCard();
     await waitForNextInput();
     expect(player.boonsReceivedThisTurn.length).toBe(1);
+    expect(game.druidBoons.includes(player.boonsReceivedThisTurn[0])).toBe(true);
   });
 };

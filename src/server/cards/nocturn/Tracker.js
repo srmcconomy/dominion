@@ -5,7 +5,7 @@ export default class Tracker extends Card {
   static types = new Set(['Action', 'Fate']);
   async onPlay(player) {
     player.money++;
-    await player.receiveBoon();
+    await player.takeBoon();
   }
 
   canTriggerOn(event, player) {

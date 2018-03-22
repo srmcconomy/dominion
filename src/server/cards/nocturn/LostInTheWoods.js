@@ -19,7 +19,7 @@ export default class LostInTheWoods extends Card {
     });
     if (card) {
       await player.discard(card);
-      await player.receiveBoon();
+      await player.takeBoon();
     }
   }
 }

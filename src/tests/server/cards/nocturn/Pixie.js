@@ -131,7 +131,7 @@ export default () => {
     expect(game.trash.last().title).toBe('Copper');
   });
 
-  test('Goat should bea ble to not Trash', async () => {
+  test('Goat should be able to not trash', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Goat']);
     await waitForNextInput();
