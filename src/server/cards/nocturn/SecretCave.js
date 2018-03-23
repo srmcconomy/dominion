@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class SecretCave extends Card {
+  name = 'Secret Cave';
   static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Action', 'Duration']);
   async onPlay(player) {

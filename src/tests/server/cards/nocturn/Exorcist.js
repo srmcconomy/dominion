@@ -9,6 +9,17 @@ export default () => {
     game.getKingdomCards = () => ['Exorcist'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Exorcist']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Night');
+    expect(card.types.size).toBe(1);
+    expect(card.cost.coin).toBe(4);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should add spirit supplies', async () => {
     await startGameGetPlayerAndWaitForStartOfTurn(game);
     expect(game.supplies.get('WillOWisp').cards.length).toBe(12);

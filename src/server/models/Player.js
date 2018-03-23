@@ -755,9 +755,9 @@ export default class Player extends Model {
         return boon;
       } else {
         this.moveCard(boon, this.game.boonPile, boons);
-        return boons;
       }
     }
+    return boons;
   }
 
   async receiveBoon(boon, from) {

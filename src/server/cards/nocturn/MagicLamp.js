@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class MagicLamp extends Card {
+  name = 'Magic Lamp';
   static cost = new Card.Cost({ coin: 0 });
   static types = new Set(['Treasure', 'Heirloom']);
   static supplyCategory = 'nonSupply';

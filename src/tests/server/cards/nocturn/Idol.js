@@ -10,6 +10,19 @@ export default () => {
     game.getKingdomCards = () => ['Idol'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Idol']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Treasure');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Fate');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should give boon', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Idol']);

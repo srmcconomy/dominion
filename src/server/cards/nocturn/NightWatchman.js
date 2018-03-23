@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class NightWatchman extends Card {
+  name = 'Night Watchman';
   static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Night']);
   async onPlay(player) {

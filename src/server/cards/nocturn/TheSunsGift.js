@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class TheSunsGift extends Card {
+  name = 'The Sun\'s Gift';
   static cost = new Card.Cost({ coin: 0 });
   static types = new Set(['Boon']);
   static supplyCategory = 'nonSupply';

@@ -1,8 +1,8 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class DenOfSin extends Card {
-  static cost = new Card.Cost({ coin: 3 });
+  name = 'Den of Sin';
+  static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Night', 'Duration']);
   async onPlay(player) {
     this.ignoreCleanUp = true;

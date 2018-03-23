@@ -9,6 +9,19 @@ export default () => {
     game.getKingdomCards = () => ['Raider'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Raider']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Night');
+    expect(card.types).toHave('Duration');
+    expect(card.types).toHave('Attack');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(6);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should give $3 next turn', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Raider']);

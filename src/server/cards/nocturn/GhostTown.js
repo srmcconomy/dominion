@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class GhostTown extends Card {
+  name = 'Ghost Town';
   static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Night', 'Duration']);
   async onPlay(player) {

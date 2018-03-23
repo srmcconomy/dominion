@@ -9,13 +9,7 @@ export default class Pixie extends Card {
     const boons = await player.takeBoon(1, false);
     const boon = boons.last();
     player.game.log(`${player.name} looks at boon: ${boon.title}`);
-    const [card] = await player.selectCards({
-      min: 0,
-      max: 1,
-      pile: boons.filter(b => b === boon),
-      message: 'Trash Pixie to receive this twice?'
-    });
-    if (card) {
+    if (await player.pickCard(boon, boons, 'Trash Pixie to receive this twice?')) {
       await player.receiveBoon(boon, boons);
       await player.receiveBoon(boon, boons);
     } else {

@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class HauntedMirror extends Card {
+  name = 'Haunted Mirror';
   static cost = new Card.Cost({ coin: 0 });
   static types = new Set(['Treasure', 'Heirloom']);
   static supplyCategory = 'nonSupply';

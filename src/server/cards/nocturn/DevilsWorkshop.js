@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class DevilsWorkshop extends Card {
+  name = 'Devil\'s Workshop';
   static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Night']);
   async onPlay(player) {

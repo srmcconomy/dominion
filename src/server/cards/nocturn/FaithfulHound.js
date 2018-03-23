@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class FaithfulHound extends Card {
+  name = 'Faithful Hound';
   static cost = new Card.Cost({ coin: 2 });
   static types = new Set(['Action', 'Reaction']);
   async onPlay(player) {

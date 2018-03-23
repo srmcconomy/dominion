@@ -1,11 +1,11 @@
 import Card from 'cards/Card';
-import Pile from 'utils/Pile';
 
 export default class Fool extends Card {
   static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Action', 'Fate']);
   async onPlay(player) {
     if (player.game.lostInTheWoods.player !== player) {
+      player.game.log(`${player.name} is now Lost in the Woods`);
       player.game.lostInTheWoods.player = player;
       this.boons = await player.takeBoon(3, false);
 

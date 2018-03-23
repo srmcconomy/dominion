@@ -9,6 +9,17 @@ export default () => {
     game.getKingdomCards = () => ['Monastery'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Monastery']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Night');
+    expect(card.types.size).toBe(1);
+    expect(card.cost.coin).toBe(2);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should trash 2 if gained two', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Workshop', 'Silver', 'Copper', 'Duchy', 'Monastery']);
