@@ -686,6 +686,17 @@ export default class Player extends Model {
     return card;
   }
 
+  async pickCard(card, from, message) {
+    const [selected] = await this.selectCards({
+      min: 0,
+      max: 1,
+      pile: from.filter(c => c === card),
+      message
+    });
+    if (selected) return true;
+    return false;
+  }
+
   nextPlayer() {
     return this.game.playerOrder[this.index === this.game.playerOrder.length - 1 ? 0 : this.index + 1];
   }

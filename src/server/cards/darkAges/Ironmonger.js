@@ -11,8 +11,9 @@ export default class Ironmonger extends Card {
 
     if (card) {
       player.game.log(`${player.name} reveals ${card.title}`);
-      const choice = await player.selectOption([`Discard ${card.title}`, 'Don\'t']);
-      if (choice === 0) await player.discard(card, player.deck);
+      if (await player.pickCard(card, player.deck, 'Discard?')) {
+        await player.discard(card, player.deck);
+      } else player.game.log(`${player.name} leaves card on top`);
       if (card.types.has('Action')) player.actions++;
       if (card.types.has('Treasure')) player.money++;
       if (card.types.has('Victory')) await player.draw(1);

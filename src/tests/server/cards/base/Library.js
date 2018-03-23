@@ -1,5 +1,5 @@
-import { test, beforeEach, expect, log } from '../../testingFramework';
-import { createGame, setHand, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, setStartingDeck, respondWithChoice } from '../../toolbox';
+import { test, beforeEach, expect } from '../../testingFramework';
+import { createGame, setHand, respondWithFirstCard, respondWithNoCards, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, setStartingDeck, respondWithChoice } from '../../toolbox';
 
 export default () => {
   let game;
@@ -42,7 +42,7 @@ export default () => {
   test('should ask to set aside any actions', async () => {
     setStartingDeck([
       ...[...Array(7)].map(() => 'Copper'),
-      'Chapel',
+      'Village',
       'Chapel',
       ...[...Array(7)].map(() => 'Copper'),
     ]);
@@ -52,11 +52,11 @@ export default () => {
     respondWithCard('Library');
     await waitForNextInput();
 
-    respondWithChoice(0);
+    respondWithFirstCard();
     let { lastInputWasValid } = await waitForNextInput();
     expect(lastInputWasValid).toBe(true);
 
-    respondWithChoice(1);
+    respondWithNoCards();
     ({ lastInputWasValid } = await waitForNextInput());
     expect(lastInputWasValid).toBe(true);
 

@@ -10,8 +10,12 @@ export default class Vassal extends Card {
     const card = cards.last();
 
     if (card) await player.discard(card, cards);
-    if (player.discardPile.last() === card && card.types.has('Action')) {
-      await player.play(card, player.discardPile);
+    if (player.discardPile.length > 0) {
+      if (player.discardPile.last() === card && card.types.has('Action')) {
+        if (await player.pickCard(card, player.discardPile, 'Play Action Card?')) {
+          await player.play(card, player.discardPile);
+        }
+      }
     }
   }
 }

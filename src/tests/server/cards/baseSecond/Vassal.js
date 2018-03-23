@@ -1,5 +1,5 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, setDeck, respondWithCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, setDeck, respondWithCard, respondWithFirstCard, respondWithNoCards, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
@@ -26,8 +26,35 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Vassal');
     await waitForNextInput();
+    respondWithFirstCard();
+    await waitForNextInput();
+    respondWithFirstCard();
+    await waitForNextInput();
     expect(player.actions).toBe(0);
     expect(player.hand.length).toBe(7);
     expect(player.money).toBe(4);
+  });
+
+  test('should be able to stop chain', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Vassal']);
+    setDeck(player, ['Copper', 'Copper', 'Copper', 'Smithy', 'Vassal']);
+    await waitForNextInput();
+    respondWithCard('Vassal');
+    await waitForNextInput();
+    respondWithFirstCard();
+    await waitForNextInput();
+    respondWithNoCards();
+    await waitForNextInput();
+    expect(player.actions).toBe(0);
+    expect(player.hand.length).toBe(4);
+    expect(player.money).toBe(4);
+    expect(player.deck.length).toBe(3);
+    expect(player.discardPile.last().title).toBe('Smithy');
+
+    respondWithCard('Copper');
+    await waitForNextInput();
+    expect(player.hand.length).toBe(3);
+    expect(player.money).toBe(5);
   });
 };

@@ -1,5 +1,5 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, respondWithCard, respondWithChoice, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, respondWithCard, respondWithFirstCard, respondWithNoCards, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
@@ -36,12 +36,49 @@ export default () => {
     await waitForNextInput();
     respondWithCard('MiningVillage');
     await waitForNextInput();
-    respondWithChoice(0);
+    respondWithFirstCard();
     await waitForNextInput();
     expect(player.hand.length).toBe(5);
     expect(player.actions).toBe(2);
     expect(player.money).toBe(2);
     expect(player.playArea.length).toBe(0);
     expect(game.trash.last().title).toBe('MiningVillage');
+  });
+
+  test('trash shoud be optional', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'MiningVillage']);
+    await waitForNextInput();
+    respondWithCard('MiningVillage');
+    await waitForNextInput();
+    respondWithNoCards();
+    await waitForNextInput();
+    expect(player.hand.length).toBe(5);
+    expect(player.actions).toBe(2);
+    expect(player.money).toBe(0);
+    expect(player.playArea.length).toBe(1);
+    expect(game.trash.length).toBe(0);
+  });
+
+  test('throneroom should only allow trashing once', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'ThroneRoom', 'MiningVillage']);
+    await waitForNextInput();
+    respondWithCard('ThroneRoom');
+    await waitForNextInput();
+    respondWithCard('MiningVillage');
+    await waitForNextInput();
+    respondWithFirstCard();
+    await waitForNextInput();
+    expect(player.hand.length).toBe(5);
+    expect(player.actions).toBe(4);
+    expect(player.money).toBe(2);
+    expect(player.playArea.length).toBe(1);
+    expect(game.trash.last().title).toBe('MiningVillage');
+
+    respondWithCard('Copper');
+    await waitForNextInput();
+    expect(player.hand.length).toBe(4);
+    expect(player.money).toBe(3);
   });
 };

@@ -1,5 +1,5 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, setDeck, respondWithCard, respondWithChoice, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, setDeck, respondWithCard, respondWithFirstCard, respondWithNoCards, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
@@ -27,7 +27,7 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Ironmonger');
     await waitForNextInput();
-    respondWithChoice(0);
+    respondWithFirstCard();
     await waitForNextInput();
     expect(player.hand.length).toBe(6);
     expect(player.actions).toBe(1);
@@ -42,7 +42,7 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Ironmonger');
     await waitForNextInput();
-    respondWithChoice(1);
+    respondWithNoCards();
     await waitForNextInput();
     expect(player.hand.length).toBe(6);
     expect(player.actions).toBe(1);
@@ -57,7 +57,7 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Ironmonger');
     await waitForNextInput();
-    respondWithChoice(1);
+    respondWithNoCards();
     await waitForNextInput();
     expect(player.hand.length).toBe(5);
     expect(player.actions).toBe(1);
@@ -71,7 +71,7 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Ironmonger');
     await waitForNextInput();
-    respondWithChoice(1);
+    respondWithNoCards();
     await waitForNextInput();
     expect(player.hand.length).toBe(5);
     expect(player.actions).toBe(2);
@@ -85,7 +85,7 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Ironmonger');
     await waitForNextInput();
-    respondWithChoice(1);
+    respondWithNoCards();
     await waitForNextInput();
     expect(player.hand.length).toBe(5);
     expect(player.actions).toBe(1);
@@ -99,7 +99,7 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Ironmonger');
     await waitForNextInput();
-    respondWithChoice(1);
+    respondWithNoCards();
     await waitForNextInput();
     expect(player.hand.length).toBe(6);
     expect(player.actions).toBe(2);
@@ -113,7 +113,7 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Ironmonger');
     await waitForNextInput();
-    respondWithChoice(1);
+    respondWithNoCards();
     await waitForNextInput();
     expect(player.hand.length).toBe(6);
     expect(player.actions).toBe(1);
