@@ -9,6 +9,18 @@ export default () => {
     game.getKingdomCards = () => ['GreatHall'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['GreatHall']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Victory');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(3);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should cantrip', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'GreatHall']);

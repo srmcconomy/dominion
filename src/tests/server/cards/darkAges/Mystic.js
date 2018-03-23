@@ -1,6 +1,5 @@
 import { test, beforeEach, expect } from '../../testingFramework';
 import { createGame, setHand, setDeck, respondWithCard, respondWithSupply, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
-import { lchmod } from 'fs';
 
 export default () => {
   let game;
@@ -8,6 +7,17 @@ export default () => {
   beforeEach(async () => {
     game = await createGame();
     game.getKingdomCards = () => ['Mystic'];
+  });
+
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Mystic']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types.size).toBe(1);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
   });
 
   test('should draw if named correctly', async () => {

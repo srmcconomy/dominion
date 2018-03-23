@@ -9,6 +9,17 @@ export default () => {
     game.getKingdomCards = () => ['Lurker', 'Market'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Lurker']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types.size).toBe(1);
+    expect(card.cost.coin).toBe(2);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should be able to trash and gain', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Lurker', 'Lurker']);

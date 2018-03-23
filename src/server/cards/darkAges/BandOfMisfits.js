@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class BandOfMisfits extends Card {
-  static cost = { coin: 5 };
+  static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action']);
 //   async onPlay(player) {
 //     const [supply] = await player.selectSupplies({

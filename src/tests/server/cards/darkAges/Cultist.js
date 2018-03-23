@@ -9,6 +9,19 @@ export default () => {
     game.getKingdomCards = () => ['Cultist'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Cultist']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Looter');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('draws and dispenses ruins', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Cultist']);

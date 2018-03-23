@@ -9,6 +9,18 @@ export default () => {
     game.getKingdomCards = () => ['FortuneTeller'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['FortuneTeller']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(3);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should top deck Victory cards', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     const otherPlayer = game.playerOrder.find(p => p !== player);

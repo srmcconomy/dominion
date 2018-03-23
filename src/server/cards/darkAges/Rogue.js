@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 
 export default class Rogue extends Card {
   static cost = new Card.Cost({ coin: 5 });
-  static types = new Set(['Action']);
+  static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {
     player.money += 2;
     if (player.game.trash.size > 0 && player.game.trash.some(async c => await player.cardCostsGreaterThanEqualTo(c, { coin: 3 }) && await player.cardCostsLessThanEqualTo(c, { coin: 6 }))) {

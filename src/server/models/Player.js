@@ -746,7 +746,7 @@ export default class Player extends Model {
             case 'playTreasures':
               if (this.hand.some(card => card.types.has('Treasure')) || this.coinTokens > 0) {
                 console.log('ask for cards');
-                const basicTreasures = this.hand.some(c => ['Copper', 'Silver', 'Gold', 'Platinum'].includes(c.title));
+                const basicTreasures = this.hand.some(c => ['Copper', 'Silver', 'Gold', 'Platinum', 'Potion'].includes(c.title));
                 const options = [];
                 if (basicTreasures) options.push('Play treasures');
                 if (this.coinTokens > 0) {
@@ -769,7 +769,7 @@ export default class Player extends Model {
                     let i = 0;
                     while (i < this.hand.size) {
                       const card = this.hand.get(i);
-                      if (['Copper', 'Silver', 'Gold', 'Platinum'].includes(card.title)) {
+                      if (['Copper', 'Silver', 'Gold', 'Platinum', 'Potion'].includes(card.title)) {
                         await this.play(card);
                       } else {
                         i++;

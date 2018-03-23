@@ -9,6 +9,17 @@ export default () => {
     game.getKingdomCards = () => ['Lookout'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Lookout']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types.size).toBe(1);
+    expect(card.cost.coin).toBe(3);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should move cards correctly', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Lookout']);

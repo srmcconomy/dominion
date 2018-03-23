@@ -1,5 +1,5 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, respondWithCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, respondWithCard, respondWithChoice, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
@@ -28,6 +28,17 @@ export default () => {
     respondWithCard('Potion');
     await waitForNextInput();
     expect(player.potion).toBe(1);
+  });
+
+  test('Basic treasures should be played with PlayAll Button', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Silver', 'Gold', 'Platinum', 'Potion']);
+    await waitForNextInput();
+    respondWithChoice(0);
+    await waitForNextInput();
+    expect(player.money).toBe(11);
+    expect(player.potion).toBe(1);
+    expect(player.hand.length).toBe(0);
   });
 
   test('Copper should cost correct amount and have proper types', async () => {

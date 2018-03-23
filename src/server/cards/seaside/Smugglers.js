@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
 
 export default class Smugglers extends Card {
-  static cost = new Card.Cost({ coin: 5 });
+  static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Action']);
   async onPlay(player) {
     const previousPlayer = player.previousPlayer();

@@ -9,6 +9,66 @@ export default () => {
     game.getKingdomCards = () => ['Ruins'];
   });
 
+  test('AbandonedMine should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['AbandonedMine']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Ruins');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(0);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('RuinedLibrary should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['RuinedLibrary']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Ruins');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(0);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('RuinedMarket should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['RuinedMarket']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Ruins');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(0);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('RuinedVillage should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['RuinedVillage']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Ruins');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(0);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('Survivors should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Survivors']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Ruins');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(0);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('Ruins pile should be generated properly', async () => {
     await startGameGetPlayerAndWaitForStartOfTurn(game);
     expect(game.supplies.get('Ruins').cards.filter(c => (c.types.has('Action') && c.types.has('Ruins'))).length).toBe(10);

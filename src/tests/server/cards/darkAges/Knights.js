@@ -9,6 +9,137 @@ export default () => {
     game.getKingdomCards = () => ['Knights'];
   });
 
+  test('DameAnna should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['DameAnna']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Knight');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('DameJosephine should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['DameJosephine']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Knight');
+    expect(card.types).toHave('Victory');
+    expect(card.types.size).toBe(4);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('DameMolly should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['DameMolly']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Knight');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('DameNatalie should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['DameNatalie']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Knight');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('DameSylvia should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['DameSylvia']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Knight');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('SirBailey should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['SirBailey']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Knight');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('SirDestry should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['SirDestry']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Knight');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('SirMartin should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['SirMartin']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Knight');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(4);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('SirMichael should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['SirMichael']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Knight');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('SirVander should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['SirVander']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Knight');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should create knights supply', async () => {
     await startGameGetPlayerAndWaitForStartOfTurn(game);
     expect(game.supplies.get('Knights').cards.length).toBe(10);

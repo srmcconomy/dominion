@@ -9,6 +9,17 @@ export default () => {
     game.getKingdomCards = () => ['Catacombs'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Catacombs']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types.size).toBe(1);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should be able to draw top 3', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Catacombs']);

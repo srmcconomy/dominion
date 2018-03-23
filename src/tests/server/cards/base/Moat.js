@@ -1,43 +1,42 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, setDeck, respondWithCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput, respondWithCard, respondWithCards } from '../../toolbox';
 
 export default () => {
   let game;
 
   beforeEach(async () => {
     game = await createGame();
-    game.getKingdomCards = () => ['SeaHag'];
+    game.getKingdomCards = () => ['Moat'];
   });
 
   test('Card should cost correct amount and have proper types', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
-    setHand(player, ['SeaHag']);
+    setHand(player, ['Moat']);
     const card = player.hand.last();
     expect(card.types).toHave('Action');
-    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Reaction');
     expect(card.types.size).toBe(2);
-    expect(card.cost.coin).toBe(4);
+    expect(card.cost.coin).toBe(2);
     expect(card.cost.potion).toBe(0);
     expect(card.cost.debt).toBe(0);
   });
 
-  test('should curse top card', async () => {
+  test('should draw 2', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
-    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'SeaHag']);
-    const otherPlayer = game.playerOrder.find(p => p !== player);
-    setDeck(otherPlayer, ['Copper', 'Copper', 'Copper', 'Copper', 'Estate']);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Moat']);
     await waitForNextInput();
-    respondWithCard('SeaHag');
+    respondWithCard('Moat');
     await waitForNextInput();
-    expect(otherPlayer.deck.last().title).toBe('Curse');
-    expect(otherPlayer.discardPile.last().title).toBe('Estate');
+    expect(player.hand.length).toBe(6);
   });
 
-  test('should be blocked by Moat', async () => {
+  test('should block attacks', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
-    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Militia']);
+    setHand(player, ['Copper', 'Copper', 'Village', 'Militia', 'Militia']);
     const otherPlayer = game.playerOrder.find(p => p !== player);
     setHand(otherPlayer, ['Copper', 'Copper', 'Copper', 'Copper', 'Moat']);
+    await waitForNextInput();
+    respondWithCard('Village');
     await waitForNextInput();
     respondWithCard('Militia');
 
@@ -49,7 +48,19 @@ export default () => {
     ({ player: inputPlayer, lastInputWasValid } = await waitForNextInput());
     expect(lastInputWasValid).toBe(true);
 
-    expect(otherPlayer.deck.length).toBe(5);
-    expect(otherPlayer.discardPile.length).toBe(0);
+    expect(otherPlayer.hand.length).toBe(5);
+
+    await waitForNextInput();
+    respondWithCard('Militia');
+
+    ({ player: inputPlayer, lastInputWasValid } = await waitForNextInput());
+    expect(inputPlayer).toBe(otherPlayer);
+    expect(lastInputWasValid).toBe(true);
+    respondWithCard('Moat');
+
+    ({ player: inputPlayer, lastInputWasValid } = await waitForNextInput());
+    expect(lastInputWasValid).toBe(true);
+
+    expect(otherPlayer.hand.length).toBe(5);
   });
 };

@@ -9,6 +9,19 @@ export default () => {
     game.getKingdomCards = () => ['Marauder'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Marauder']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Attack');
+    expect(card.types).toHave('Looter');
+    expect(card.types.size).toBe(3);
+    expect(card.cost.coin).toBe(4);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should gain spoils and give ruins', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Marauder']);

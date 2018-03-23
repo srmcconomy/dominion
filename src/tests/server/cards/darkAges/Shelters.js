@@ -9,6 +9,42 @@ export default () => {
     game.getKingdomCards = () => ['Altar'];
   });
 
+  test('Hovel should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Hovel']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Reaction');
+    expect(card.types).toHave('Shelter');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(1);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('Necropolis should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Necropolis']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Shelter');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(1);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('OvergrownEstate should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['OvergrownEstate']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Victory');
+    expect(card.types).toHave('Shelter');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(1);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should add shelters to starting deck with all darkAges cards', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     await waitForNextInput();

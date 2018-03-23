@@ -2,7 +2,7 @@ import Card from 'cards/Card';
 
 export default class TreasureMap extends Card {
   static cost = new Card.Cost({ coin: 4 });
-  static types = new Set(['Action', 'Attack']);
+  static types = new Set(['Action']);
   async onPlay(player) {
     player.trash(this, player.playArea);
     const otherCard = player.hand.find(c => c.title === 'TreasureMap');
