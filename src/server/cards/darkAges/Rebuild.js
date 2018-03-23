@@ -16,7 +16,7 @@ export default class Rebuild extends Card {
     const aside = new Pile();
     while (player.deck.size + player.discardPile.size > 0) {
       const [card] = await player.draw(1, false);
-      player.game.log(`${player.name} reveals ${card.title}`);
+      player.game.log(`${player.name} reveals ${card.name}`);
       if (card.types.has('Victory') && card.title !== supply.title) {
         await player.discardAll([...aside], aside);
         await player.trash(card);

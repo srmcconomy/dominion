@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class SeaHag extends Card {
+  name = 'Sea Hag';
   static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {

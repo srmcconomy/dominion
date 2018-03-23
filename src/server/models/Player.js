@@ -307,7 +307,7 @@ export default class Player extends Model {
 
   revealHand() {
     if (this.hand.length > 0) {
-      this.game.log(`${this.name} reveals a hand of: ${this.hand.map(c => c.title).join(', ')}`);
+      this.game.log(`${this.name} reveals a hand of: ${this.hand.map(c => c.name).join(', ')}`);
     } else {
       this.game.log(`${this.name} reveals an empty hand`);
     }
@@ -378,7 +378,7 @@ export default class Player extends Model {
 
   async trashAll(cards, from = this.hand) {
     if (cards.length > 0) {
-      this.game.log(`${this.name} trashes ${cards.map(c => c.title).join(', ')}`);
+      this.game.log(`${this.name} trashes ${cards.map(c => c.name).join(', ')}`);
       const event = await this.handleTriggers('trash', { cards, from }, cards);
       for (const card of cards) {
         if (!event.handledForCard.has(card)) {
@@ -400,7 +400,7 @@ export default class Player extends Model {
 
   async discardAll(cards, from = this.hand) {
     if (cards.length > 0) {
-      this.game.log(`${this.name} discards ${cards.map(c => c.title).join(', ')}`);
+      this.game.log(`${this.name} discards ${cards.map(c => c.name).join(', ')}`);
       const event = await this.handleTriggers('discard', { cards, from }, cards);
       for (const card of cards) {
         if (!event.handledForCard.has(card)) {
@@ -512,7 +512,7 @@ export default class Player extends Model {
 
   putOnTavernMat(card, from = this.playArea) {
     if (from.includes(card)) {
-      this.game.log(`${this.name} moves ${card.title} to their tavern mat`);
+      this.game.log(`${this.name} moves ${card.name} to their tavern mat`);
       this.moveCard(card, from, this.mats.tavern);
     }
   }
@@ -573,7 +573,7 @@ export default class Player extends Model {
   }
 
   returnToSupply(card, from = this.hand) {
-    this.game.log(`${this.name} returns ${card.title} to its supply`);
+    this.game.log(`${this.name} returns ${card.name} to its supply`);
     this.moveCard(card, from, this.game.supplies.get(card.title).cards);
   }
 

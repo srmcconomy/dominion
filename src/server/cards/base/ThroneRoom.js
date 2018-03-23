@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class ThroneRoom extends Card {
+  name = 'Throne Room';
   static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action']);
   async onPlay(player) {

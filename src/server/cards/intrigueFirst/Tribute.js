@@ -6,7 +6,7 @@ export default class Tribute extends Card {
   async onPlay(player) {
     const leftPlayer = player.nextPlayer();
     const cards = leftPlayer.lookAtTopOfDeck(2);
-    player.game.log(`${leftPlayer.name} reveals ${cards.map(c => c.title).join(', ')}`);
+    player.game.log(`${leftPlayer.name} reveals ${cards.map(c => c.name).join(', ')}`);
     const cardNames = [];
     for (let i = 0; i < cards.length; i++) {
       if (cardNames.includes(cards[i].title)) continue;

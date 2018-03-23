@@ -36,7 +36,7 @@ export default class Doctor extends Card {
     if (tempCost.coin > 0 || tempCost.potion > 0) {
       for (let i = 0; i < tempCost.coin; i++) {
         const [card] = await player.lookAtTopOfDeck(1);
-        const choice = await player.selectOption([`Trash ${card.title}`, `Discard ${card.title}`, `Top deck ${card.title}`], 'Choose what to do with card');
+        const choice = await player.selectOption([`Trash ${card.name}`, `Discard ${card.name}`, `Top deck ${card.name}`], 'Choose what to do with card');
         switch (choice) {
           case 0:
             await player.trash(card, player.deck);

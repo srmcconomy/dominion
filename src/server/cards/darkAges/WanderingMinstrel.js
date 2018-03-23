@@ -1,13 +1,14 @@
 import Card from 'cards/Card';
 
 export default class WanderingMinstrel extends Card {
+  name = 'Wandering Minstrel';
   static cost = new Card.Cost({ coin: 4 });
     static types = new Set(['Action']);
     async onPlay(player) {
       await player.draw(1);
       player.actions += 2;
       const cards = await player.draw(3, false);
-      player.game.log(`${player.name} reveals ${cards.map(c => c.title).join(', ')}`);
+      player.game.log(`${player.name} reveals ${cards.map(c => c.name).join(', ')}`);
       while (cards.some(c => c.types.has('Action'))) {
         const [card] = await player.selectCards({
           min: 1,

@@ -11,7 +11,7 @@ export default class Bureaucrat extends Card {
       }
       if (other.hand.some(card => card.types.has('Victory'))) {
         const [c] = await other.selectCards({ min: 1, max: 1, predicate: card => card.types.has('Victory'), message: 'Choose a Victory card to put onto your deck' });
-        player.game.log(`${player.name} reveals ${c.title}`);
+        player.game.log(`${player.name} reveals ${c.name}`);
         other.topDeck(c);
       } else {
         other.revealHand();

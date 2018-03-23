@@ -7,7 +7,7 @@ export default class Herald extends Card {
     await player.draw(1);
     player.actions++;
     const [card] = await player.lookAtTopOfDeck(1);
-    player.game.log(`${player.name} reveals ${card.title}`);
+    player.game.log(`${player.name} reveals ${card.name}`);
     if (card.types.has('Action')) await player.play(card, player.deck);
   }
 

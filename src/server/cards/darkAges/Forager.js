@@ -18,11 +18,11 @@ export default class Forager extends Card {
 
     const uniqueTrashedTreasures = [];
     player.game.trash.forEach(c => {
-      if (!uniqueTrashedTreasures.includes(c.title) && c.types.has('Treasure')) {
-        uniqueTrashedTreasures.push(c.title);
+      if (!uniqueTrashedTreasures.includes(c.name) && c.types.has('Treasure')) {
+        uniqueTrashedTreasures.push(c.name);
       }
     });
     player.money += uniqueTrashedTreasures.length;
-    player.game.log(`${this.title} is worth ${uniqueTrashedTreasures.length}: (${uniqueTrashedTreasures.join(', ')}).`);
+    player.game.log(`${this.name} is worth ${uniqueTrashedTreasures.length}: (${uniqueTrashedTreasures.join(', ')}).`);
   }
 }

@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class HuntingGrounds extends Card {
+  name = 'Hunting Grounds';
   static cost = new Card.Cost({ coin: 6 });
   static types = new Set(['Action']);
   async onPlay(player) {

@@ -6,7 +6,7 @@ export default class Survivors extends Card {
   static supplyCategory = 'nonSupply';
   async onPlay(player) {
     const cards = await player.draw(2, false);
-    const choice = await player.selectOption([`Discard ${cards.map(c => c.title).join(', ')}`, 'Put them back']);
+    const choice = await player.selectOption([`Discard ${cards.map(c => c.name).join(', ')}`, 'Put them back']);
     switch (choice) {
       case 0:
         await player.discardAll([...cards], cards);

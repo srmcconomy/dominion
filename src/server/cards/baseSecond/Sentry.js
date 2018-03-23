@@ -16,7 +16,7 @@ export default class Sentry extends Card {
         pile: cards,
         message: 'Select a card to move'
       });
-      const choice = await player.selectOption([`Trash ${card.title}`, `Discard ${card.title}`, `Put ${card.title} back on your deck`]);
+      const choice = await player.selectOption([`Trash ${card.name}`, `Discard ${card.name}`, `Put ${card.name} back on your deck`]);
       switch (choice) {
         case 0:
           await player.trash(card, cards);

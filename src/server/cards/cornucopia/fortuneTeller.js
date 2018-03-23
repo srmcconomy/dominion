@@ -2,6 +2,7 @@ import Card from 'cards/Card';
 import Pile from 'utils/Pile';
 
 export default class FortuneTeller extends Card {
+  name = 'Fortune Teller';
   static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {
@@ -13,7 +14,7 @@ export default class FortuneTeller extends Card {
       const aside = new Pile();
       while (other.deck.size + other.discardPile.size > 0) {
         const [card] = await other.draw(1, false);
-        player.game.log(`${other.name} reveals ${card.title}`);
+        player.game.log(`${other.name} reveals ${card.name}`);
         if (card.types.has('Victory') || card.types.has('Curse')) {
           other.deck.push(card);
           break;

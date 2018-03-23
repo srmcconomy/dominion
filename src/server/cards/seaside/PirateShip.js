@@ -2,6 +2,7 @@ import Card from 'cards/Card';
 import Pile from 'utils/Pile';
 
 export default class PirateShip extends Card {
+  name = 'Pirate Ship';
   static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {
@@ -23,7 +24,7 @@ export default class PirateShip extends Card {
               return;
             }
             const cards = await other.lookAtTopOfDeck(2);
-            player.game.log(`${other.name} reveals ${cards.map(c => c.title).join(', ')}`);
+            player.game.log(`${other.name} reveals ${cards.map(c => c.name).join(', ')}`);
 
             if (cards.some(c => c.types.has('Treasure'))) {
               const cardsInspected = new Pile();

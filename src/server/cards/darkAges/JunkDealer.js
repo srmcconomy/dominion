@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class JunkDealer extends Card {
+  name = 'Junk Dealer';
   static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action']);
   async onPlay(player) {

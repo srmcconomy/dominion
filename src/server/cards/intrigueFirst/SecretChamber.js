@@ -2,6 +2,7 @@ import Card from 'cards/Card';
 import { Set } from 'immutable';
 
 export default class SecretChamber extends Card {
+  name = 'Secret Chamber';
   static cost = new Card.Cost({ coin: 2 });
   static types = new Set(['Action', 'Reaction']);
   async onPlay(player) {

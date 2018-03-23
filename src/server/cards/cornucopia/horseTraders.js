@@ -2,6 +2,7 @@ import Card from 'cards/Card';
 import { Set } from 'immutable';
 
 export default class HorseTraders extends Card {
+  name = 'Horse Traders';
   static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action', 'Reaction']);
   async onPlay(player) {

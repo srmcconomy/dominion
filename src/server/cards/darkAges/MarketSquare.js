@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class MarketSquare extends Card {
+  name = 'Market Square';
   static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Action', 'Reaction']);
   async onPlay(player) {

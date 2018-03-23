@@ -2,6 +2,7 @@ import Card from 'cards/Card';
 import KnightAttack from 'utils/KnightAttack';
 
 export default class DameMolly extends Card {
+  name = 'Dame Molly';
   static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action', 'Attack', 'Knight']);
   static supplyCategory = 'nonSupply';

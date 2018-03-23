@@ -13,7 +13,7 @@ export default class Swindler extends Card {
       if (!card) {
         return;
       }
-      player.game.log(`${other.name} reveals ${card.title}`);
+      player.game.log(`${other.name} reveals ${card.name}`);
       await other.trash(card, other.deck);
       const [supply] = await player.selectSupplies({
         min: 1,
@@ -22,7 +22,7 @@ export default class Swindler extends Card {
           s.cards.size > 0 &&
           player.cardCostsEqualTo(s.cards.last(), card)
         ),
-        message: `Choose a card to replace ${other.name}'s ${card.title}`,
+        message: `Choose a card to replace ${other.name}'s ${card.name}`,
       });
       if (!supply) {
         return;

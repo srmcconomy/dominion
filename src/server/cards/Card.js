@@ -13,6 +13,8 @@ export default class Card extends BaseCard {
     if (game) game.cards.push(this);
 
     this.supply = supply;
+
+    this.name = this.title;
   }
 
   getVpValue(player) {

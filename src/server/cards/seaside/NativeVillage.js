@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
-import Pile from 'utils/Pile';
 
 export default class NativeVillage extends Card {
+  name = 'Native Village';
   static cost = new Card.Cost({ coin: 2 });
   static types = new Set(['Action']);
   async onPlay(player) {

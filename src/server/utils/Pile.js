@@ -10,7 +10,7 @@ export default class Pile extends Model {
   }
 
   toString() {
-    return `Pile: [${this._list.map(c => c.title).join(', ')}]`;
+    return `Pile: [${this._list.map(c => c.name).join(', ')}]`;
   }
 
   createDirty() {

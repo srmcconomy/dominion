@@ -6,7 +6,7 @@ export default class Advisor extends Card {
   async onPlay(player) {
     player.actions++;
     const cards = await player.draw(3, false);
-    player.game.log(`${player.name} reveals ${cards.map(c => c.title).join(', ')}`);
+    player.game.log(`${player.name} reveals ${cards.map(c => c.name).join(', ')}`);
     const [card] = await player.nextPlayer().selectCards({
       min: 1,
       max: 1,

@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class DeathCart extends Card {
+  name = 'Death Cart';
   static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action', 'Looter']);
   async onPlay(player) {

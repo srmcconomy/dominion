@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class OvergrownEstate extends Card {
+  name = 'Overgrown Estate';
   static VP = 0;
   static cost = new Card.Cost({ coin: 1 });
   static types = new Set(['Victory', 'Shelter']);

@@ -10,7 +10,7 @@ export default class Ironmonger extends Card {
     const [card] = await player.lookAtTopOfDeck(1);
 
     if (card) {
-      player.game.log(`${player.name} reveals ${card.title}`);
+      player.game.log(`${player.name} reveals ${card.name}`);
       if (await player.pickCard(card, player.deck, 'Discard?')) {
         await player.discard(card, player.deck);
       } else player.game.log(`${player.name} leaves card on top`);

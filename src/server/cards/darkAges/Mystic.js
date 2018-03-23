@@ -15,7 +15,7 @@ export default class Mystic extends Card {
     player.game.log(`${player.name} names ${supply.title}`);
     const [card] = await player.lookAtTopOfDeck(1);
     if (card) {
-      player.game.log(`${player.name} reveals ${card.title}`);
+      player.game.log(`${player.name} reveals ${card.name}`);
       if (card && card.title === supply.title) {
         await player.draw(1);
       }

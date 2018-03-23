@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class CandlestickMaker extends Card {
+  name = 'Candlestick Maker';
   static cost = new Card.Cost({ coin: 2 });
   static types = new Set(['Action']);
   async onPlay(player) {

@@ -5,7 +5,7 @@ export default class Catacombs extends Card {
   static types = new Set(['Action']);
   async onPlay(player) {
     const cards = await player.lookAtTopOfDeck(3);
-    const choice = await player.selectOption([`Put ${cards.map(c => c.title).join(', ')} into your hand`, 'Discard them and draw three new cards']);
+    const choice = await player.selectOption([`Put ${cards.map(c => c.name).join(', ')} into your hand`, 'Discard them and draw three new cards']);
     switch (choice) {
       case 0:
         for (let i = 0; i < cards.length; i++) {

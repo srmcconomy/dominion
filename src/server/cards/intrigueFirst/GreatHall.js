@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class GreatHall extends Card {
+  name = 'Great Hall';
   static cost = new Card.Cost({ coin: 3 });
   static VP = 1;
   static types = new Set(['Action', 'Victory']);
