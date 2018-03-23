@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class WillOWisp extends Card {
+  name = 'Will-O\'-Wisp';
   static cost = new Card.Cost({ coin: 0 });
   static types = new Set(['Action', 'Spirit']);
   static supplyCategory = 'nonSupply';

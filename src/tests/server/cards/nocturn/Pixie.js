@@ -13,6 +13,30 @@ export default () => {
     game.getKingdomCards = () => ['Pixie'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Pixie']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Fate');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(2);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('Goat should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Goat']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Treasure');
+    expect(card.types).toHave('Heirloom');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(2);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should add Goat to starting deck', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     await waitForNextInput();

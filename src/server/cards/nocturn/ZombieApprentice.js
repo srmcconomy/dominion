@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class ZombieApprentice extends Card {
+  name = 'Zombie Apprentice';
   static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Action', 'Zombie']);
   static supplyCategory = 'nonSupply';

@@ -1,5 +1,4 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class Lighthouse extends Card {
   static cost = new Card.Cost({ coin: 2 });

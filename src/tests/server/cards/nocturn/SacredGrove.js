@@ -13,13 +13,23 @@ export default () => {
     game.getKingdomCards = () => ['SacredGrove'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['SacredGrove']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Fate');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(5);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should give buy and money', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'SacredGrove']);
     await waitForNextInput();
     respondWithCard('SacredGrove');
-    await waitForNextInput();
-    respondWithNoCards();
     await waitForNextInput();
     expect(player.buys >= 2).toBe(true);
     expect(player.money >= 3).toBe(true);

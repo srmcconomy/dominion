@@ -1,5 +1,4 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class HorseTraders extends Card {
   name = 'Horse Traders';

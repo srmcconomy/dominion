@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class ZombieSpy extends Card {
+  name = 'Zombie Spy';
   static cost = new Card.Cost({ coin: 3 });
   static types = new Set(['Action', 'Zombie']);
   static supplyCategory = 'nonSupply';
@@ -9,8 +10,9 @@ export default class ZombieSpy extends Card {
     player.actions++;
     const [card] = await player.lookAtTopOfDeck(1);
     if (card) {
-      const choice = await player.selectOption([`Discard ${card.title}`, `Leave ${card.title} on deck`]);
-      if (choice === 0) await player.discard(card, player.deck);
+      if (await player.pickCard(card, player.deck, 'Discard from deck?')) {
+        await player.discard(card, player.deck);
+      }
     }
   }
 }

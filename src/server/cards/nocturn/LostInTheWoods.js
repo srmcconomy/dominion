@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class LostInTheWoods extends Card {
+  name = 'Lost in the Woods';
   static cost = new Card.Cost({ coin: 0 });
   static types = new Set(['State']);
   static supplyCategory = 'nonSupply';

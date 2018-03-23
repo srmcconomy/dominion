@@ -10,6 +10,30 @@ export default () => {
     game.getKingdomCards = () => ['Tracker'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Tracker']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Fate');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(2);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
+  test('Pouch should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Pouch']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Treasure');
+    expect(card.types).toHave('Heirloom');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(2);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('should add Pouch to starting deck', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     await waitForNextInput();

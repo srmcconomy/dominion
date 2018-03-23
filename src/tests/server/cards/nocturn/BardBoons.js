@@ -21,6 +21,18 @@ export default () => {
     game.getKingdomCards = () => ['Bard'];
   });
 
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Bard']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types).toHave('Fate');
+    expect(card.types.size).toBe(2);
+    expect(card.cost.coin).toBe(4);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
+  });
+
   test('Boon Pile is created and WillOWisp', async () => {
     await startGameGetPlayerAndWaitForStartOfTurn(game);
     expect(game.supplies.get('WillOWisp').cards.length).toBe(12);
