@@ -1,0 +1,20 @@
+import Card from 'cards/Card';
+
+export default class Fear extends Card {
+  static cost = new Card.Cost({ coin: 0 });
+  static types = new Set(['Hex']);
+  static supplyCategory = 'nonSupply';
+  async effect(player) {
+    if (player.hand.length >= 5) {
+      const [card] = await player.selectCards({
+        min: 1,
+        max: 1,
+        predicate: c => (c.types.has('Action') || c.types.has('Treasure')),
+        message: 'Select an Action or Treasure card to discard'
+      });
+      if (card) {
+        await player.discard(card);
+      }
+    } else player.revealHand();
+  }
+}
