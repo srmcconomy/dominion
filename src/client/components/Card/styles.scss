@@ -178,6 +178,13 @@
   }
 }
 
+.hex {
+  background-image: url(assets/images/cards/backgrounds/normal/action.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action.png);
+  }
+}
+
 .state {
   background-image: url(assets/images/cards/backgrounds/normal/action.png);
   .supply & {

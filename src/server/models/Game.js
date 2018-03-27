@@ -13,6 +13,7 @@ import Estate from 'cards/basic/Estate';
 import Hovel from 'cards/darkAges/Hovel';
 import Necropolis from 'cards/darkAges/Necropolis';
 import OvergrownEstate from 'cards/darkAges/OvergrownEstate';
+
 import TheEarthsGift from 'cards/nocturn/TheEarthsGift';
 import TheFieldsGift from 'cards/nocturn/TheFieldsGift';
 import TheFlamesGift from 'cards/nocturn/TheFlamesGift';
@@ -25,6 +26,20 @@ import TheSkysGift from 'cards/nocturn/TheSkysGift';
 import TheSunsGift from 'cards/nocturn/TheSunsGift';
 import TheSwampsGift from 'cards/nocturn/TheSwampsGift';
 import TheWindsGift from 'cards/nocturn/TheWindsGift';
+
+import BadOmens from 'cards/nocturn/BadOmens';
+import Delusion from 'cards/nocturn/Delusion';
+import Envy from 'cards/nocturn/Envy';
+import Famine from 'cards/nocturn/Famine';
+import Fear from 'cards/nocturn/Fear';
+import Greed from 'cards/nocturn/Greed';
+import Haunting from 'cards/nocturn/Haunting';
+import Locusts from 'cards/nocturn/Locusts';
+import Misery from 'cards/nocturn/Misery';
+import Plague from 'cards/nocturn/Plague';
+import Poverty from 'cards/nocturn/Poverty';
+import War from 'cards/nocturn/War';
+
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
@@ -170,6 +185,25 @@ export default class Game extends Model {
       this.boonPile.shuffle();
     }
 
+    const doomGame = suppliesArray.some(title => Supply.classes.get(title).types.has('Doom'));
+    if (doomGame) {
+      this.hexPile = new Pile();
+      this.hexDiscardPile = new Pile();
+      this.hexPile.push(new BadOmens(this));
+      this.hexPile.push(new Delusion(this));
+      this.hexPile.push(new Envy(this));
+      this.hexPile.push(new Famine(this));
+      this.hexPile.push(new Fear(this));
+      this.hexPile.push(new Greed(this));
+      this.hexPile.push(new Haunting(this));
+      this.hexPile.push(new Locusts(this));
+      this.hexPile.push(new Misery(this));
+      this.hexPile.push(new Plague(this));
+      this.hexPile.push(new Poverty(this));
+      this.hexPile.push(new War(this));
+      this.hexPile.shuffle();
+    }
+
     return suppliesArray;
   }
 
@@ -178,7 +212,7 @@ export default class Game extends Model {
     this.players.forEach(player => {
       player.score = player.vpTokens;
       player.endOfGameCleanUp();
-      player.deck.forEach(c => {
+      [...player.deck, ...player.states].forEach(c => {
         const cardScore = c.getVpValue(player);
         if (cardScore) {
           this.log(`${player.name}\'s ${c.name} is worth ${cardScore}`);
@@ -299,7 +333,7 @@ export default class Game extends Model {
         console.log(player.deck.map(c => c.title));
       } else {
         while (player.deck.length < 7) {
-        player.moveCard(this.supplies.get('Copper').cards.last(), this.supplies.get('Copper').cards, player.deck);
+          player.moveCard(this.supplies.get('Copper').cards.last(), this.supplies.get('Copper').cards, player.deck);
         }
         if (sheltersGame) {
           player.deck.push(new Hovel(this));

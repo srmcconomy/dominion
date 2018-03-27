@@ -8,7 +8,7 @@ export default class Leprechaun extends Card {
     if (player.playArea.length === 7) {
       await player.gain('Wish');
     } else {
-      await player.receiveHex();
+      await player.takeHex();
     }
   }
 }

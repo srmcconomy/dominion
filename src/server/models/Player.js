@@ -90,6 +90,9 @@ export default class Player extends Model {
   mats = new Mats();
 
   @trackDirty
+  states = new Pile();
+
+  @trackDirty
   supplyTokens = new SupplyTokens();
 
   @trackDirty
@@ -142,6 +145,8 @@ export default class Player extends Model {
   cardsBoughtThisTurn = [];
 
   boonsReceivedThisTurn = [];
+
+  hexsReceivedThisTurn = [];
 
   persistentEffects = new Map();
 
@@ -748,7 +753,7 @@ export default class Player extends Model {
   }
 
   async takeBoon(num = 1, receiveNow = true) {
-    if (this.game.boonPile < num) {
+    if (this.game.boonPile.size < num) {
       this.game.boonDiscardPile.shuffle();
       this.moveCard(this.game.boonDiscardPile, this.game.boonPile, { num: this.game.boonDiscardPile.size });
     }
@@ -760,21 +765,48 @@ export default class Player extends Model {
       if (receiveNow) {
         await this.receiveBoon(boon, this.game.boonPile);
         return boon;
-      } else {
-        this.moveCard(boon, this.game.boonPile, boons);
       }
+      this.moveCard(boon, this.game.boonPile, boons);
+
     }
     return boons;
   }
 
   async receiveBoon(boon, from) {
-    this.game.log(`${this.name} receives boon: ${boon.title}, ${this.game.boonPile.length} ${this.game.boonDiscardPile.length}`);
+    this.game.log(`${this.name} receives boon: ${boon.name}`);
     this.boonsReceivedThisTurn.push(boon);
     await boon.effect(this, from);
+    this.game.log(`boon piles: ${this.game.boonPile.length} ${this.game.boonDiscardPile.length}`);
     if (from.includes(boon)) this.moveCard(boon, from, this.game.boonDiscardPile);
   }
 
-  async receiveHex() { }
+  async takeHex(num = 1, receiveNow = true) {
+    if (this.game.hexPile.size < num) {
+      this.game.hexDiscardPile.shuffle();
+      this.moveCard(this.game.hexDiscardPile, this.game.hexPile, { num: this.game.hexDiscardPile.size });
+    }
+
+    num = Math.min(num, this.game.hexPile.size);
+    const hexs = new Pile();
+    while (num-- > 0) {
+      const hex = this.game.hexPile.last();
+      if (receiveNow) {
+        await this.receiveHex(hex, this.game.hexPile);
+        return hex;
+      }
+      this.moveCard(hex, this.game.hexPile, hexs);
+
+    }
+    return hexs;
+  }
+
+  async receiveHex(hex, from) {
+    this.game.log(`${this.name} receives hex: ${hex.name}`);
+    this.hexsReceivedThisTurn.push(hex);
+    await hex.effect(this, from);
+    this.game.log(`hex piles: ${this.game.hexPile.length} ${this.game.hexDiscardPile.length}`);
+    if (from.includes(hex)) this.moveCard(hex, from, this.game.hexDiscardPile);
+  }
 
   async processTurnPhases() {
     let doneTurn = false;
@@ -795,6 +827,7 @@ export default class Player extends Model {
           }
           this.turnPhase = 'buyPhase';
           this.buyState = 'playTreasures';
+          await this.handleTriggers('start-of-buy-phase', {}, [...this.states]);
           break;
         case 'buyPhase':
           switch (this.buyState) {
@@ -954,6 +987,7 @@ export default class Player extends Model {
     this.cardsBoughtThisTurn = [];
     this.eventsBoughtThisTurn = [];
     this.boonsReceivedThisTurn = [];
+    this.hexsReceivedThisTurn = [];
 
     await this.processTurnPhases();
   }
