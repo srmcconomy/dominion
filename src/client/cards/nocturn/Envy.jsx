@@ -5,7 +5,7 @@ import Coin from 'components/Coin';
 export default class Envy extends Card {
   static description = (
     <div>
-      <div>If you don\t have Deluded or Envious, take Envious.</div>
+      <div>If you dont have Deluded or Envious, take Envious.</div>
     </div>
   );
   static cost = <Coin>0</Coin>

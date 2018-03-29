@@ -3,6 +3,7 @@ import Card from 'cards/Card';
 export default class Bat extends Card {
   static cost = new Card.Cost({ coin: 2 });
   static types = new Set(['Night']);
+  static supplyCategory = 'nonSupply';
   async onPlay(player) {
     const cards = await player.selectCards({
       min: 0,

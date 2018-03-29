@@ -14,31 +14,8 @@ import Hovel from 'cards/darkAges/Hovel';
 import Necropolis from 'cards/darkAges/Necropolis';
 import OvergrownEstate from 'cards/darkAges/OvergrownEstate';
 
-import TheEarthsGift from 'cards/nocturn/TheEarthsGift';
-import TheFieldsGift from 'cards/nocturn/TheFieldsGift';
-import TheFlamesGift from 'cards/nocturn/TheFlamesGift';
-import TheForestsGift from 'cards/nocturn/TheForestsGift';
-import TheMoonsGift from 'cards/nocturn/TheMoonsGift';
-import TheMountainsGift from 'cards/nocturn/TheMountainsGift';
-import TheRiversGift from 'cards/nocturn/TheRiversGift';
-import TheSeasGift from 'cards/nocturn/TheSeasGift';
-import TheSkysGift from 'cards/nocturn/TheSkysGift';
-import TheSunsGift from 'cards/nocturn/TheSunsGift';
-import TheSwampsGift from 'cards/nocturn/TheSwampsGift';
-import TheWindsGift from 'cards/nocturn/TheWindsGift';
-
-import BadOmens from 'cards/nocturn/BadOmens';
-import Delusion from 'cards/nocturn/Delusion';
-import Envy from 'cards/nocturn/Envy';
-import Famine from 'cards/nocturn/Famine';
-import Fear from 'cards/nocturn/Fear';
-import Greed from 'cards/nocturn/Greed';
-import Haunting from 'cards/nocturn/Haunting';
-import Locusts from 'cards/nocturn/Locusts';
-import Misery from 'cards/nocturn/Misery';
-import Plague from 'cards/nocturn/Plague';
-import Poverty from 'cards/nocturn/Poverty';
-import War from 'cards/nocturn/War';
+import fateSetup from 'utils/FateSetup';
+import hexSetup from 'utils/HexSetup';
 
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
@@ -167,41 +144,13 @@ export default class Game extends Model {
 
     const fateGame = suppliesArray.some(title => Supply.classes.get(title).types.has('Fate'));
     if (fateGame) {
-      suppliesArray.push('WillOWisp');
-      this.boonPile = new Pile();
-      this.boonDiscardPile = new Pile();
-      this.boonPile.push(new TheEarthsGift(this));
-      this.boonPile.push(new TheFieldsGift(this));
-      this.boonPile.push(new TheFlamesGift(this));
-      this.boonPile.push(new TheForestsGift(this));
-      this.boonPile.push(new TheMoonsGift(this));
-      this.boonPile.push(new TheMountainsGift(this));
-      this.boonPile.push(new TheRiversGift(this));
-      this.boonPile.push(new TheSeasGift(this));
-      this.boonPile.push(new TheSkysGift(this));
-      this.boonPile.push(new TheSunsGift(this));
-      this.boonPile.push(new TheSwampsGift(this));
-      this.boonPile.push(new TheWindsGift(this));
-      this.boonPile.shuffle();
+      if (!suppliesArray.includes('WillOWisp')) suppliesArray.push('WillOWisp');
+      fateSetup(this);
     }
 
     const doomGame = suppliesArray.some(title => Supply.classes.get(title).types.has('Doom'));
     if (doomGame) {
-      this.hexPile = new Pile();
-      this.hexDiscardPile = new Pile();
-      this.hexPile.push(new BadOmens(this));
-      this.hexPile.push(new Delusion(this));
-      this.hexPile.push(new Envy(this));
-      this.hexPile.push(new Famine(this));
-      this.hexPile.push(new Fear(this));
-      this.hexPile.push(new Greed(this));
-      this.hexPile.push(new Haunting(this));
-      this.hexPile.push(new Locusts(this));
-      this.hexPile.push(new Misery(this));
-      this.hexPile.push(new Plague(this));
-      this.hexPile.push(new Poverty(this));
-      this.hexPile.push(new War(this));
-      this.hexPile.shuffle();
+      hexSetup(this);
     }
 
     return suppliesArray;

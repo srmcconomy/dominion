@@ -8,6 +8,7 @@ export default class HauntedMirror extends Card {
   static title = 'Haunted Mirror'
   static description = (
     <div>
+      <p />
       <Medium><div><Coin>1</Coin></div></Medium>
       <Line />
       <div>When you trash this, you may discard an Action card, to gain a Ghost from its pile.</div>
