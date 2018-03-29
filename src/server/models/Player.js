@@ -188,6 +188,8 @@ export default class Player extends Model {
     this.name = name;
     this.journeyToken = 'faceUp';
     this.turnPhase = 'actionPhase';
+    this.boonsReceivedThisTurn = [];
+    this.hexsReceivedThisTurn = [];
   }
 
   addPersistentEffect(eventName, card) {
@@ -806,6 +808,17 @@ export default class Player extends Model {
     await hex.effect(this, from);
     this.game.log(`hex piles: ${this.game.hexPile.length} ${this.game.hexDiscardPile.length}`);
     if (from.includes(hex)) this.moveCard(hex, from, this.game.hexDiscardPile);
+  }
+
+  exchange(title, otherTitle, from = this.playArea) {
+    const toSupply = this.game.supplies.get(title);
+    const fromSupply = this.game.supplies.get(otherTitle);
+    if (toSupply && fromSupply) {
+      if (fromSupply.cards.length > 0 && fromSupply.cards.last().title === otherTitle) {
+        this.moveCard(this, from, toSupply.cards);
+        this.moveCard(fromSupply.cards.last(), fromSupply.cards, this.discardPile);
+      }
+    }
   }
 
   async processTurnPhases() {

@@ -12,6 +12,6 @@ export default class Deluded extends Card {
   }
 
   async onTrigger(event, player) {
-
+    player.game.log('Please don\'t buy action cards this turn, card not fully implemented');
   }
 }
