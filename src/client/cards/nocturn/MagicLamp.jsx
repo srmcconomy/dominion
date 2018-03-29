@@ -7,6 +7,7 @@ export default class MagicLamp extends Card {
   static title = 'Magic Lamp'
   static description = (
     <div>
+      <p />
       <Medium><div><Coin>1</Coin></div></Medium>
       <div>When you play this, if there are at least 6 cards that you have exactly 1 copy of in play, trash this. If you do, gain 3 Wishes from their pile.</div>
     </div>

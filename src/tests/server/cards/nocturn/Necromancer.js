@@ -1,12 +1,12 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, setDeck, respondWithCard, respondWithSupply, respondWithFirstCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, setDeck, setTrash, respondWithCard, respondWithSupply, respondWithFirstCard, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
 
   beforeEach(async () => {
     game = await createGame();
-    game.getKingdomCards = () => ['Necromancer'];
+    game.getKingdomCards = () => ['Necromancer', 'Pillage', 'Ratcatcher'];
   });
 
   test('Card should cost correct amount and have proper types', async () => {
@@ -39,6 +39,7 @@ export default () => {
     await waitForNextInput();
     expect(player.hand.length).toBe(6);
     expect(player.actions).toBe(1);
+    expect(player.playArea.length).toBe(1);
     expect(game.trash.length).toBe(4);
   });
 
@@ -56,6 +57,7 @@ export default () => {
     expect(game.trash.last().title).toBe('Estate');
     expect(player.discardPile.last().title).toBe('Silver');
     expect(player.deck.length).toBe(0);
+    expect(player.playArea.length).toBe(1);
     expect(game.trash.length).toBe(4);
   });
 
@@ -74,6 +76,65 @@ export default () => {
     expect(player.actions).toBe(1);
     expect(player.discardPile.last().title).toBe('Gold');
     expect(player.deck.length).toBe(1);
+    expect(player.playArea.length).toBe(1);
     expect(game.trash.length).toBe(3);
   });
+
+  test('should work with Pillage', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    const otherPlayer = game.playerOrder.find(p => p !== player);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Necromancer']);
+    setHand(otherPlayer, []);
+    setTrash(game, ['Pillage']);
+    await waitForNextInput();
+    respondWithCard('Necromancer');
+    await waitForNextInput();
+    respondWithCard('Pillage');
+    await waitForNextInput();
+    expect(player.hand.length).toBe(4);
+    expect(player.actions).toBe(0);
+    expect(player.discardPile.filter(c => c.title === 'Spoils').length).toBe(2);
+    expect(player.playArea.length).toBe(1);
+    expect(game.trash.length).toBe(1);
+  });
+
+  test('should work with reserve cards', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    const otherPlayer = game.playerOrder.find(p => p !== player);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Necromancer']);
+    setHand(otherPlayer, []);
+    setTrash(game, ['Ratcatcher']);
+    await waitForNextInput();
+    respondWithCard('Necromancer');
+    await waitForNextInput();
+    respondWithCard('Ratcatcher');
+    await waitForNextInput();
+    expect(player.hand.length).toBe(5);
+    expect(player.actions).toBe(1);
+    expect(player.mats.tavern.length).toBe(0);
+    expect(player.playArea.length).toBe(1);
+    expect(game.trash.length).toBe(1);
+  });
+
+  test('should work with conspirator', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    const otherPlayer = game.playerOrder.find(p => p !== player);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Necromancer']);
+    setHand(otherPlayer, []);
+    setTrash(game, ['Conspirator', 'Necromancer']);
+    await waitForNextInput();
+    respondWithCard('Necromancer');
+    await waitForNextInput();
+    respondWithCard('Necromancer');
+    await waitForNextInput();
+    respondWithCard('Conspirator');
+    await waitForNextInput();
+    expect(player.hand.length).toBe(5);
+    expect(player.actions).toBe(1);
+    expect(player.money).toBe(2);
+    expect(player.playArea.length).toBe(1);
+    expect(game.trash.length).toBe(2);
+  });
+
+  test('should work with prince?');
 };

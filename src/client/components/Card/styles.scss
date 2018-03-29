@@ -224,6 +224,18 @@
   }
 }
 
+:global(.descriptionWhite) {
+  margin: 62% 10% 18%;
+  color: white;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  span {
+    text-align: center;
+  }
+}
+
 .types {
   align-self: center;
   margin-left: 5%;
