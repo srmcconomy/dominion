@@ -6,6 +6,7 @@ export default () => {
 
   beforeEach(async () => {
     game = await createGame();
+    game.getKingdomCards = () => ['Sentry'];
   });
 
   test('Card should cost correct amount and have proper types', async () => {

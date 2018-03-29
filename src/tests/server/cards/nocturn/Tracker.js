@@ -84,6 +84,8 @@ export default () => {
     expect(player.discardPile.last().title).toBe('Estate');
   });
 
+  test('Should be fine with Watchtower');
+
   test('Pouch should give money and buy', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Pouch']);

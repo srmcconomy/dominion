@@ -426,7 +426,9 @@ export default class Player extends Model {
 
   async gainSpecificCard(card, from, to = this.discardPile) {
     const event = await this.handleTriggers('would-gain', { card }, [card]);
-    if (event.destination) to = event.destination;
+    if (event.destination) {
+      to = event.destination;
+    } else event.destination = to;
     if (to === this.discardPile) {
       this.game.log(`${this.name} gains ${card.name}`);
     } else {
@@ -435,7 +437,7 @@ export default class Player extends Model {
     if (!event.handledByPlayer.get(this)) {
       this.moveCard(card, from, to);
       this.cardsGainedThisTurn.push(card);
-      await this.handleTriggers('gain', { card }, [card]);
+      await this.handleTriggers('gain', { card, destination: to }, [card]);
       return true;
     }
   }
@@ -803,13 +805,14 @@ export default class Player extends Model {
     if (from.includes(hex)) this.moveCard(hex, from, this.game.hexDiscardPile);
   }
 
-  exchange(title, otherTitle, from = this.playArea) {
-    const toSupply = this.game.supplies.get(title);
+  exchange(card, otherTitle, from = this.playArea, to = this.discardPile) {
+    const toSupply = this.game.supplies.get(card.title);
     const fromSupply = this.game.supplies.get(otherTitle);
     if (toSupply && fromSupply) {
       if (fromSupply.cards.length > 0 && fromSupply.cards.last().title === otherTitle) {
-        this.moveCard(this, from, toSupply.cards);
-        this.moveCard(fromSupply.cards.last(), fromSupply.cards, this.discardPile);
+        this.moveCard(card, from, toSupply.cards);
+        this.moveCard(fromSupply.cards.last(), fromSupply.cards, to);
+        this.game.log(`${this.name} exhanges ${card.name} for a ${otherTitle}`);
       }
     }
   }
