@@ -71,8 +71,10 @@ export default () => {
 
     respondWithCards(['Estate', 'Estate']);
     await waitForNextInput();
+    expect(game.trash.length).toBe(2);
     expect(player.discardPile.last().title).toBe('Vampire');
     expect(game.supplies.get('Bat').cards.length).toBe(11);
+    expect(game.supplies.get('Vampire').cards.length).toBe(9);
   });
 
   test('bat should work even with fortresses', async () => {
@@ -85,10 +87,13 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Bat');
     await waitForNextInput();
-
     respondWithCards(['Fortress', 'Fortress']);
     await waitForNextInput();
+    respondWithCard('Fortress');
+    await waitForNextInput();
+    expect(game.trash.length).toBe(0);
     expect(player.discardPile.last().title).toBe('Vampire');
     expect(game.supplies.get('Bat').cards.length).toBe(11);
+    expect(game.supplies.get('Vampire').cards.length).toBe(9);
   });
 };

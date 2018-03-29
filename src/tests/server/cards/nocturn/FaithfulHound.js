@@ -1,5 +1,5 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, respondWithCard, respondWithCards, respondWithNoCards, skipToNextTurn, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, setDeck, respondWithCard, respondWithCards, respondWithNoCards, skipToNextTurn, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
@@ -65,5 +65,24 @@ export default () => {
     expect(player.hand.length).toBe(4);
     expect(player.discardPile.length).toBe(2);
     expect(player.playArea.length).toBe(1);
+  });
+
+  test('if setaside with vassal should work', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Vassal']);
+    setDeck(player, ['Copper', 'Copper', 'Copper', 'FaithfulHound']);
+    await waitForNextInput();
+    respondWithCard('Vassal');
+    await waitForNextInput();
+    respondWithCard('FaithfulHound'); // Yes play it
+    await waitForNextInput();
+    respondWithCard('FaithfulHound'); // Yes set it aside
+    await waitForNextInput();
+    expect(player.asidePile.length).toBe(1);
+    expect(player.hand.length).toBe(5);
+    expect(player.discardPile.length).toBe(0);
+    expect(player.playArea.length).toBe(1);
+    respondWithCard('Copper');
+    await waitForNextInput();
   });
 };

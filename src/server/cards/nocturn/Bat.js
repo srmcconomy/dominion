@@ -11,7 +11,7 @@ export default class Bat extends Card {
     });
     await player.trashAll([...cards]);
     if (cards.length > 0) {
-      player.exchange('Bat', 'Vampire');
+      player.exchange(this, 'Vampire');
     }
   }
 }
