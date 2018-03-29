@@ -46,4 +46,17 @@ export default () => {
     expect(player.actions).toBe(1);
     expect(player.hand.length).toBe(5);
   });
+
+  test('should be gained to hand', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Altar', 'Copper']);
+    await waitForNextInput();
+    respondWithCard('Altar');
+    await waitForNextInput();
+    respondWithCard('Copper');
+    await waitForNextInput();
+    respondWithSupply('DenOfSin');
+    await waitForNextInput();
+    expect(player.hand.last().title).toBe('DenOfSin');
+  });
 };
