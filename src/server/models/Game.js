@@ -369,7 +369,9 @@ export default class Game extends Model {
     for (let i = 0; i < this.playerOrder.length; i++) {
       await this.playerOrder[i].draw(5);
     }
+    this.turnId = 0;
     for (;;) {
+      this.turnId++;
       await this.currentPlayer.takeTurn();
       let numEmptySupplies = 0;
       this.supplies.forEach(supply => {

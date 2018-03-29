@@ -1,5 +1,5 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, respondWithCard, respondWithSupply, respondWithNoCards, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, setDeck, respondWithCard, respondWithSupply, respondWithNoCards, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
@@ -36,6 +36,8 @@ export default () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     const otherPlayer = game.playerOrder.find(p => p !== player);
     setHand(player, ['Werewolf', 'Werewolf']);
+    setHand(otherPlayer, []);
+    setDeck(otherPlayer, []);
     await waitForNextInput();
     respondWithNoCards();
     await waitForNextInput();
