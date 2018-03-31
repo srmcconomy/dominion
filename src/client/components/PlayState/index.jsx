@@ -24,7 +24,7 @@ function PlayState({ data }) {
       {coinTokens ? <div>{coinTokens} Coin Token{coinTokens === 1 ? '' : 's'}</div> : null}
       {potion ? <div><PotionImg>{potion}</PotionImg></div> : null}
       {debt ? <div><Debt>{debt}</Debt></div> : null}
-      {vpTokens ? <div><VP /> {vpTokens}</div> : null}
+      {vpTokens ? <div>{vpTokens}  <VP /></div> : null}
     </div>
   );
 }

@@ -55,4 +55,20 @@ export default () => {
     expect(player.discardPile.length).toBe(0);
     expect(player.deck.last().title).toBe('Gold');
   });
+
+  test('works with empty deck', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Navigator']);
+    setDeck(player, []);
+    await waitForNextInput();
+    respondWithCard('Navigator');
+    await waitForNextInput();
+    expect(player.actions).toBe(0);
+    expect(player.money).toBe(2);
+    expect(player.discardPile.length).toBe(0);
+    expect(player.deck.length).toBe(0);
+    respondWithCard('Copper');
+    await waitForNextInput();
+    expect(player.money).toBe(3);
+  });
 };

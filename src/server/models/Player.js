@@ -414,11 +414,18 @@ export default class Player extends Model {
 
   async gainSpecificCard(card, from, to = this.discardPile) {
     const event = await this.handleTriggers('would-gain', { card }, [card]);
-    if (to === this.discardPile) {
-      this.game.log(`${this.name} gains ${card.name}`);
-    } else {
-      this.game.log(`${this.name} gains ${card.name} to his/her SOMETHING pile`);
+    switch (to) {
+      case this.hand:
+        this.game.log(`${this.name} gains ${card.name} in to his hand`);
+        break;
+      case this.deck:
+        this.game.log(`${this.name} gains ${card.name} on to his deck`);
+        break;
+      default:
+        this.game.log(`${this.name} gains ${card.name}`);
+        break;
     }
+
     if (!event.handledByPlayer.get(this)) {
       this.moveCard(card, from, to);
       this.cardsGainedThisTurn.push(card);

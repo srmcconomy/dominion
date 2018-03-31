@@ -66,6 +66,8 @@ export default () => {
   //   expect(player.money).toBe(2);
   // });
 
+  test('should proc on gain effects, Death Cart');
+
   test('should be blocked by Moat', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Militia']);
