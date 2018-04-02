@@ -15,6 +15,7 @@ import adventures from 'cards/adventures';
 import guilds from 'cards/guilds';
 import darkAges from 'cards/darkAges';
 import nocturn from 'cards/nocturn';
+import alchemy from 'cards/alchemy';
 
 const cardClasses = {
   ...basic,
@@ -28,6 +29,7 @@ const cardClasses = {
   ...guilds,
   ...darkAges,
   ...nocturn,
+  ...alchemy,
 };
 
 let currentPlayer;

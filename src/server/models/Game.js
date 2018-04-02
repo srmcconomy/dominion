@@ -9,6 +9,7 @@ import 'supplies/adventures';
 import 'supplies/guilds';
 import 'supplies/darkAges';
 import 'supplies/nocturn';
+import 'supplies/alchemy';
 import Estate from 'cards/basic/Estate';
 import Hovel from 'cards/darkAges/Hovel';
 import Necropolis from 'cards/darkAges/Necropolis';

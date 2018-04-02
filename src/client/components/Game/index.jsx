@@ -22,6 +22,7 @@ import 'cards/adventures';
 import 'cards/guilds';
 import 'cards/darkAges';
 import 'cards/nocturn';
+import 'cards/alchemy';
 
 import styles from './styles.scss';
 
