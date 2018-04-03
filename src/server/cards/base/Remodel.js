@@ -10,10 +10,9 @@ export default class Remodel extends Card {
       const [supply] = await player.selectSupplies({
         min: 1,
         max: 1,
-        predicate: async s => (
-          s.cards.size > 0 &&
+        predicate: async s => (s.cards.length > 0 ? (
           player.cardCostsLessThanEqualTo(s.cards.last(), (await player.getCardCost(card)).add({ coin: 2 }))
-        ),
+        ) : false),
         message: 'Choose an card to gain'
       });
       if (supply) {

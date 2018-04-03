@@ -5,6 +5,6 @@ export default class Potion extends Card {
   static types = new Set(['Treasure']);
   static supplyCategory = 'treasure';
   onPlay(player) {
-    player.potion += 1;
+    player.potion++;
   }
 }

@@ -9,7 +9,8 @@ export default class Smugglers extends Card {
       min: 1,
       max: 1,
       pile: [...previousPlayer.cardsGainedThisTurn],
-      predicate: c => player.cardCostsLessThanEqualTo(c.cards.last(), { coin: 6 }),
+      predicate: c => player.game.supplies.get(c.title).cards.length > 0 &&
+      player.cardCostsLessThanEqualTo(c, { coin: 6 }),
     });
 
     if (card) {

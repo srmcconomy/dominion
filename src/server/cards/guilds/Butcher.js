@@ -31,10 +31,9 @@ export default class Butcher extends Card {
       const [supply] = await player.selectSupplies({
         min: 1,
         max: 1,
-        predicate: s => (
-          s.cards.size > 0 &&
+        predicate: s => (s.cards.length > 0 ? (
           player.cardCostsLessThanEqualTo(s.cards.last(), { coin: card.cost.coin + coinTokensPaid })
-        ),
+        ) : false),
         message: 'Choose an card to gain'
       });
       if (supply) {

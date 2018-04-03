@@ -18,10 +18,9 @@ export default class Remake extends Card {
           predicate: s => {
             const tempCost = { coin: 0, debt: 0, potion: 0, ...card.cost };
             tempCost.coin++;
-            return (
-              s.cards.size > 0 &&
-            player.cardCostsEqualTo(s.cards.last(), tempCost)
-            );
+            return (s.cards.length > 0 ? (
+              player.cardCostsEqualTo(s.cards.last(), tempCost)
+            ) : false);
           },
           message: 'Choose an card to gain'
         });

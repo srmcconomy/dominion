@@ -12,10 +12,9 @@ export default class ZombieMason extends Card {
       const [supply] = await player.selectSupplies({
         min: 0,
         max: 1,
-        predicate: s => (
-          s.cards.size > 0 &&
-          player.cardCostsLessThanEqualTo(s.cards.last(), { coin: card.cost.coin + 1 , debt: card.debt, potion: card.potion })
-        ),
+        predicate: s => (s.cards.length > 0 ? (
+          player.cardCostsLessThanEqualTo(s.cards.last(), { coin: card.cost.coin + 1, debt: card.debt, potion: card.potion })
+        ) : false),
         message: 'Choose an card to gain'
       });
       if (supply) player.gain(supply.title);
