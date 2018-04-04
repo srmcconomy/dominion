@@ -24,6 +24,7 @@ import 'cards/guilds';
 import 'cards/darkAges';
 import 'cards/nocturn';
 import 'cards/alchemy';
+import 'cards/promo';
 
 import styles from './styles.scss';
 

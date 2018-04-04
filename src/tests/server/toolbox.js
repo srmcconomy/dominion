@@ -2,8 +2,6 @@ import Game from 'models/Game';
 import Player from 'models/Player';
 import Card from 'cards/Card';
 
-import { log } from './testingFramework';
-
 import basic from 'cards/basic';
 import base from 'cards/base';
 import baseSecond from 'cards/baseSecond';
@@ -16,6 +14,9 @@ import guilds from 'cards/guilds';
 import darkAges from 'cards/darkAges';
 import nocturn from 'cards/nocturn';
 import alchemy from 'cards/alchemy';
+import promo from 'cards/promo';
+
+import { log } from './testingFramework';
 
 const cardClasses = {
   ...basic,
@@ -30,6 +31,7 @@ const cardClasses = {
   ...darkAges,
   ...nocturn,
   ...alchemy,
+  ...promo,
 };
 
 let currentPlayer;
