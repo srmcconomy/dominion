@@ -20,9 +20,8 @@ function PlayState({ data }) {
     <div className={cx('play-state')}>
       <div>{actions} Action{actions === 1 ? '' : 's'}</div>
       <div>{buys} Buy{buys === 1 ? '' : 's'}</div>
-      <div><Coin>{money}</Coin></div>
+      {potion ? <div><Coin>{money}</Coin>, {potion}<PotionImg /></div> : <div><Coin>{money}</Coin></div>}
       {coinTokens ? <div>{coinTokens} Coin Token{coinTokens === 1 ? '' : 's'}</div> : null}
-      {potion ? <div><PotionImg>{potion}</PotionImg></div> : null}
       {debt ? <div><Debt>{debt}</Debt></div> : null}
       {vpTokens ? <div>{vpTokens}  <VP /></div> : null}
     </div>

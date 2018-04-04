@@ -81,7 +81,7 @@ export default class Game extends Model {
   }
 
   getKingdomCards() {
-    const blackList = ['Bridge', 'Highway', 'Tournament', 'BandOfMisfits', 'BridgeTroll', 'Quarry', 'Peddler', 'Rogue', 'Saboteur', 'Knights', 'Talisman'];
+    const blackList = ['Bridge', 'Highway', 'Tournament', 'BandOfMisfits', 'BridgeTroll', 'Quarry', 'Peddler', 'Rogue', 'Saboteur', 'Knights', 'Talisman', 'Possession'];
     const kingdomSupplies = [...Supply.classes.values()].filter(S => S.category === 'kingdom' && !blackList.includes(S.title));
     const suppliesTitles = [];
     while (suppliesTitles.length < 10) {

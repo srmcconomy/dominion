@@ -19,7 +19,7 @@ export default class Player extends new Record({
   actions: null,
   money: null,
   debt: null,
-  potions: null,
+  potion: null,
   vpTokens: null,
 }) {
   constructor(json) {

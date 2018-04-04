@@ -4,6 +4,7 @@ import Coin from 'components/Coin';
 import PotionImg from 'components/Potion';
 
 export default class ScryingPool extends Card {
+  static title = 'Scrying Pool'
   static description = (
     <div>
       <div><strong>+1 Action</strong></div>
@@ -11,7 +12,7 @@ export default class ScryingPool extends Card {
     </div>
   );
   static cost = <div><Coin>2</Coin><PotionImg /></div>
-  static types = ['Action'];
+  static types = ['Action', 'Attack'];
 }
 
 Card.classes.set('ScryingPool', ScryingPool);

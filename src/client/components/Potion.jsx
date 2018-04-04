@@ -5,12 +5,8 @@ import styles from './potion.scss';
 
 const cx = classnames.bind(styles);
 
-export default function PotionImg({ inline = true, children }) {
+export default function PotionImg({ inline = true }) {
   return (
-    <div className={cx('potion', { inline })}>
-      <div>
-        <span>{children}</span>
-      </div>
-    </div>
+    <div className={cx('potion', { inline })} />
   );
 }

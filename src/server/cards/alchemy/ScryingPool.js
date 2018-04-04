@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class ScryingPool extends Card {
+  name = 'Scrying Pool'
   static cost = new Card.Cost({ coin: 2, potion: 1 });
   static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {

@@ -10,7 +10,7 @@ export default class Vineyard extends Card {
     </div>
   );
   static cost = <PotionImg />
-  static types = ['Action'];
+  static types = ['Victory'];
 }
 
 Card.classes.set('Vineyard', Vineyard);
