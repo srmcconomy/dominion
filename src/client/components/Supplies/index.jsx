@@ -17,7 +17,7 @@ function Supplies({ supplies: { treasure, treasure2, victory, kingdom, nonSupply
       <div className={cx('kingdom')}>
         {kingdom.map(title => <Supply key={title} title={title} />)}
       </div>
-      <div>
+      <div className={cx('treasures')}>>
         <div className={cx('treasure')}> {treasure.map(title => <Supply key={title} title={title} small />)} </div>
         <div className={cx('treasure')}> {treasure2.map(title => <Supply key={title} title={title} small />)} </div>
       </div>

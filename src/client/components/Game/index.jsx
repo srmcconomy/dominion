@@ -10,6 +10,7 @@ import Input from 'components/Input';
 import Card from 'components/Card';
 import Hand from 'components/Hand';
 import Players from 'components/Players';
+import Trash from 'components/Trash';
 
 import 'cards/basic';
 import 'cards/base';
@@ -60,6 +61,10 @@ function Game({ game, message, cardToShow, hideCard }) {
       <div className={cx('player-container')}>
         <Players />
       </div>
+      {game.trash.size ? <div className={cx('trash-container')}>
+        <div>Trash</div>
+        <Trash />
+      </div> : null }
       { cardToShow && (
         <div onClick={hideCard} className={cx('card-to-show')}>
           <Card data={cardToShow} huge />

@@ -387,6 +387,7 @@ export default class Player extends Model {
     if (!event.handledForCard.has(card)) {
       this.moveCard(card, from, this.game.trash);
       this.cardsOwned.delete(card);
+      this.game.trash.sort();
       return true;
     }
     return false;
@@ -402,6 +403,7 @@ export default class Player extends Model {
           this.cardsOwned.delete(card);
         }
       }
+      this.game.trash.sort();
     } else {
       this.game.log(`${this.name} trashes nothing`);
     }
@@ -1013,6 +1015,7 @@ export default class Player extends Model {
   }
 
   async getInputAndNotifyDirty(payload, validate) {
+    this.game.players.forEach(p => p.hand.sort());
     this.game.players.forEach(p => p.calculateScore());
     const log = this.game.log.getNewMessages();
     await this.forEachOtherPlayer(player => {

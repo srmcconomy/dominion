@@ -159,6 +159,20 @@ export default class Pile extends Model {
     return this;
   }
 
+  sort() {
+    this._list.sort((a, b) => {
+      if (a.title < b.title) {
+        return -1;
+      } else if (a.title > b.title) {
+        return 1;
+      }
+      return 0;
+    });
+    this._list.forEach((card, i) => this._map.set(card.id, i));
+    this.markDirty();
+    return this;
+  }
+
   splice(index, num, insert = null) {
     const cards = insert ? this._list.splice(index, num, insert) : this._list.splice(index, num);
     cards.forEach(card => this._map.delete(card.id));

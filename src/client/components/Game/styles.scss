@@ -30,7 +30,9 @@
 .hand-container {
   display: flex;
   justify-content: center;
-  font-size: 0.7em;
+  height: 25%;
+  width: 80%;
+  font-size: 2.25em;
 }
 
 .play-state-container {
@@ -48,6 +50,14 @@
   height: 100%;
   font-size: 0.6em;
   flex: 1;
+}
+
+.trash-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 80%;
+  font-size: 2em;
 }
 
 .center-area {
