@@ -30,5 +30,6 @@ export default class Knights extends Supply {
       this.cards.push(new SirMichael(game));
       this.cards.push(new SirVander(game));
       this.cards.shuffle();
+      // this.selectorCard.push(new (Card.classes.get('Knights'))(game));
     }
 }

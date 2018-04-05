@@ -37,7 +37,7 @@ export default class Card extends Component {
   }
 
   render() {
-    const { style, selected, selectable, huge, small, supply, onClick, data } = this.props;
+    const { style, selected, selectable, huge, small, supply, onClick, data, empty } = this.props;
     if (!data) {
       return (
         <div
@@ -52,7 +52,7 @@ export default class Card extends Component {
         </div>
       );
     }
-    const image = supply ? this.props.data.image.small : this.props.data.image.normal;
+    const image = empty ? this.props.data.image.empty : (supply ? this.props.data.image.small : this.props.data.image.normal);
     const { fullArt, types, title, description, set, cost } = data;
     return (
       <div

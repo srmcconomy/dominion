@@ -23,5 +23,6 @@ export default class Ruins extends Supply {
       );
       this.cards.shuffle();
       this.cards = this.cards.splice(0, (10 * game.players.size) - 10);
+      // this.selectorCard.push(new (Card.classes.get('Ruins'))(game));
     }
 }
