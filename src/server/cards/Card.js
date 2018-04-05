@@ -21,8 +21,6 @@ export default class Card extends BaseCard {
     return this.VP;
   }
 
-  endGameCleanUp(player) { }
-
   updateIgnoreCleanUp() { }
 
   toJSON() {

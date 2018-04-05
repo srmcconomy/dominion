@@ -183,18 +183,24 @@ export async function waitForNextInput() {
 
 export function setHand(player, cards) {
   const newHand = cards.map(title => new cardClasses[title](player.game));
+  player.hand.forEach(c => player.cardsOwned.delete(c));
+  player.cardsOwned.push(...newHand);
   player.hand.clear();
   player.hand.push(...newHand);
 }
 
 export function setDiscardPile(player, cards) {
   const newDiscardPile = cards.map(title => new cardClasses[title](player.game));
+  player.discardPile.forEach(c => player.cardsOwned.delete(c));
+  player.cardsOwned.push(...newDiscardPile);
   player.discardPile.clear();
   player.discardPile.push(...newDiscardPile);
 }
 
 export function setDeck(player, cards) {
   const newDeck = cards.map(title => new cardClasses[title](player.game));
+  player.deck.forEach(c => player.cardsOwned.delete(c));
+  player.cardsOwned.push(...newDeck);
   player.deck.clear();
   player.deck.push(...newDeck);
 }

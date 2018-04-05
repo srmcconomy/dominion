@@ -47,6 +47,7 @@ export default () => {
   test('should be optional', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Copper', 'Potion', 'Alchemist']);
+    setDeck(player, Array(20).fill('Copper'));
     await waitForNextInput();
     respondWithCard('Alchemist');
     await waitForNextInput();
@@ -58,7 +59,7 @@ export default () => {
     await waitForNextInput();
     respondWithSupply('Curse');
     await waitForNextInput();
-    respondWithNoCards('Alchemist');
+    respondWithNoCards();
     await waitForNextInput();
     expect(player.hand.some(c => c.title === 'Alchemist')).toBe(false);
   });

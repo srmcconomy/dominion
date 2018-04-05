@@ -28,12 +28,4 @@ export default class Gear extends Card {
       player.moveCard(this.aside.last(), this.aside, player.hand);
     }
   }
-
-  endGameCleanUp(player) {
-    if (this.aside) {
-      while (this.aside.size > 0) {
-        player.moveCard(this.aside.last(), this.aside, player.deck);
-      }
-    }
-  }
 }

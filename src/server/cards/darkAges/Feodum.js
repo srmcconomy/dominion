@@ -9,7 +9,7 @@ export default class Feodum extends Card {
   }
 
   getVpValue(player) {
-    return Math.floor(player.deck.filter(c => c.title === 'Silver').length / 3);
+    return Math.floor(player.cardsOwned.filter(c => c.title === 'Silver').length / 3);
   }
 
   willTriggerOn(event, player) {

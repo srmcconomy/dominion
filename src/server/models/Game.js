@@ -160,20 +160,9 @@ export default class Game extends Model {
   endOfGame() {
     const scores = [];
     this.players.forEach(player => {
-      player.score = player.vpTokens;
-      player.endOfGameCleanUp();
-      [...player.deck, ...player.states].forEach(c => {
-        const cardScore = c.getVpValue(player);
-        if (cardScore) {
-          this.log(`${player.name}\'s ${c.name} is worth ${cardScore}`);
-          console.log(`${player.name}\'s ${c.name} is worth ${cardScore}`);
-        }
-        player.score += cardScore;
-      });
-      this.log(`${player.name} has ${player.score} victory points`);
-      console.log(`${player.name} has ${player.score} victory points`);
-      scores.push({ player, name: player.name, score: player.score });
+      scores.push(player.calculateScore(true));
     });
+    this.log('\u00A0');
 
     const hadExtraTurn = Array(this.playerOrder.length).fill(false);
     let tempIndex = this.startingPlayerIndex;
@@ -295,6 +284,7 @@ export default class Game extends Model {
 
       if (reserveGame) player.mats.tavern = new Pile();
       if (fateGame) player.boonPile = new Pile();
+      player.cardsOwned.push(...player.deck);
     });
     this.players.forEach(player => {
       this.playerOrder.push(player);
@@ -335,6 +325,7 @@ export default class Game extends Model {
         numEmptySupplies >= (this.playerOrder.size > 4 ? 4 : 3)
       ) {
         this.endOfGame();
+        await this.currentPlayer.selectOption(['1', '2'], 'Don\'t click, just here to force score logging');
         break;
       }
 

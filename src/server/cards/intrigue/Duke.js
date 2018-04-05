@@ -8,6 +8,6 @@ export default class Duke extends Card {
     return 12;
   }
   getVpValue(player) {
-    return player.deck.filter(c => c.title === 'Duchy').length;
+    return player.cardsOwned.filter(c => c.title === 'Duchy').length;
   }
 }

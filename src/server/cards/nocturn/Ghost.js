@@ -34,12 +34,4 @@ export default class Ghost extends Card {
     this.setAside.clear();
     this.ignoreCleanUp = false;
   }
-
-  endGameCleanUp(player) {
-    if (this.setAside) {
-      while (this.setAside.size > 0) {
-        player.moveCard(this.setAside.last(), this.setAside, player.deck);
-      }
-    }
-  }
 }

@@ -39,12 +39,4 @@ export default class Crypt extends Card {
       if (this.setAside[i].length === 0) this.ignoreCleanUp = false;
     }
   }
-
-  endGameCleanUp(player) {
-    this.setAside.forEach(p => {
-      while (p.size > 0) {
-        player.moveCard(p.last(), p, player.deck);
-      }
-    });
-  }
 }

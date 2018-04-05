@@ -40,6 +40,7 @@ export default () => {
     await waitForNextInput();
     expect(player.hand.length).toBe(1);
     expect(game.trash.length).toBe(3);
+    expect(player.cardsOwned.some(c => c.title === 'Fortress')).toBe(true);
   });
 
   test('remodel trashing returns it to hand', async () => {

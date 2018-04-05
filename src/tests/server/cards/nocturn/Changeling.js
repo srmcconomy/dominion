@@ -47,9 +47,12 @@ export default () => {
     await waitForNextInput();
     respondWithFirstCard();
     await waitForNextInput();
+    expect(player.discardPile.length).toBe(1);
     expect(player.discardPile.last().title).toBe('Changeling');
     expect(game.supplies.get('Changeling').cards.length).toBe(9);
     expect(game.supplies.get('Silver').cards.length).toBe(40);
+    expect(player.cardsOwned.some(c => c.title === 'Changeling')).toBe(true);
+    expect(player.cardsOwned.some(c => c.title === 'Silver')).toBe(false);
   });
 
   test('should exchange to hand if card was gained to hand', async () => {
@@ -65,5 +68,7 @@ export default () => {
     expect(player.hand.last().title).toBe('Changeling');
     expect(game.supplies.get('Changeling').cards.length).toBe(9);
     expect(game.supplies.get('GhostTown').cards.length).toBe(10);
+    expect(player.cardsOwned.some(c => c.title === 'Changeling')).toBe(true);
+    expect(player.cardsOwned.some(c => c.title === 'GhostTown')).toBe(false);
   });
 };

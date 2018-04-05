@@ -9,7 +9,6 @@ export default class Rebuild extends Card {
     const [supply] = await player.selectSupplies({
       min: 1,
       max: 1,
-      predicate: s => s.cards.last().types.has('Victory'),
       message: 'Name a card',
     });
 

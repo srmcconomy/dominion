@@ -29,9 +29,6 @@ export default class Vampire extends Card {
       await player.gain(supply.title);
     }
 
-    if (player.game.supplies.get('Bat').cards.length > 0) {
-      player.moveCard(this, player.playArea, player.game.supplies.get('Vampire').cards);
-      player.moveCard(player.game.supplies.get('Bat').cards, player.discardPile);
-    }
+    player.exchange(this, 'Bat');
   }
 }

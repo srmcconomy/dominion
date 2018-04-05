@@ -9,7 +9,7 @@ export default class Fairgrounds extends Card {
   }
   getVpValue(player) {
     const uniqueNames = [];
-    player.deck.forEach(c => {
+    player.cardsOwned.forEach(c => {
       if (!uniqueNames.includes(c.title)) uniqueNames.push(c.title);
     });
     return 2 * Math.floor(uniqueNames.length / 5);

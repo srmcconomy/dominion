@@ -58,6 +58,8 @@ export default () => {
     expect(player.discardPile.some(c => c.title === 'Duchy')).toBe(true);
     expect(player.discardPile.some(c => c.title === 'Bat')).toBe(true);
     expect(game.supplies.get('Vampire').cards.length).toBe(11);
+    expect(player.cardsOwned.some(c => c.title === 'Bat')).toBe(true);
+    expect(player.cardsOwned.filter(c => c.title === 'Vampire').length).toBe(1);
   });
 
   test('bat should work', async () => {
@@ -75,6 +77,8 @@ export default () => {
     expect(player.discardPile.last().title).toBe('Vampire');
     expect(game.supplies.get('Bat').cards.length).toBe(11);
     expect(game.supplies.get('Vampire').cards.length).toBe(9);
+    expect(player.cardsOwned.some(c => c.title === 'Vampire')).toBe(true);
+    expect(player.cardsOwned.filter(c => c.title === 'Bat').length).toBe(1);
   });
 
   test('bat should work even with fortresses', async () => {

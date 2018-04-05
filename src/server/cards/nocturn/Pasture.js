@@ -8,6 +8,6 @@ export default class Pasture extends Card {
     player.money++;
   }
   getVpValue(player) {
-    return player.deck.filter(c => c.title === 'Estate').length;
+    return player.cardsOwned.filter(c => c.title === 'Estate').length;
   }
 }

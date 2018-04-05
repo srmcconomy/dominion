@@ -21,6 +21,7 @@ export default class Player extends new Record({
   debt: null,
   potion: null,
   vpTokens: null,
+  score: null,
 }) {
   constructor(json) {
     const ret = {};

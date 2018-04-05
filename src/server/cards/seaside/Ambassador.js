@@ -21,6 +21,7 @@ export default class Ambassador extends Card {
       if (player.game.supplies.get(card.title).category !== 'nonSupply') {
         for (let i = 0; i < cards.length; i++) {
           await player.returnToSupply(cards[i]);
+          player.cardsOwned.delete(cards[i]);
           returnedCards = true;
         }
         await player.forEachOtherPlayer(async other => {

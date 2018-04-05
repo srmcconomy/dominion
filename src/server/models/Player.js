@@ -133,10 +133,13 @@ export default class Player extends Model {
   @trackDirty
   vpTokens = 0;
 
+  @trackDirty
   score = 0;
 
   @trackDirty
   journeyToken = 'faceUp';
+
+  cardsOwned = new Pile();
 
   cardsPlayedThisTurn = [];
 
@@ -383,6 +386,7 @@ export default class Player extends Model {
     const event = await this.handleTriggers('trash', { cards: [card], from }, [card]);
     if (!event.handledForCard.has(card)) {
       this.moveCard(card, from, this.game.trash);
+      this.cardsOwned.delete(card);
       return true;
     }
     return false;
@@ -395,6 +399,7 @@ export default class Player extends Model {
       for (const card of cards) {
         if (!event.handledForCard.has(card)) {
           this.moveCard(card, from, this.game.trash);
+          this.cardsOwned.delete(card);
         }
       }
     } else {
@@ -444,7 +449,10 @@ export default class Player extends Model {
     if (!event.handledByPlayer.get(this)) {
       this.moveCard(card, from, to);
       this.cardsGainedThisTurn.push(card);
-      await this.handleTriggers('gain', { card, destination: to }, [card]);
+      const event2 = await this.handleTriggers('gain', { card, destination: to }, [card]);
+      if (!event2.handledForCard.has(card)) {
+        this.cardsOwned.push(card);
+      }
       return true;
     }
   }
@@ -606,37 +614,25 @@ export default class Player extends Model {
     await this.discardAll([...cards], this.playArea);
   }
 
-  async endOfGameCleanUp() {
-    while (this.hand.size > 0) {
-      this.moveCard(this.hand.last(), this.hand, this.deck);
+  calculateScore(logScore = false) {
+    if (logScore) {
+      this.game.log('\u00A0');
+      this.game.log(`============ ${this.name} =============`);
     }
-    while (this.playArea.size > 0) {
-      this.moveCard(this.playArea.last(), this.playArea, this.deck);
-    }
-    while (this.asidePile.size > 0) {
-      this.moveCard(this.asidePile.last(), this.asidePile, this.deck);
-    }
-    while (this.discardPile.size > 0) {
-      this.moveCard(this.discardPile.last(), this.discardPile, this.deck);
-    }
-    if (this.mats.tavern) {
-      while (this.mats.tavern.size > 0) {
-        this.moveCard(this.mats.tavern.last(), this.mats.tavern, this.deck);
+    this.score = this.vpTokens;
+    [...this.cardsOwned, ...this.states].forEach(c => {
+      const cardScore = c.getVpValue(this);
+      if (cardScore && logScore) {
+        this.game.log(`${c.name} is worth ${cardScore}`);
+        console.log(`${c.name} is worth ${cardScore}`);
       }
-    }
-    if (this.mats.island) {
-      while (this.mats.island.size > 0) {
-        this.moveCard(this.mats.island.last(), this.mats.island, this.deck);
-      }
-    }
-    if (this.mats.nativeVillage) {
-      while (this.mats.nativeVillage.size > 0) {
-        this.moveCard(this.mats.nativeVillage.last(), this.mats.nativeVillage, this.deck);
-      }
-    }
-    this.deck.forEach(c => {
-      c.endGameCleanUp(this);
+      this.score += cardScore;
     });
+    if (logScore) {
+      this.game.log(`${this.name} has ${this.score} victory points`);
+      console.log(`${this.name} has ${this.score} victory points`);
+    }
+    return { player: this, name: this.name, score: this.score };
   }
 
   async handleVanillaBonusTokens(card) {
@@ -817,11 +813,15 @@ export default class Player extends Model {
     const fromSupply = this.game.supplies.get(otherTitle);
     if (toSupply && fromSupply) {
       if (fromSupply.cards.length > 0 && fromSupply.cards.last().title === otherTitle) {
+        this.cardsOwned.push(fromSupply.cards.last());
+        this.cardsOwned.delete(card);
         this.moveCard(card, from, toSupply.cards);
         this.moveCard(fromSupply.cards.last(), fromSupply.cards, to);
         this.game.log(`${this.name} exhanges ${card.name} for a ${otherTitle}`);
+        return true;
       }
     }
+    return false;
   }
 
   async processTurnPhases() {
@@ -1013,6 +1013,7 @@ export default class Player extends Model {
   }
 
   async getInputAndNotifyDirty(payload, validate) {
+    this.game.players.forEach(p => p.calculateScore());
     const log = this.game.log.getNewMessages();
     await this.forEachOtherPlayer(player => {
       const dirty = this.game.createDirty(player);

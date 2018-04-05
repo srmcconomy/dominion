@@ -29,6 +29,8 @@ export default class Changeling extends Card {
   }
 
   async onTrigger(event, player) {
-    player.exchange(event.card, 'Changeling', event.destination, event.destination);
+    if (player.exchange(event.card, 'Changeling', event.destination, event.destination)) {
+      event.handledForCard.add(event.card);
+    }
   }
 }

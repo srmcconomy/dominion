@@ -35,6 +35,8 @@ export default () => {
     expect(player.hand.length).toBe(2);
     expect(otherPlayer.discardPile.last().title).toBe('Estate');
     expect(game.supplies.get('Estate').cards.length).toBe(9);
+    expect(player.cardsOwned.length).toBe(8);
+    expect(otherPlayer.cardsOwned.length).toBe(11);
   });
 
   test('Can return none', async () => {
@@ -51,6 +53,8 @@ export default () => {
     expect(player.hand.length).toBe(4);
     expect(otherPlayer.discardPile.last().title).toBe('Estate');
     expect(game.supplies.get('Estate').cards.length).toBe(7);
+    expect(player.cardsOwned.length).toBe(10);
+    expect(otherPlayer.cardsOwned.length).toBe(11);
   });
 
   test('Works with shelters', async () => {
@@ -66,6 +70,8 @@ export default () => {
     await waitForNextInput();
     expect(player.hand.length).toBe(4);
     expect(otherPlayer.discardPile.length).toBe(0);
+    expect(player.cardsOwned.length).toBe(10);
+    expect(otherPlayer.cardsOwned.length).toBe(10);
   });
 
   test('Works with spoils', async () => {
@@ -82,6 +88,8 @@ export default () => {
     expect(player.hand.length).toBe(4);
     expect(otherPlayer.discardPile.length).toBe(0);
     expect(game.supplies.get('Spoils').cards.length).toBe(15);
+    expect(player.cardsOwned.length).toBe(10);
+    expect(otherPlayer.cardsOwned.length).toBe(10);
   });
 
   test('Can return to Split piles');
@@ -107,5 +115,7 @@ export default () => {
     respondWithCards(['Estate', 'Estate']);
     await waitForNextInput();
     expect(game.supplies.get('Estate').cards.length).toBe(10);
+    expect(player.cardsOwned.length).toBe(8);
+    expect(otherPlayer.cardsOwned.length).toBe(10);
   });
 };
