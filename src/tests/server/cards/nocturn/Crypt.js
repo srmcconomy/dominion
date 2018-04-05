@@ -69,7 +69,7 @@ export default () => {
     expect(player.playArea.length).toBe(1);
     expect(player.playArea.last().setAside[0].length).toBe(2);
     expect(player.playArea.last().ignoreCleanUp).toBe(true);
-    expect(player.hand.last().title).toBe('Copper');
+    expect(player.hand.some(c => c.title === 'Copper')).toBe(true);
 
     await skipToNextTurn(player);
     await waitForNextInput();
@@ -78,7 +78,7 @@ export default () => {
     expect(player.playArea.length).toBe(1);
     expect(player.playArea.last().setAside[0].length).toBe(1);
     expect(player.playArea.last().ignoreCleanUp).toBe(true);
-    expect(player.hand.last().title).toBe('Silver');
+    expect(player.hand.some(c => c.title === 'Silver')).toBe(true);
 
     await skipToNextTurn(player);
     await waitForNextInput();
@@ -87,7 +87,7 @@ export default () => {
     expect(player.playArea.length).toBe(1);
     expect(player.playArea.last().setAside[0].length).toBe(0);
     expect(player.playArea.last().ignoreCleanUp).toBe(false);
-    expect(player.hand.last().title).toBe('Gold');
+    expect(player.hand.some(c => c.title === 'Gold')).toBe(true);
 
     await skipToNextTurn(player);
     await waitForNextInput();

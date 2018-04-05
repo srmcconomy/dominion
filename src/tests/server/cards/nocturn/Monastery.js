@@ -38,9 +38,9 @@ export default () => {
     await waitForNextInput();
     respondWithCard('Duchy');
     await waitForNextInput();
-    expect(game.trash.last().title).toBe('Duchy');
+    expect(game.trash.some(c => c.title === 'Duchy')).toBe(true);
     respondWithCard('Copper');
     await waitForNextInput();
-    expect(game.trash.last().title).toBe('Copper');
+    expect(game.trash.some(c => c.title === 'Copper')).toBe(true);
   });
 };

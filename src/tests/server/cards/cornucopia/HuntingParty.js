@@ -56,6 +56,6 @@ export default () => {
     await waitForNextInput();
     expect(player.hand.length).toBe(6);
     expect(player.actions).toBe(1);
-    expect(player.hand.last().title).toBe('Gold');
+    expect(player.hand.some(c => c.title === 'Gold')).toBe(true);
   });
 };

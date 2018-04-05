@@ -76,7 +76,7 @@ export default () => {
     await waitForNextInput();
     expect(player.mats.pirateShip).toBe(2);
     expect(game.trash.length).toBe(2);
-    expect(game.trash.last().title).toBe('Gold');
+    expect(game.trash.some(c => c.title === 'Gold')).toBe(true);
   });
 
   test('should give coin', async () => {

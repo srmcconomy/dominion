@@ -34,7 +34,7 @@ export default () => {
     respondWithCard('WillOWisp');
     await waitForNextInput();
     expect(player.hand.length).toBe(6);
-    expect(player.hand.last().title).toBe('Estate');
+    expect(player.hand.some(c => c.title === 'Estate')).toBe(true);
     expect(player.deck.length).toBe(0);
     expect(player.actions).toBe(1);
   });

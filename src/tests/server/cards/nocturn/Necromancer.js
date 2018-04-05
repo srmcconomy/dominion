@@ -54,7 +54,7 @@ export default () => {
     await waitForNextInput();
     respondWithSupply('Silver');
     await waitForNextInput();
-    expect(game.trash.last().title).toBe('Estate');
+    expect(game.trash.some(c => c.title === 'Estate')).toBe(true);
     expect(player.discardPile.last().title).toBe('Silver');
     expect(player.deck.length).toBe(0);
     expect(player.playArea.length).toBe(1);

@@ -65,7 +65,7 @@ export default () => {
     await waitForNextInput();
     respondWithFirstCard();
     await waitForNextInput();
-    expect(player.hand.last().title).toBe('Changeling');
+    expect(player.hand.some(c => c.title === 'Changeling')).toBe(true);
     expect(game.supplies.get('Changeling').cards.length).toBe(9);
     expect(game.supplies.get('GhostTown').cards.length).toBe(10);
     expect(player.cardsOwned.some(c => c.title === 'Changeling')).toBe(true);
