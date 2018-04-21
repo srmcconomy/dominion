@@ -6,9 +6,7 @@ export default class Cellar extends Card {
   async onPlay(player) {
     player.actions++;
     const cards = await player.selectCards({ min: 0, max: player.hand.size, message: 'Select Cards to discard' });
-    for (let i = 0; i < cards.length; i++) {
-      await player.discard(cards[i]);
-    }
+    await player.discardAll([...cards]);
     await player.draw(cards.length);
   }
 }

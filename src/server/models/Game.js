@@ -6,8 +6,18 @@ import 'supplies/intrigueFirst';
 import 'supplies/seaside';
 import 'supplies/cornucopia';
 import 'supplies/adventures';
-import Copper from 'cards/basic/Copper';
+import 'supplies/guilds';
+import 'supplies/darkAges';
+import 'supplies/nocturn';
+import 'supplies/alchemy';
 import Estate from 'cards/basic/Estate';
+import Hovel from 'cards/darkAges/Hovel';
+import Necropolis from 'cards/darkAges/Necropolis';
+import OvergrownEstate from 'cards/darkAges/OvergrownEstate';
+
+import fateSetup from 'utils/FateSetup';
+import hexSetup from 'utils/HexSetup';
+
 import Model from 'models/Model';
 import DirtyModel, { trackDirty, DirtyMap } from 'utils/DirtyModel';
 import Pile from 'utils/Pile';
@@ -34,7 +44,7 @@ export default class Game extends Model {
   supplies = new DirtyMap();
 
   @trackDirty
-  organizedSupplies = { victory: [], treasure: [], kingdom: [], nonSupply: [] };
+  organizedSupplies = { victory: [], treasure: [], treasure2: [], kingdom: [], nonSupply: [] };
 
   @trackDirty
   trash = new Pile();
@@ -71,7 +81,8 @@ export default class Game extends Model {
   }
 
   getKingdomCards() {
-    const kingdomSupplies = [...Supply.classes.values()].filter(S => S.category === 'kingdom');
+    const blackList = ['Bridge', 'Highway', 'Tournament', 'BandOfMisfits', 'BridgeTroll', 'Quarry', 'Peddler', 'Rogue', 'Saboteur', 'Knights', 'Talisman', 'Possession', 'Knights'];
+    const kingdomSupplies = [...Supply.classes.values()].filter(S => S.category === 'kingdom' && !blackList.includes(S.title));
     const suppliesTitles = [];
     while (suppliesTitles.length < 10) {
       suppliesTitles.push(kingdomSupplies.splice(
@@ -79,7 +90,7 @@ export default class Game extends Model {
         1,
       )[0].title);
     }
-    if (false) {
+    if (true) {
       return suppliesTitles;
     }
     return [
@@ -92,7 +103,8 @@ export default class Game extends Model {
       'NativeVillage',
       'PirateShip',
       'Island',
-      'Page',
+      'Monastery',
+      'SecretCave',
     ];
   }
 
@@ -114,8 +126,10 @@ export default class Game extends Model {
       this.log(`${kingdomArray[i]}`);
     }
 
-    kingdomArray.forEach(title => {
-      const dependencies = Supply.classes.get(title).getDependencies(kingdomArray, this);
+    kingdomArray.forEach(c => suppliesArray.push(c));
+
+    suppliesArray.forEach(title => {
+      const dependencies = Supply.classes.get(title).getDependencies(suppliesArray, this);
       dependencies.forEach(d => {
         if (!suppliesArray.includes(d)) {
           suppliesArray.push(d);
@@ -123,10 +137,22 @@ export default class Game extends Model {
       });
     });
 
-    const potionGame = kingdomArray.some(title => Supply.classes.get(title).cost.potion);
+    const potionGame = suppliesArray.some(title => Supply.classes.get(title).cost.potion);
     if (potionGame) suppliesArray.push('Potion');
 
-    kingdomArray.forEach(c => suppliesArray.push(c));
+    const looterGame = suppliesArray.some(title => Supply.classes.get(title).types.has('Looter'));
+    if (looterGame) suppliesArray.push('Ruins');
+
+    const fateGame = suppliesArray.some(title => Supply.classes.get(title).types.has('Fate'));
+    if (fateGame) {
+      if (!suppliesArray.includes('WillOWisp')) suppliesArray.push('WillOWisp');
+      fateSetup(this);
+    }
+
+    const doomGame = suppliesArray.some(title => Supply.classes.get(title).types.has('Doom'));
+    if (doomGame) {
+      hexSetup(this);
+    }
 
     return suppliesArray;
   }
@@ -134,20 +160,9 @@ export default class Game extends Model {
   endOfGame() {
     const scores = [];
     this.players.forEach(player => {
-      player.score = player.vpTokens;
-      player.endOfGameCleanUp();
-      player.deck.forEach(c => {
-        const cardScore = c.getVpValue(player);
-        if (cardScore) {
-          this.log(`${player.name}\'s ${c.title} is worth ${cardScore}`);
-          console.log(`${player.name}\'s ${c.title} is worth ${cardScore}`);
-        }
-        player.score += cardScore;
-      });
-      this.log(`${player.name} has ${player.score} victory points`);
-      console.log(`${player.name} has ${player.score} victory points`);
-      scores.push({ player, name: player.name, score: player.score });
+      scores.push(player.calculateScore(true));
     });
+    this.log('\u00A0');
 
     const hadExtraTurn = Array(this.playerOrder.length).fill(false);
     let tempIndex = this.startingPlayerIndex;
@@ -163,7 +178,7 @@ export default class Game extends Model {
     let winningScore = null;
     const winners = [];
     scores.forEach(s => {
-      if (s.score > winningScore) winningScore = s.score;
+      if (s.score >= winningScore) winningScore = s.score;
     });
     scores.forEach(s => {
       if (s.score === winningScore) {
@@ -207,22 +222,47 @@ export default class Game extends Model {
 
   async start() {
     this.getSupplyCards().forEach((title) => {
-      console.log(title);
       const supply = new (Supply.classes.get(title))(this);
       supply.setup(this);
       this.supplies.set(title, supply);
       this.organizedSupplies[supply.category].push(title);
     });
     Object.keys(this.organizedSupplies).forEach(key => {
-      this.organizedSupplies[key].sort((a, b) => (
-        this.supplies.get(a).cost.coin - this.supplies.get(b).cost.coin
-      ));
+      this.organizedSupplies[key].sort((a, b) => {
+        if (this.supplies.get(a).cost.coin === this.supplies.get(b).cost.coin)
+        {
+          if (this.supplies.get(a).title < this.supplies.get(b).title) {
+            return -1;
+          } else if (this.supplies.get(a).title > this.supplies.get(b).title) {
+            return 1;
+          }
+          return 0;
+        }
+        return this.supplies.get(a).cost.coin - this.supplies.get(b).cost.coin;
+      });
     });
 
     let reserveGame = false;
     this.supplies.forEach(s => {
       if (s.types.has('Reserve')) reserveGame = true;
     });
+
+    let fateGame = false;
+    this.supplies.forEach(s => {
+      if (s.types.has('Fate')) fateGame = true;
+    });
+
+    const darkAges = require.context('cards/darkAges', true);
+    let supplyCount = 0;
+    let darkAgesCount = 0;
+    this.supplies.forEach(s => {
+      if (s.category === 'kingdom') {
+        supplyCount++;
+        if (darkAges.keys().includes(`./${s.title}`)) darkAgesCount++;
+      }
+    });
+
+    const sheltersGame = Math.random() < darkAgesCount / (supplyCount || 1);
 
     this.players.forEach(player => {
       if (this.startingDeck) {
@@ -231,16 +271,20 @@ export default class Game extends Model {
         player.deck.push(...this.startingDeck());
         console.log(player.deck.map(c => c.title));
       } else {
-        player.deck.push(
-          ...Array(7).fill().map(() => new Copper(this)),
-          ...Array(3).fill().map(() => new Estate(this)),
-        );
+        while (player.deck.length < 7) {
+          player.moveCard(this.supplies.get('Copper').cards.last(), this.supplies.get('Copper').cards, player.deck);
+        }
+        if (sheltersGame) {
+          player.deck.push(new Hovel(this));
+          player.deck.push(new Necropolis(this));
+          player.deck.push(new OvergrownEstate(this));
+        } else player.deck.push(...Array(3).fill().map(() => new Estate(this)));
         player.deck.shuffle();
       }
 
-      if (reserveGame) {
-        player.mats.tavern = new Pile();
-      }
+      if (reserveGame) player.mats.tavern = new Pile();
+      if (fateGame) player.boonPile = new Pile();
+      player.cardsOwned.push(...player.deck);
     });
     this.players.forEach(player => {
       this.playerOrder.push(player);
@@ -265,7 +309,9 @@ export default class Game extends Model {
     for (let i = 0; i < this.playerOrder.length; i++) {
       await this.playerOrder[i].draw(5);
     }
+    this.turnId = 0;
     for (;;) {
+      this.turnId++;
       await this.currentPlayer.takeTurn();
       let numEmptySupplies = 0;
       this.supplies.forEach(supply => {
@@ -279,6 +325,7 @@ export default class Game extends Model {
         numEmptySupplies >= (this.playerOrder.size > 4 ? 4 : 3)
       ) {
         this.endOfGame();
+        await this.currentPlayer.selectOption(['1', '2'], 'Don\'t click, just here to force score logging');
         break;
       }
 

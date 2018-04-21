@@ -11,6 +11,16 @@
   flex-direction: column-reverse;
 }
 
+.treasures {
+  display: flex;
+  flex-direction: row;
+}
+
+.treasure {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
 .non-supply {
   display: flex;
   flex-direction: column-reverse;

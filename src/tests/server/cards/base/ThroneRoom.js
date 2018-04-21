@@ -1,12 +1,23 @@
 import { test, beforeEach, expect } from '../../testingFramework';
-import { createGame, setHand, respondWithCard, skipToNextTurn, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
+import { createGame, setHand, setDeck, respondWithCard, respondWithCards, skipToNextTurn, startGameGetPlayerAndWaitForStartOfTurn, waitForNextInput } from '../../toolbox';
 
 export default () => {
   let game;
 
   beforeEach(async () => {
     game = await createGame();
-    game.getKingdomCards = () => ['ThroneRoom', 'Ratcatcher'];
+    game.getKingdomCards = () => ['ThroneRoom', 'Ratcatcher', 'Pillage'];
+  });
+
+  test('Card should cost correct amount and have proper types', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['ThroneRoom']);
+    const card = player.hand.last();
+    expect(card.types).toHave('Action');
+    expect(card.types.size).toBe(1);
+    expect(card.cost.coin).toBe(4);
+    expect(card.cost.potion).toBe(0);
+    expect(card.cost.debt).toBe(0);
   });
 
   test('should play and action card twice', async () => {
@@ -30,6 +41,7 @@ export default () => {
   test('should add card to cardsPlayedThisTurn twice', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
     setHand(player, ['Copper', 'Copper', 'Silver', 'Merchant', 'ThroneRoom']);
+    setDeck(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Copper']);
     await waitForNextInput();
     respondWithCard('ThroneRoom');
     await waitForNextInput();
@@ -42,37 +54,80 @@ export default () => {
     expect(player.cardsPlayedThisTurn.length).toBe(4);
   });
 
-  test('should work on Durrations')//, async () => {
-  //   const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
-  //   setHand(player, ['Copper', 'Copper', 'Silver', 'MerchantShip', 'ThroneRoom']);
-  //   await waitForNextInput();
-  //   respondWithCard('ThroneRoom');
-  //   await waitForNextInput();
-  //   respondWithCard('MerchantShip');
-  //   // await waitForNextInput();
-  //   // expect(player.hand.length).toBe(3);
-  //   // expect(player.money).toBe(4);
-  //   // expect(player.cardsPlayedThisTurn.length).toBe(3);
-  //   await skipToNextTurn(player);
-  //   await waitForNextInput();
-  //   expect(player.money).toBe(4);
-  // });
+  test('should work on Durrations', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Silver', 'MerchantShip', 'ThroneRoom']);
+    await waitForNextInput();
+    respondWithCard('ThroneRoom');
+    await waitForNextInput();
+    respondWithCard('MerchantShip');
+    await skipToNextTurn(player);
+    await waitForNextInput();
+    expect(player.money).toBe(4);
+    expect(player.playArea.length).toBe(2);
 
-  test('should work on cards that trash themselves');//, async () => {
-  //   const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
-  //   setHand(player, ['Copper', 'Copper', 'Silver', 'MerchantShip', 'ThroneRoom']);
-  //   await waitForNextInput();
-  //   respondWithCard('ThroneRoom');
-  //   await waitForNextInput();
-  //   respondWithCard('MerchantShip');
-  //   // await waitForNextInput();
-  //   // expect(player.hand.length).toBe(3);
-  //   // expect(player.money).toBe(4);
-  //   // expect(player.cardsPlayedThisTurn.length).toBe(3);
-  //   await skipToNextTurn(player);
-  //   await waitForNextInput();
-  //   expect(player.money).toBe(4);
-  // });
+    await skipToNextTurn(player);
+    await waitForNextInput();
+    expect(player.playArea.length).toBe(0);
+  });
+
+  test('should be able to TR, TR, Caravan, Dungeon', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Dungeon', 'Caravan', 'ThroneRoom', 'ThroneRoom']);
+    setDeck(player, Array(50).fill('Copper'));
+    await waitForNextInput();
+    respondWithCard('ThroneRoom');
+    await waitForNextInput();
+    respondWithCard('ThroneRoom');
+    await waitForNextInput();
+    expect(player.hand.length).toBe(3);
+    expect(player.actions).toBe(0);
+    respondWithCard('Dungeon');
+    await waitForNextInput();
+    respondWithCards(['Copper', 'Copper']);
+    await waitForNextInput();
+    respondWithCards(['Copper', 'Copper']);
+    await waitForNextInput();
+    expect(player.hand.length).toBe(2);
+    expect(player.actions).toBe(2);
+    respondWithCard('Caravan');
+    await waitForNextInput();
+    expect(player.hand.length).toBe(3);
+    expect(player.actions).toBe(4);
+
+    await skipToNextTurn(player);
+    setDeck(player, ['Gold', 'Estate', 'Silver', 'Estate', 'Estate', 'Estate']);
+    expect(player.playArea.length).toBe(3);
+    await waitForNextInput();
+    respondWithCard('Caravan');
+    await waitForNextInput();
+    respondWithCards(['Estate', 'Estate']); // Dungeon should automatically proc twice now that it is only mandetory trigger
+    await waitForNextInput();
+    respondWithCards(['Estate', 'Estate']);
+    await waitForNextInput();
+    expect(player.hand.length).toBe(7);
+    expect(player.hand.some(c => c.title === 'Silver')).toBe(true);
+    expect(player.hand.some(c => c.title === 'Gold')).toBe(true);
+    expect(player.actions).toBe(1);
+
+    await skipToNextTurn(player);
+    expect(player.playArea.length).toBe(0);
+  });
+
+  test('should work on cards that trash themselves', async () => {
+    const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Pillage', 'ThroneRoom']);
+    const otherPlayer = game.playerOrder.find(p => p !== player);
+    setHand(otherPlayer, ['Copper', 'Copper', 'Copper', 'Copper']);
+    await waitForNextInput();
+    respondWithCard('ThroneRoom');
+    await waitForNextInput();
+    respondWithCard('Pillage');
+    await waitForNextInput();
+    expect(game.trash.length).toBe(1);
+    expect(player.discardPile.length).toBe(4);
+    expect(player.playArea.length).toBe(1);
+  });
 
   test('should work on reserve cards', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);

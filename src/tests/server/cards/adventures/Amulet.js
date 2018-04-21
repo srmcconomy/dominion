@@ -6,6 +6,7 @@ export default () => {
 
   beforeEach(async () => {
     game = await createGame();
+    game.getKingdomCards = () => ['Amulet'];
   });
 
   test('should give the option of giving 1 coin', async () => {

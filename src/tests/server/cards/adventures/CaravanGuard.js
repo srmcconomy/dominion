@@ -6,6 +6,7 @@ export default () => {
 
   beforeEach(async () => {
     game = await createGame();
+    game.getKingdomCards = () => ['CaravanGuard'];
   });
 
   test('should give 1 card 1 action', async () => {

@@ -5,9 +5,6 @@ export default class Platinum extends Card {
   static cost = new Card.Cost({ coin: 9 });
   static types = new Set(['Treasure']);
   static supplyCategory = 'treasure';
-  static getNumberInSupply() {
-    return 12;
-  }
   onPlay(player) {
     player.money += 5;
   }

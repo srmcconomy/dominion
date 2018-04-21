@@ -20,17 +20,24 @@ export default class Supply extends Component {
     chooseSupply(this.props.data);
   }
   render() {
-    const { cards, tokens, title, kingdom } = this.props.data;
+    const { cards, tokens, title, kingdom, selectorCard } = this.props.data;
     return (
       <div className={cx('supply')}>
         <div className={cx('card')}>
-          {cards.size > 0 ? <Card data={cards.last()} supply small={this.props.small} selectable={this.props.selectable} onClick={this.onCardClick} /> : null}
+          <Card data={cards.size > 0 ? cards.last() : selectorCard.last()} supply small={this.props.small} selectable={this.props.selectable} onClick={this.onCardClick} empty={cards.size === 0} />
         </div>
-        <div className={cx('num')}>
-          <span>
-            {cards.size}
-          </span>
-        </div>
+        {cards.size > 3 ?
+          <div className={cx('num')}>
+            <span>
+              {cards.size}
+            </span>
+          </div> :
+          <div className={cx('numlow')}>
+            <span>
+              {cards.size}
+            </span>
+          </div>
+        }
       </div>
     );
   }

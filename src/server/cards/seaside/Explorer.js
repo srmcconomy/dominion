@@ -11,8 +11,10 @@ export default class Explorer extends Card {
       message: 'You may reveal a Province to gain a Gold, else gain a silver'
     });
     if (card) {
+      player.game.log(`${player.name} reveals a Province`);
       await player.gain('Gold', player.hand);
     } else {
+      player.game.log(`${player.name} dosn't reveal a Province`);
       await player.gain('Silver', player.hand);
     }
   }

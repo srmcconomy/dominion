@@ -12,6 +12,10 @@ import intrigueFirst from 'cards/intrigueFirst';
 import seaside from 'cards/seaside';
 import cornucopia from 'cards/cornucopia';
 import adventures from 'cards/adventures';
+import guilds from 'cards/guilds';
+import darkAges from 'cards/darkAges';
+import nocturn from 'cards/nocturn';
+import alchemy from 'cards/alchemy';
 
 const cardClasses = {
   ...basic,
@@ -22,6 +26,10 @@ const cardClasses = {
   ...seaside,
   ...cornucopia,
   ...adventures,
+  ...guilds,
+  ...darkAges,
+  ...nocturn,
+  ...alchemy,
 };
 
 let currentPlayer;
@@ -75,7 +83,7 @@ async function emitStub(type, { payload }) {
   return nextResponse;
 }
 
-export async function createGame({ numPlayers = 2 } = {}) {
+export async function createGame(numPlayers = 2) {
   currentGame = new Game();
   for (let i = 0; i < numPlayers; i++) {
     const player = new Player(`Player${i}`, currentGame);
@@ -175,20 +183,32 @@ export async function waitForNextInput() {
 
 export function setHand(player, cards) {
   const newHand = cards.map(title => new cardClasses[title](player.game));
+  player.hand.forEach(c => player.cardsOwned.delete(c));
+  player.cardsOwned.push(...newHand);
   player.hand.clear();
   player.hand.push(...newHand);
 }
 
 export function setDiscardPile(player, cards) {
   const newDiscardPile = cards.map(title => new cardClasses[title](player.game));
+  player.discardPile.forEach(c => player.cardsOwned.delete(c));
+  player.cardsOwned.push(...newDiscardPile);
   player.discardPile.clear();
   player.discardPile.push(...newDiscardPile);
 }
 
 export function setDeck(player, cards) {
   const newDeck = cards.map(title => new cardClasses[title](player.game));
+  player.deck.forEach(c => player.cardsOwned.delete(c));
+  player.cardsOwned.push(...newDeck);
   player.deck.clear();
   player.deck.push(...newDeck);
+}
+
+export function setTrash(game, cards) {
+  const newTrash = cards.map(title => new cardClasses[title](game));
+  game.trash.clear();
+  game.trash.push(...newTrash);
 }
 
 export function setStartingDeck(cardNames) {
@@ -203,8 +223,10 @@ export async function skipToNextTurn(player) {
     while (inputPlayer === player) {
       if (input.selectOption) {
         respondWithChoice(0);
-      } else if (input.selectCards) {
+      } else if (input.selectCards.min === 0) {
         respondWithCards([]);
+      } else if (input.selectCards.min > 0) {
+        respondWithFirstCard();
       }
       ({ input, player: inputPlayer } = await waitForNextInput());
     }
@@ -216,8 +238,10 @@ export async function skipToNextTurn(player) {
   while (inputPlayer !== player) {
     if (input.selectOption) {
       respondWithChoice(0);
-    } else if (input.selectCards) {
+    } else if (input.selectCards.min === 0) {
       respondWithCards([]);
+    } else if (input.selectCards.min > 0) {
+      respondWithFirstCard();
     }
     ({ input, player: inputPlayer } = await waitForNextInput());
   }

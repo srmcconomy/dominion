@@ -17,13 +17,7 @@ export default class Mill extends Card {
       if (cards.length === 2) {
         player.money += 2;
       }
-      for (let i = 0; i < cards.length; i++) {
-        await player.discard(cards[i]);
-      }
+      await player.discardAll([...cards]);
     }
-  }
-  static getNumberInSupply(game) {
-    if (game.players.size === 2) return 8;
-    return 12;
   }
 }

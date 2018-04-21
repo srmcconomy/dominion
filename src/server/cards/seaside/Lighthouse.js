@@ -1,11 +1,10 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class Lighthouse extends Card {
   static cost = new Card.Cost({ coin: 2 });
   static types = new Set(['Action', 'Duration']);
   async onPlay(player) {
-    await player.actions++;
+    player.actions++;
     player.money++;
     this.ignoreCleanUp = true;
   }

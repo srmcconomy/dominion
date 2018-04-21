@@ -4,6 +4,7 @@ const COST_FIELDS = ['coin', 'debt', 'potion'];
 
 export default class Card extends BaseCard {
   ignoreCleanUp = false;
+  timesPlayed = 0;
   static types = new Map();
   static VP = 0;
 
@@ -12,13 +13,15 @@ export default class Card extends BaseCard {
     if (game) game.cards.push(this);
 
     this.supply = supply;
+
+    this.name = this.title;
   }
 
   getVpValue(player) {
     return this.VP;
   }
 
-  endGameCleanUp(player) { }
+  updateIgnoreCleanUp() { }
 
   toJSON() {
     return {

@@ -9,20 +9,29 @@ export default class Ambassador extends Card {
       max: 1,
       message: 'Reveal a card for your opponents to gain'
     });
+    player.game.log(`${player.name} reveals ${card.name}`);
     const cards = await player.selectCards({
       min: 0,
       max: 2,
       predicate: c => c.name === card.title,
       message: 'Select 0-2 cards to return'
     });
-    for (let i = 0; i < cards.length; i++) {
-      await player.returnToSupply(cards[i]);
-    }
-    await player.forEachOtherPlayer(async other => {
-      if (event.handledByPlayer.get(other)) {
-        return;
+    let returnedCards = false;
+    if (player.game.supplies.get(card.title)) {
+      if (player.game.supplies.get(card.title).category !== 'nonSupply') {
+        for (let i = 0; i < cards.length; i++) {
+          await player.returnToSupply(cards[i]);
+          player.cardsOwned.delete(cards[i]);
+          returnedCards = true;
+        }
+        await player.forEachOtherPlayer(async other => {
+          if (event.handledByPlayer.get(other)) {
+            return;
+          }
+          await other.gain(card.title);
+        });
       }
-      await other.gain(card.title);
-    });
+    }
+    if (!returnedCards) player.game.log(`${player.name} fails to return cards`);
   }
 }

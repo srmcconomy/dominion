@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class GhostShip extends Card {
+  name = 'Ghost Ship';
   static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action', 'Attack']);
   async onPlay(player, event) {

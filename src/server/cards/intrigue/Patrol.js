@@ -6,7 +6,7 @@ export default class Patrol extends Card {
   async onPlay(player) {
     await player.draw(3);
     const cards = player.lookAtTopOfDeck(4);
-    player.game.log(`${player.name} reveals ${cards.map(c => c.title).join(', ')}`);
+    player.game.log(`${player.name} reveals ${cards.map(c => c.name).join(', ')}`);
     cards.filter(c => c.types.has('Victory') || c.types.has('Curse'))
       .forEach(c => player.moveCard(c, player.deck, player.hand));
   }

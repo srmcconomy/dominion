@@ -8,18 +8,14 @@ export default class Minion extends Card {
     const choices = {
       '+2 coins': () => { player.money += 2; },
       'Discard your hand, +4 cards, attack': async () => {
-        while (player.hand.size > 0) {
-          await player.discard(player.hand.last());
-        }
+        await player.discardAll([...player.hand]);
         await player.draw(4);
         await player.forEachOtherPlayer(async other => {
           if (event.handledByPlayer.get(other)) {
             return;
           }
           if (other.hand.size >= 5) {
-            while (other.hand.size > 0) {
-              await other.discard(other.hand.last());
-            }
+            await other.discardAll([...other.hand], other.hand);
             await other.draw(4);
           }
         });

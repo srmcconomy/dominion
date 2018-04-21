@@ -7,10 +7,9 @@ export default class Artisan extends Card {
     const [supply] = await player.selectSupplies({
       min: 1,
       max: 1,
-      predicate: s => (
-        s.cards.size > 0 &&
+      predicate: s => (s.cards.length > 0 ? (
         player.cardCostsLessThanEqualTo(s.cards.last(), { coin: 5 })
-      ),
+      ) : false),
       message: 'Choose an card to gain'
     });
     if (supply) {

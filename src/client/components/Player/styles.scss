@@ -5,10 +5,16 @@
   &.big {
     font-size: 4em;
   }
+  margin-bottom: 12px;
 }
 
 .card {
   font-size: 0.1em;
+}
+
+.score {
+  position: relative;
+  margin-right: 12px;
 }
 
 .deck-container {

@@ -32,4 +32,9 @@ export default () => {
     const numPorts = player.discardPile.filter(c => c.title === 'Port').length;
     expect(numPorts).toBe(2);
   });
+
+  test('should have 12 in supply', async () => {
+    await startGameGetPlayerAndWaitForStartOfTurn(game);
+    expect(game.supplies.get('Port').cards.length).toBe(12);
+  });
 };

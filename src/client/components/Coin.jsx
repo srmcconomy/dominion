@@ -9,7 +9,7 @@ export default function Coin({ inline = true, children }) {
   return (
     <div className={cx('coin', { inline })}>
       <div>
-        <span>{children}</span>
+        <span><font color="black">{children}</font></span>
       </div>
     </div>
   );

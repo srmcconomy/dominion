@@ -3,7 +3,7 @@ import { Record } from 'immutable';
 import { cardTransform, pileTransform } from './transforms';
 
 const transforms = {
-  discardPile: obj => obj.top && cardTransform(obj.top),
+  discardPile: obj => (obj.top ? cardTransform(obj.top) : 0),
   hand: obj => (obj.pile ? pileTransform(obj) : obj.size),
   playArea: pileTransform,
 };
@@ -19,8 +19,10 @@ export default class Player extends new Record({
   actions: null,
   money: null,
   debt: null,
-  potions: null,
+  potion: null,
   vpTokens: null,
+  score: null,
+  coinTokens: null,
 }) {
   constructor(json) {
     const ret = {};

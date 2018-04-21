@@ -11,12 +11,12 @@ export default class Jester extends Card {
       }
       const [card] = other.lookAtTopOfDeck(1);
       if (card) {
-        player.game.log(`${other.name} reveals ${card.title}`);
+        player.game.log(`${other.name} reveals ${card.name}`);
         await other.discard(card, other.deck);
         if (card.types.has('Victory')) {
           await other.gain('Curse');
         } else {
-          const choice = await player.selectOption([`${other.name} gains ${card.title}`, `You gain ${card.title}`]);
+          const choice = await player.selectOption([`${other.name} gains ${card.name}`, `You gain ${card.name}`]);
           switch (choice) {
             case 0:
               await other.gain(card.title);

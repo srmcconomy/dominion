@@ -15,6 +15,9 @@ export default class Supply {
   @trackDirty
   cards = new Pile();
 
+  @trackDirty
+  selectorCard = new Pile();
+
   static category;
   static types;
   static cost;

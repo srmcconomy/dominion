@@ -18,6 +18,8 @@ export default class Masquerade extends Card {
       const whereToPass = i === 0 ? cards.length - 1 : i - 1;
       if (cards[i]) {
         other.moveCard(cards[i], other.hand, player.game.playerOrder[whereToPass].hand);
+        other.cardsOwned.delete(cards[i]);
+        player.game.playerOrder[whereToPass].cardsOwned.push(cards[i]);
       }
     }
     const [card] = await player.selectCards({ min: 0, max: 1, message: 'Select a card to trash' });

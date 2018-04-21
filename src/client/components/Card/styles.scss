@@ -52,6 +52,13 @@
   }
 }
 
+.night {
+  background-image: url(assets/images/cards/backgrounds/normal/night.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/night.png);
+  }
+}
+
 .action.reserve {
   background-image: url(assets/images/cards/backgrounds/normal/action-reserve.png);
   .supply & {
@@ -87,6 +94,13 @@
   }
 }
 
+.action.ruins {
+  background-image: url(assets/images/cards/backgrounds/normal/action-ruins.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action-ruins.png);
+  }
+}
+
 .action.shelter {
   background-image: url(assets/images/cards/backgrounds/normal/action-shelter.png);
 }
@@ -99,6 +113,20 @@
   background-image: url(assets/images/cards/backgrounds/normal/action-traveller.png);
   .supply & {
     background-image: url(assets/images/cards/backgrounds/mini/action.png);
+  }
+}
+
+.action.night {
+  background-image: url(assets/images/cards/backgrounds/normal/action-night.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action-night.png);
+  }
+}
+
+.night.duration {
+  background-image: url(assets/images/cards/backgrounds/normal/night-duration.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/night-duration.png);
   }
 }
 
@@ -136,11 +164,32 @@
 }
 
 .victory.shelter {
-  background-image: url(assets/images/cards/backgrounds/normal/action-reserve.png);
+  background-image: url(assets/images/cards/backgrounds/normal/victory-shelter.png);
 }
 
 .reaction.shelter {
   background-image: url(assets/images/cards/backgrounds/normal/reaction-shelter.png);
+}
+
+.boon {
+  background-image: url(assets/images/cards/backgrounds/normal/action.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action.png);
+  }
+}
+
+.hex {
+  background-image: url(assets/images/cards/backgrounds/normal/action.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action.png);
+  }
+}
+
+.state {
+  background-image: url(assets/images/cards/backgrounds/normal/action.png);
+  .supply & {
+    background-image: url(assets/images/cards/backgrounds/mini/action.png);
+  }
 }
 
 .name {
@@ -166,6 +215,18 @@
 
 :global(.description) {
   margin: 62% 10% 18%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  span {
+    text-align: center;
+  }
+}
+
+:global(.descriptionWhite) {
+  margin: 62% 10% 18%;
+  color: white;
   flex: 1;
   display: flex;
   justify-content: center;

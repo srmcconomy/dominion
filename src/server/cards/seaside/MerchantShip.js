@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class MerchantShip extends Card {
+  name = 'Merchant Ship';
   static cost = new Card.Cost({ coin: 5 });
   static types = new Set(['Action', 'Duration']);
   async onPlay(player) {

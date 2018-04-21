@@ -10,7 +10,7 @@ export default class Pile extends Model {
   }
 
   toString() {
-    return `Pile: [${this._list.map(c => c.title).join(', ')}]`;
+    return `Pile: [${this._list.map(c => c.name).join(', ')}]`;
   }
 
   createDirty() {
@@ -126,8 +126,8 @@ export default class Pile extends Model {
   }
 
   first() {
-    if (this.list.length === 0) return null;
-    return this.list[0];
+    if (this._list.length === 0) return null;
+    return this._list[0];
   }
 
   last() {
@@ -155,6 +155,20 @@ export default class Pile extends Model {
       this._map.set(this._list[j].id, j);
       this._map.set(this._list[i].id, i);
     }
+    this.markDirty();
+    return this;
+  }
+
+  sort() {
+    this._list.sort((a, b) => {
+      if (a.title < b.title) {
+        return -1;
+      } else if (a.title > b.title) {
+        return 1;
+      }
+      return 0;
+    });
+    this._list.forEach((card, i) => this._map.set(card.id, i));
     this.markDirty();
     return this;
   }

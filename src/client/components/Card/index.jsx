@@ -37,14 +37,14 @@ export default class Card extends Component {
   }
 
   render() {
-    const { style, selected, selectable, huge, small, supply, onClick, data } = this.props;
+    const { style, selected, selectable, huge, small, supply, onClick, data, empty } = this.props;
     if (!data) {
       return (
         <div
-        className={cx('card-border', { huge, full: true && !supply, supply, selected, selectable, small })}
-        style={style}
-        onClick={onClick}
-        onContextMenu={this.onRightClick}
+          className={cx('card-border', { huge, full: true && !supply, supply, selected, selectable, small })}
+          style={style}
+          onClick={onClick}
+          onContextMenu={this.onRightClick}
         >
           <div className={cx('card-container')}>
             <div className={cx('card', 'back')} />
@@ -52,7 +52,7 @@ export default class Card extends Component {
         </div>
       );
     }
-    const image = supply ? this.props.data.image.small : this.props.data.image.normal;
+    const image = empty ? this.props.data.image.empty : (supply ? this.props.data.image.small : this.props.data.image.normal);
     const { fullArt, types, title, description, set, cost } = data;
     return (
       <div
@@ -71,9 +71,14 @@ export default class Card extends Component {
               <AutoSizeText maxFontSize={fullArt ? 1.75 : 1.5}>{title}</AutoSizeText>
             </div>
             {!fullArt && !supply && (
-              <div className={cx('description')}>
-                <AutoSizeBlock maxFontSize={1}>{description}</AutoSizeBlock>
-              </div>
+              types.includes('Night') ?
+                <div className={cx('descriptionWhite')}>
+                  <AutoSizeBlock maxFontSize={1}>{description}</AutoSizeBlock>
+                </div>
+              :
+                <div className={cx('description')}>
+                  <AutoSizeBlock maxFontSize={1}>{description}</AutoSizeBlock>
+                </div>
             )}
             <div className={cx('types')}>
               <AutoSizeText maxFontSize={1.3}>{[...types].join(' - ')}</AutoSizeText>

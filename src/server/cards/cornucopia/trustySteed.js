@@ -1,6 +1,7 @@
 import Card from 'cards/Card';
 
 export default class TrustySteed extends Card {
+  name = 'Trusty Steed';
   static cost = new Card.Cost({ coin: 0 });
   static types = new Set(['Action']);
   static supplyCategory = 'nonSupply';

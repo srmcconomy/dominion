@@ -6,6 +6,7 @@ export default () => {
 
   beforeEach(async () => {
     game = await createGame();
+    game.getKingdomCards = () => ['BridgeTroll'];
   });
 
   test('should give 1 buy', async () => {
@@ -52,9 +53,9 @@ export default () => {
 
   test('should make cards cost 1 coin less', async () => {
     const player = await startGameGetPlayerAndWaitForStartOfTurn(game);
-    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'Bridge']);
+    setHand(player, ['Copper', 'Copper', 'Copper', 'Copper', 'BridgeTroll']);
     await waitForNextInput();
-    respondWithCard('Bridge');
+    respondWithCard('BridgeTroll');
     await waitForNextInput();
     player.money = 2;
     respondWithCards([]);
@@ -73,9 +74,9 @@ export default () => {
     await waitForNextInput();
 
     await skipToNextTurn(player);
+    setHand(player, ['Silver']);
     await waitForNextInput();
-    player.money = 2;
-    respondWithCards([]);
+    respondWithCard('Silver');
     await waitForNextInput();
     respondWithSupply('Silver');
     await waitForNextInput();

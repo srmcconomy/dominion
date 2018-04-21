@@ -10,14 +10,9 @@ export default class Cutpurse extends Card {
         return;
       }
       if (other.hand.some(card => card.title === 'Copper')) {
-        for (let i = 0; i < other.hand.size; i++) {
-          if (other.hand.list[i].title === 'Copper') {
-            other.discard(other.hand.list[i]);
-            break;
-          }
-        }
+        await other.discard(other.hand.find(card => card.title === 'Copper'));
       } else {
-        // other.revealHand();
+        other.revealHand();
       }
     });
   }

@@ -15,7 +15,7 @@ export default class Harbinger extends Card {
       });
       if (card) {
         await player.topDeck(card, player.discardPile);
-        player.game.log(`${player.name} places ${card.title} on top of their deck`);
+        player.game.log(`${player.name} places a card on top of their deck`);
       }
     }
   }

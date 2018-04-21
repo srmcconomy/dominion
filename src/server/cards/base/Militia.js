@@ -15,9 +15,7 @@ export default class Militia extends Card {
           max: other.hand.size - 3,
           message: 'Discard down to three cards in hand'
         });
-        for (let i = 0; i < cards.length; i++) {
-          await other.discard(cards[i]);
-        }
+        await other.discardAll([...cards], other.hand);
       }
     });
   }

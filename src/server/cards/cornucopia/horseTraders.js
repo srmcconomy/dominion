@@ -1,7 +1,7 @@
 import Card from 'cards/Card';
-import { Set } from 'immutable';
 
 export default class HorseTraders extends Card {
+  name = 'Horse Traders';
   static cost = new Card.Cost({ coin: 4 });
   static types = new Set(['Action', 'Reaction']);
   async onPlay(player) {
@@ -12,9 +12,8 @@ export default class HorseTraders extends Card {
       max: 2,
       message: 'Select cards to discard'
     });
-    for (let i = 0; i < cards.length; i++) {
-      await player.discard(cards[i]);
-    }
+
+    await player.discardAll([...cards]);
   }
 
   canTriggerOn(event, player) {

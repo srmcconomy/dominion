@@ -16,7 +16,7 @@ setInputStore(store);
 window.store = store;
 
 const createGame = () => {
-  socket.emit('create-game', 'game1', 'player1');
+  socket.emit('create-game', 'game1', 'AAA');
 };
 
 const tokenRequest = () => {
@@ -24,7 +24,7 @@ const tokenRequest = () => {
 };
 
 const joinGame = () => {
-  socket.emit('join-game', 'player2');
+  socket.emit('join-game', 'BBB');
 };
 
 const startGame = () => {
